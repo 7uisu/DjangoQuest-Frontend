@@ -1,0 +1,365 @@
+/* Home.css */
+
+/* Base styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  image-rendering: pixelated; /* Ensure all images are pixelated */
+}
+
+body {
+  font-family: 'Press Start 2P', monospace; /* Use a pixelated font */
+  overflow-x: hidden;
+  color: #ffffff;
+}
+
+/* Main container */
+.djangoquest-app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Loading screen */
+.loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000022; /* Match the app background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.loading-content {
+  text-align: center;
+  width: 80%;
+  max-width: 600px;
+}
+
+.loading-content h1 {
+  font-size: 4rem;
+  margin-bottom: 2rem;
+  color: #44b78b; /* Django green */
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7);
+}
+
+.loading-bar-container {
+  width: 100%;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 3px solid #44b78b;
+  margin-bottom: 1rem;
+  padding: 3px;
+}
+
+.loading-bar {
+  height: 100%;
+  background-color: #44b78b;
+  transition: width 0.3s ease;
+}
+
+.loading-content p {
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+/* PixiJS container */
+.pixi-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* UI Overlay */
+.ui-overlay {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Let clicks pass through to PixiJS */
+}
+
+/* Navigation styling */
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: auto; /* Make nav clickable */
+}
+
+.nav-logo {
+  font-size: 1.5rem;
+  color: #44b78b; /* Django green */
+  font-weight: bold;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.nav-links li {
+  margin-left: 1.5rem;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s;
+}
+
+.nav-links button:hover {
+  color: #44b78b;
+}
+
+/* Section content styling */
+.home-content, .about-content, .gallery-content, .download-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 70px);
+  padding: 2rem;
+  text-align: center;
+  pointer-events: auto;
+  z-index: 3;
+}
+
+
+/* Hero section */
+.hero-text {
+  max-width: 800px;
+}
+
+.hero-text h1 {
+  font-size: 6rem;
+  margin-bottom: 1rem;
+  letter-spacing: 3px;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7);
+}
+
+.hero-text h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+/* CTA Button */
+.cta-button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-family: inherit;
+  background-color: #44b78b;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  transition: all 0.2s;
+}
+
+.cta-button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* About section */
+/* Add these styles to your Home.css file */
+
+.about-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+}
+
+.about-logo {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding-right: 2rem;
+}
+
+.about-text h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.about-text p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.about-text {
+  flex: 1;
+  color: white;
+  text-align: left;
+}
+
+.dquest-logo {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+/* Make sure about-content is responsive */
+@media (max-width: 768px) {
+  .about-layout {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .about-logo {
+    padding-right: 0;
+    padding-bottom: 1.5rem;
+  }
+  
+  .dquest-logo {
+    max-width: 80%;
+  }
+  
+  .about-text {
+    text-align: center;
+  }
+}
+
+/* Gallery section */
+.screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.screenshot {
+  width: 300px;
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 3px solid white;
+}
+
+/* Download section */
+.download-content {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 600px;
+}
+
+.download-content h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.download-content p {
+  margin-bottom: 2rem;
+}
+
+.download-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #44b78b;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  transition: all 0.2s;
+}
+
+.download-button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Pixelated borders */
+.pixelated-border {
+  border-style: solid;
+  border-width: 4px;
+  border-image-slice: 2;
+  border-image-width: 2;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+}
+
+/* Space objects container */
+.space-objects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Above canvas but below UI */
+  pointer-events: none; /* Allow clicking through to elements below */
+}
+
+/* Planet styling */
+.planet, .rocket {
+  position: absolute;
+  transition: transform 0.5s ease;
+}
+
+.half-earth {
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+.jupiter {
+  top: 30%;
+  right: 20%;
+  width: 15%;
+  animation: rotate 120s linear infinite;
+  z-index: -2;
+}
+
+.moon {
+  top: 20%;
+  left: 20%;
+  width: 10%;
+  animation: rotate 60s linear infinite;
+}
+
+.rocket {
+  left: 400px;
+  top: 50%;
+  width: 250px;
+  animation: hover 4s ease-in-out infinite;
+}
+
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes hover {
+  0% { transform: translateY(0px) rotate(-20deg); }
+  50% { transform: translateY(-20px) rotate(-15deg); }
+  100% { transform: translateY(0px) rotate(-20deg); }
+}
+
