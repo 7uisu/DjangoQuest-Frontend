@@ -1,5 +1,5 @@
-// src/pages/Login.tsx
-import React, { useState, useEffect } from 'react';
+// src/pages/PasswordReset.tsx
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -10,34 +10,25 @@ import {
   CircularProgress,
   Alert,
 } from '@mui/material';
-import { Link as RouterLink, Navigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
-const Login: React.FC = () => {
-  const { login, isAuthenticated, isLoading, error, clearError } = useAuth();
+const PasswordReset: React.FC = () => {
+  const { requestPasswordReset, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // Clear error on mount (e.g., after logout)
-  useEffect(() => {
-    clearError();
-  }, [clearError]);
-
-  // Clear error when email or password changes
-  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    clearError(); // Clear error when user starts typing
-    setter(e.target.value);
-  };
-
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
-  }
+  const [success, setSuccess] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccess(null);
+    setInfoMessage(null);
     try {
-      await login({ email, password });
+      await requestPasswordReset({ email });
+      setSuccess('Password reset email sent successfully.');
+      setInfoMessage('Please check your inbox (and spam/junk folder) for the reset email. It may take a few minutes to arrive.');
     } catch (err) {
+      console.log("Password reset request failed:", err);
       // Error is handled by useAuth
     }
   };
@@ -71,12 +62,22 @@ const Login: React.FC = () => {
         }}
       >
         <Typography variant="h4" component="h1" align="center" gutterBottom>
-          Sign In
+          Reset Password
         </Typography>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
+          </Alert>
+        )}
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {success}
+          </Alert>
+        )}
+        {infoMessage && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            {infoMessage}
           </Alert>
         )}
 
@@ -86,42 +87,26 @@ const Login: React.FC = () => {
             label="Email"
             type="email"
             value={email}
-            onChange={handleInputChange(setEmail)}
-            disabled={isLoading}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading || !!success}
             margin="normal"
             variant="outlined"
             sx={{ bgcolor: 'white' }}
           />
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            value={password}
-            onChange={handleInputChange(setPassword)}
-            disabled={isLoading}
-            margin="normal"
-            variant="outlined"
-            sx={{ bgcolor: 'white' }}
-          />
-          <Box sx={{ textAlign: 'right', mb: 2 }}>
-            <Link component={RouterLink} to="/password-reset" variant="body2">
-              Forgot Password?
-            </Link>
-          </Box>
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
-            disabled={isLoading}
+            disabled={isLoading || !!success}
             sx={{ mt: 3, mb: 2, py: 1.5 }}
           >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Reset Password'}
           </Button>
 
           <Box sx={{ textAlign: 'center' }}>
-            <Link component={RouterLink} to="/register" variant="body2">
-              {"Don't have an account? Sign Up"}
+            <Link component={RouterLink} to="/login" variant="body2">
+              Back to Sign In
             </Link>
           </Box>
         </Box>
@@ -130,4 +115,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default PasswordReset;
