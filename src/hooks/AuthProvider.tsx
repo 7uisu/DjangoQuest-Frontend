@@ -1,5 +1,5 @@
 // src/hooks/AuthProvider.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { requestPasswordReset as apiRequestPasswordReset, confirmPasswordReset as apiConfirmPasswordReset } from '../api/auth'; // Rename imports
@@ -215,10 +215,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const clearError: AuthContextType['clearError'] = () => {
-    console.log("Clearing error");
+  const clearError: AuthContextType['clearError'] = useCallback(() => {
+    console.log("Clearing error [AuthProvider]");
     setError(null);
-  };
+  }, []);
 
   // For debugging
   useEffect(() => {

@@ -86,6 +86,7 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   updateProfile: (data: ProfileUpdateData) => Promise<User>;
   getUserAchievements: () => Promise<UserAchievement[]>;
+  getUserProfile: () => Promise<User>; // Add this line
   requestPasswordReset: (data: PasswordResetRequest) => Promise<void>;
   confirmPasswordReset: (data: PasswordResetConfirm) => Promise<void>;
   clearError: () => void;

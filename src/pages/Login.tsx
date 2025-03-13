@@ -18,14 +18,14 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Clear error on mount (e.g., after logout)
   useEffect(() => {
+    console.log("Clearing error on initial mount [Login]");
     clearError();
-  }, [clearError]);
+  }, []);
 
-  // Clear error when email or password changes
   const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    clearError(); // Clear error when user starts typing
+    console.log("Clearing error on input change [Login]");
+    clearError();
     setter(e.target.value);
   };
 
@@ -38,7 +38,7 @@ const Login: React.FC = () => {
     try {
       await login({ email, password });
     } catch (err) {
-      // Error is handled by useAuth
+      console.log("Caught error in handleSubmit:", err);
     }
   };
 
