@@ -4,22 +4,80 @@ import {
   Box,
   Typography,
   Paper,
-  Grid2, // Replace Grid with Grid2
+  Grid2,
   Button,
   TextField,
   Divider,
   Card,
   CardContent,
   CardHeader,
+  Container,
   Chip,
   IconButton,
   CircularProgress,
   Alert,
   Avatar,
+  useTheme,
+  alpha,
+  styled,
+  Fade,
+  Grow,
 } from '@mui/material';
-import { PhotoCamera as PhotoCameraIcon, Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material';
+import {
+  PhotoCamera as PhotoCameraIcon,
+  Edit as EditIcon,
+  Save as SaveIcon,
+  Cancel as CancelIcon,
+  Person as PersonIcon,
+} from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { updateUserProfile, getUserAchievements, UserAchievementData } from '../api/user';
+
+// Styled components for enhanced visuals (matched with Dashboard.tsx)
+const GradientPaper = styled(Paper)(({ theme }) => ({
+  background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.primary.dark, 0.2)} 100%)`,
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: '0 12px 20px rgba(0,0,0,0.15)',
+  },
+}));
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  borderRadius: theme.shape.borderRadius * 1.5,
+  overflow: 'hidden',
+  position: 'relative',
+  background: alpha(theme.palette.grey[800], 0.7),
+  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+  transition: 'transform 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.02)',
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '4px',
+    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+  },
+}));
+
+const ProfileAvatar = styled(Avatar)(({ theme }) => ({
+  width: 120,
+  height: 120,
+  boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.4)}`,
+  border: `4px solid ${theme.palette.background.paper}`,
+  margin: theme.spacing(2),
+  transition: 'transform 0.3s ease',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+}));
 
 const Profile: React.FC = () => {
   const { user, setUser } = useAuth();
@@ -34,6 +92,7 @@ const Profile: React.FC = () => {
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.profile?.avatar || null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (user) {
@@ -70,11 +129,8 @@ const Profile: React.FC = () => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setAvatarFile(file);
-
       const reader = new FileReader();
-      reader.onload = () => {
-        setAvatarPreview(reader.result as string);
-      };
+      reader.onload = () => setAvatarPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -82,17 +138,12 @@ const Profile: React.FC = () => {
   const handleSave = async () => {
     setSaving(true);
     setError('');
-    
     try {
       const updateData = {
         first_name: formData.first_name,
         last_name: formData.last_name,
-        profile: {
-          bio: formData.bio,
-          avatar: avatarFile,
-        },
+        profile: { bio: formData.bio, avatar: avatarFile },
       };
-      
       const updatedUser = await updateUserProfile(updateData);
       setUser(updatedUser);
       setEditMode(false);
@@ -120,8 +171,14 @@ const Profile: React.FC = () => {
 
   if (!user) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`,
+      }}>
+        <CircularProgress size={60} sx={{ color: theme.palette.primary.main }} />
       </Box>
     );
   }
@@ -131,31 +188,55 @@ const Profile: React.FC = () => {
       sx={{
         minHeight: '100vh',
         width: '100vw',
-        bgcolor: 'rgba(0, 0, 0, 0.7)', // Match navbar's black transparent background
-        backdropFilter: 'blur(5px)', // Match navbar's blur effect
+        background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`,
+        backgroundAttachment: 'fixed',
+        backgroundSize: 'cover',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'flex-start',
         position: 'relative',
-        pt: 8,
-        px: 0,
-        mx: 0,
+        pt: 10,
+        pb: 6,
       }}
     >
-      <Box sx={{ maxWidth: 'lg', width: '100%', mt: 4, mb: 4, px: { xs: 2, sm: 0 } }}>
-        <Grid2 container spacing={3}>
+      <Container maxWidth="lg">
+        <Fade in={true} timeout={800}>
+          <Box sx={{ mb: 5 }}>
+            <Typography
+              variant="h3"
+              component="h1"
+              gutterBottom
+              sx={{
+                color: '#ffffff',
+                fontWeight: 'bold',
+                textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+              }}
+            >
+              Your Profile, @{user.username}
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: alpha(theme.palette.common.white, 0.8),
+                textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+              }}
+            >
+              Manage your details and view your achievements.
+            </Typography>
+          </Box>
+        </Fade>
+
+        <Grid2 container spacing={4}>
           {/* Profile Card */}
           <Grid2 size={{ xs: 12, md: 4 }}>
-            <Paper elevation={3} sx={{ p: 3, height: '100%', bgcolor: '#fff' }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Box sx={{ position: 'relative' }}>
-                  <Avatar
-                    src={avatarPreview || undefined}
-                    alt={user.username}
-                    sx={{ width: 150, height: 150, mb: 2 }}
-                  />
+            <Grow in={true} timeout={800}>
+              <GradientPaper sx={{ p: 3, height: '100%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                  <ProfileAvatar src={avatarPreview || undefined} alt={user.username}>
+                    <PersonIcon sx={{ fontSize: 60 }} />
+                  </ProfileAvatar>
+
                   {editMode && (
-                    <Box sx={{ position: 'absolute', right: 0, bottom: 10 }}>
+                    <Box sx={{ position: 'absolute', top: theme.spacing(2), right: theme.spacing(2) }}>
                       <input
                         accept="image/*"
                         style={{ display: 'none' }}
@@ -168,149 +249,244 @@ const Profile: React.FC = () => {
                           color="primary"
                           aria-label="upload picture"
                           component="span"
-                          sx={{ bgcolor: 'white' }}
+                          sx={{
+                            bgcolor: alpha(theme.palette.primary.main, 0.8),
+                            '&:hover': { bgcolor: theme.palette.primary.main },
+                          }}
                         >
-                          <PhotoCameraIcon />
+                          <PhotoCameraIcon sx={{ color: '#fff' }} />
                         </IconButton>
                       </label>
                     </Box>
                   )}
-                </Box>
 
-                <Typography variant="h5" gutterBottom>
-                  {user.username}
-                </Typography>
-
-                <Chip
-                  label={`XP: ${user.profile.total_xp}`}
-                  color="primary"
-                  sx={{ mb: 2 }}
-                />
-
-                {!editMode ? (
-                  <>
-                    <Typography variant="subtitle1" gutterBottom>
-                      {user.first_name} {user.last_name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" sx={{ mt: 2, textAlign: 'center' }}>
-                      {user.profile.bio || "No bio available"}
-                    </Typography>
-                    <Button
-                      startIcon={<EditIcon />}
-                      variant="outlined"
-                      onClick={() => setEditMode(true)}
-                      sx={{ mt: 3 }}
-                    >
-                      Edit Profile
-                    </Button>
-                  </>
-                ) : (
-                  <Box sx={{ width: '100%', mt: 2 }}>
-                    {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-
-                    <TextField
-                      label="First Name"
-                      name="first_name"
-                      value={formData.first_name}
-                      onChange={handleInputChange}
-                      fullWidth
-                      margin="normal"
-                      size="small"
-                    />
-
-                    <TextField
-                      label="Last Name"
-                      name="last_name"
-                      value={formData.last_name}
-                      onChange={handleInputChange}
-                      fullWidth
-                      margin="normal"
-                      size="small"
-                    />
-
-                    <TextField
-                      label="Bio"
-                      name="bio"
-                      value={formData.bio}
-                      onChange={handleInputChange}
-                      fullWidth
-                      margin="normal"
-                      multiline
-                      rows={4}
-                      size="small"
-                    />
-
-                    <Box sx={{ display: 'flex', gap: 1, mt: 2, justifyContent: 'center' }}>
+                  {!editMode && (
+                    <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
                       <Button
-                        startIcon={<SaveIcon />}
-                        variant="contained"
-                        onClick={handleSave}
-                        disabled={saving}
-                      >
-                        {saving ? <CircularProgress size={24} /> : 'Save'}
-                      </Button>
-
-                      <Button
-                        startIcon={<CancelIcon />}
+                        startIcon={<EditIcon />}
                         variant="outlined"
-                        onClick={handleCancel}
-                        disabled={saving}
+                        size="small"
+                        onClick={() => setEditMode(true)}
+                        sx={{
+                          borderRadius: 8,
+                          textTransform: 'none',
+                          color: '#ffffff',
+                          borderColor: alpha(theme.palette.common.white, 0.5),
+                          '&:hover': { borderColor: '#ffffff' },
+                        }}
                       >
-                        Cancel
+                        Edit Profile
                       </Button>
                     </Box>
-                  </Box>
-                )}
-              </Box>
-            </Paper>
+                  )}
+
+                  <Typography
+                    variant="h4"
+                    component="h2"
+                    sx={{ fontWeight: 'bold', mb: 0.5, color: '#ffffff' }}
+                  >
+                    {formData.first_name} {formData.last_name}
+                  </Typography>
+
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ color: alpha(theme.palette.common.white, 0.8), mb: 1 }}
+                  >
+                    @{user.username}
+                  </Typography>
+
+                  <Chip
+                    label={`Total XP: ${user.profile.total_xp}`}
+                    sx={{
+                      mb: 2,
+                      background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                      color: '#fff',
+                      fontWeight: 'bold',
+                    }}
+                  />
+                </Box>
+
+                <Divider sx={{ my: 3 }}>
+                  <Chip label="User Info" sx={{ color: '#ffffff' }} />
+                </Divider>
+
+                <Box sx={{ mt: 2 }}>
+                  {!editMode ? (
+                    <>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        sx={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}
+                      >
+                        <span style={{ fontWeight: 'bold' }}>Email:</span>
+                        <span>{user.email}</span>
+                      </Typography>
+
+                      <Typography
+                        variant="body1"
+                        sx={{ fontWeight: 'bold', mb: 1, color: '#ffffff' }}
+                      >
+                        Bio:
+                      </Typography>
+                      <Paper
+                        elevation={0}
+                        sx={{
+                          p: 2,
+                          bgcolor: alpha(theme.palette.background.paper, 0.6),
+                          borderRadius: 2,
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ color: alpha(theme.palette.common.white, 0.8) }}
+                        >
+                          {formData.bio || 'No bio provided. Tell others a bit about yourself!'}
+                        </Typography>
+                      </Paper>
+                    </>
+                  ) : (
+                    <Box sx={{ width: '100%' }}>
+                      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+
+                      <TextField
+                        label="First Name"
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        size="small"
+                        sx={{
+                          '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' },
+                          '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) },
+                        }}
+                      />
+
+                      <TextField
+                        label="Last Name"
+                        name="last_name"
+                        value={formData.last_name}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        size="small"
+                        sx={{
+                          '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' },
+                          '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) },
+                        }}
+                      />
+
+                      <TextField
+                        label="Bio"
+                        name="bio"
+                        value={formData.bio}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                        multiline
+                        rows={4}
+                        size="small"
+                        sx={{
+                          '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' },
+                          '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) },
+                        }}
+                      />
+
+                      <Box sx={{ display: 'flex', gap: 1, mt: 2, justifyContent: 'center' }}>
+                        <Button
+                          startIcon={<SaveIcon />}
+                          variant="contained"
+                          onClick={handleSave}
+                          disabled={saving}
+                          sx={{
+                            bgcolor: theme.palette.primary.main,
+                            '&:hover': { bgcolor: theme.palette.primary.dark },
+                          }}
+                        >
+                          {saving ? <CircularProgress size={24} /> : 'Save'}
+                        </Button>
+
+                        <Button
+                          startIcon={<CancelIcon />}
+                          variant="outlined"
+                          onClick={handleCancel}
+                          disabled={saving}
+                          sx={{
+                            color: '#ffffff',
+                            borderColor: alpha(theme.palette.common.white, 0.5),
+                            '&:hover': { borderColor: '#ffffff', bgcolor: alpha(theme.palette.grey[700], 0.2) },
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              </GradientPaper>
+            </Grow>
           </Grid2>
 
           {/* Achievements */}
           <Grid2 size={{ xs: 12, md: 8 }}>
-            <Paper elevation={3} sx={{ p: 3, bgcolor: '#fff' }}>
-              <Typography variant="h5" gutterBottom>
-                Achievements
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
+            <Grow in={true} timeout={1000}>
+              <GradientPaper sx={{ p: 3 }}>
+                <Typography
+                  variant="h5"
+                  component="h3"
+                  sx={{ fontWeight: 'bold', mb: 3, color: '#ffffff' }}
+                >
+                  Recent Achievements
+                </Typography>
 
-              {achievements.length > 0 ? (
-                <Grid2 container spacing={2}>
-                  {achievements.map((achievement) => (
-                    <Grid2 size={{ xs: 12, sm: 6 }} key={achievement.achievement.id}>
-                      <Card variant="outlined">
-                        <CardHeader
-                          title={achievement.achievement.name}
-                          subheader={`Unlocked: ${new Date(achievement.date_unlocked).toLocaleDateString()}`}
-                        />
-                        <CardContent>
-                          <Typography variant="body2" color="textSecondary">
-                            {achievement.achievement.description}
-                          </Typography>
-                          <Chip
-                            label={`+${achievement.achievement.xp_reward} XP`}
-                            color="secondary"
-                            size="small"
-                            sx={{ mt: 1 }}
+                {achievements.length > 0 ? (
+                  <Grid2 container spacing={2}>
+                    {achievements.map((achievement) => (
+                      <Grid2 size={{ xs: 12, sm: 6 }} key={achievement.achievement.id}>
+                        <StyledCard variant="outlined">
+                          <CardHeader
+                            title={achievement.achievement.name}
+                            subheader={`Unlocked: ${new Date(achievement.date_unlocked).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            })}`}
+                            titleTypographyProps={{ sx: { color: '#ffffff', fontWeight: 'bold' } }}
+                            subheaderTypographyProps={{ sx: { color: alpha(theme.palette.common.white, 0.8) } }}
                           />
-                        </CardContent>
-                      </Card>
-                    </Grid2>
-                  ))}
-                </Grid2>
-              ) : (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography variant="subtitle1" color="textSecondary">
-                    You haven't unlocked any achievements yet.
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                    Complete tasks and challenges to earn achievements and XP!
-                  </Typography>
-                </Box>
-              )}
-            </Paper>
+                          <CardContent>
+                            <Typography
+                              variant="body2"
+                              sx={{ color: alpha(theme.palette.common.white, 0.8) }}
+                            >
+                              {achievement.achievement.description}
+                            </Typography>
+                            <Chip
+                              label={`+${achievement.achievement.xp_reward} XP`}
+                              color="secondary"
+                              size="small"
+                              sx={{ mt: 1, bgcolor: theme.palette.secondary.main, color: '#fff' }}
+                            />
+                          </CardContent>
+                        </StyledCard>
+                      </Grid2>
+                    ))}
+                  </Grid2>
+                ) : (
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography
+                      variant="body1"
+                      sx={{ color: alpha(theme.palette.common.white, 0.8), p: 2 }}
+                    >
+                      You haven't earned any achievements yet.
+                    </Typography>
+                  </Box>
+                )}
+              </GradientPaper>
+            </Grow>
           </Grid2>
         </Grid2>
-      </Box>
+      </Container>
     </Box>
   );
 };

@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { Feedback as FeedbackIcon, Send as SendIcon } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
-import api from '../api/axios';
+import { userApi } from '../api/axios';
 
 interface FeedbackData {
   rating: number;

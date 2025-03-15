@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetConfirm from "./pages/PasswordResetConfirm";
 import Feedback from "./pages/Feedback";
+import TutorialList from "./pages/TutorialList";
+import TutorialLayout from "./pages/TutorialLayout";
 import { Box } from '@mui/material';
 
 const App = () => {
@@ -30,6 +32,8 @@ const App = () => {
               <Route path="/password-reset" element={<PasswordReset />} />
               <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
               <Route path="/feedback" element={<Feedback />} />
+              <Route path="/tutorials" element={<TutorialList />} /> {/* Tutorial list */}
+              <Route path="/tutorials/:id" element={<TutorialLayout />} /> {/* Specific tutorial */}
               <Route element={<PrivateRoutes />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />

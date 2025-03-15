@@ -1,13 +1,14 @@
 // src/api/user.ts
-import api from './axios';
+import { userApi } from './axios';
 
-// Types
+// User profile data structure
 export interface ProfileData {
   avatar: string | null;
   bio: string;
   total_xp: number;
 }
 
+// Achievement structure
 export interface AchievementData {
   id: number;
   name: string;
@@ -17,6 +18,7 @@ export interface AchievementData {
   created_at: string;
 }
 
+// User achievement link
 export interface UserAchievementData {
   id: number;
   user: number;
@@ -24,6 +26,7 @@ export interface UserAchievementData {
   date_unlocked: string;
 }
 
+// Full user data
 export interface UserData {
   id: number;
   username: string;
@@ -36,6 +39,7 @@ export interface UserData {
   achievements: UserAchievementData[];
 }
 
+// Data for updating profile
 export interface ProfileUpdateData {
   first_name?: string;
   last_name?: string;
@@ -46,12 +50,13 @@ export interface ProfileUpdateData {
   };
 }
 
-// User API Functions
+// Fetch current user’s profile
 export const getUserProfile = async (): Promise<UserData> => {
-  const response = await api.get('/profile/');
+  const response = await userApi.get('/profile/');
   return response.data;
 };
 
+// Update user profile (supports file upload for avatar)
 export const updateUserProfile = async (data: ProfileUpdateData): Promise<UserData> => {
   if (data.profile?.avatar instanceof File) {
     const formData = new FormData();
@@ -60,22 +65,24 @@ export const updateUserProfile = async (data: ProfileUpdateData): Promise<UserDa
     if (data.username) formData.append('username', data.username);
     if (data.profile.bio) formData.append('profile.bio', data.profile.bio);
     if (data.profile.avatar) formData.append('profile.avatar', data.profile.avatar);
-    const response = await api.patch('/profile/', formData, {
+    const response = await userApi.patch('/profile/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   } else {
-    const response = await api.patch('/profile/', data); // Fixed from formData to data
+    const response = await userApi.patch('/profile/', data);
     return response.data;
   }
 };
 
+// Get user’s achievements
 export const getUserAchievements = async (): Promise<UserAchievementData[]> => {
-  const response = await api.get('/user-achievements/');
+  const response = await userApi.get('/user-achievements/');
   return response.data;
 };
 
+// Get all available achievements
 export const getAchievements = async (): Promise<AchievementData[]> => {
-  const response = await api.get('/achievements/');
+  const response = await userApi.get('/achievements/');
   return response.data;
 };

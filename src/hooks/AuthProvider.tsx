@@ -1,20 +1,17 @@
 // src/hooks/AuthProvider.tsx
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axios';
-import { requestPasswordReset as apiRequestPasswordReset, confirmPasswordReset as apiConfirmPasswordReset } from '../api/auth'; // Rename imports
+import { userApi } from '../api/axios'; // Changed from api to userApi
+import { requestPasswordReset as apiRequestPasswordReset, confirmPasswordReset as apiConfirmPasswordReset } from '../api/auth';
 import { AuthContext, AuthContextType, AuthProviderProps, TokenResponse, User } from './AuthContext';
 
-/**
- * Authentication Provider component
- */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Check if user is already logged in on mount
+  // Check auth on mount
   useEffect(() => {
     console.log("checkAuth triggered");
     const checkAuth = async () => {
@@ -34,40 +31,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } else {
         setUser(null);
       }
-      
       setIsLoading(false);
     };
-    
     checkAuth();
   }, []);
 
-  // API Functions
+  // Fetch user profile
   const getUserProfile = async (): Promise<User> => {
-    const response = await api.get('/profile/');
+    const response = await userApi.get('/profile/'); // Use userApi
     return response.data;
   };
 
+  // Login function
   const login: AuthContextType['login'] = async (credentials) => {
     setIsLoading(true);
     setError(null);
     console.log("Attempting login with:", credentials);
     
-    // Clear any existing tokens before login
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     console.log("Cleared tokens before login");
 
     try {
-      const response = await api.post<TokenResponse>('/token/', credentials);
+      const response = await userApi.post<TokenResponse>('/token/', credentials); // Use userApi
       const { access, refresh } = response.data;
       console.log("Login successful, tokens:", { access, refresh });
       
-      // Store tokens
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
       console.log("Stored refresh token:", localStorage.getItem('refresh_token'));
       
-      // Get user profile
       const userData = await getUserProfile();
       setUser(userData);
       
@@ -87,7 +80,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null);
     
     try {
-      await api.post('/register/', data);
+      await userApi.post('/register/', data); // Use userApi
       navigate('/login');
     } catch (err: any) {
       const errorMessage = err.response?.data?.detail || 'Registration failed. Please try again.';
@@ -107,7 +100,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log("Refresh token before logout:", refreshToken);
       if (refreshToken && typeof refreshToken === 'string' && refreshToken.trim() !== '') {
         try {
-          const response = await api.post('/logout/', { refresh: refreshToken });
+          const response = await userApi.post('/logout/', { refresh: refreshToken }); // Use userApi
           console.log("API logout successful:", response.data);
         } catch (apiErr: any) {
           console.warn('API logout failed, but continuing with client-side logout:', {
@@ -121,7 +114,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (err) {
       console.error('Unexpected logout error:', err);
     } finally {
-      // Always clear local storage and user state
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       console.log("Tokens after logout:", {
@@ -140,7 +132,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     
     try {
       let response;
-      
       if (data.profile?.avatar instanceof File) {
         const formData = new FormData();
         if (data.first_name) formData.append('first_name', data.first_name);
@@ -149,11 +140,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (data.profile.bio) formData.append('profile.bio', data.profile.bio);
         if (data.profile.avatar) formData.append('profile.avatar', data.profile.avatar);
         
-        response = await api.patch('/profile/', formData, {
+        response = await userApi.patch('/profile/', formData, { // Use userApi
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
-        response = await api.patch('/profile/', data);
+        response = await userApi.patch('/profile/', data); // Use userApi
       }
       
       const updatedUser = response.data;
@@ -172,7 +163,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null);
     
     try {
-      const response = await api.get('/user-achievements/');
+      const response = await userApi.get('/user-achievements/'); // Use userApi
       return response.data;
     } catch (err: any) {
       const errorMessage = err.response?.data?.detail || 'Failed to fetch achievements.';
@@ -185,7 +176,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiRequestPasswordReset(data); // Use renamed import
+      const response = await apiRequestPasswordReset(data);
       console.log("Password reset request response:", response);
     } catch (err: any) {
       const errorMessage = err.response?.data?.detail || 'Password reset request failed.';
@@ -201,7 +192,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiConfirmPasswordReset(data); // Use renamed import
+      const response = await apiConfirmPasswordReset(data);
       console.log("Password reset confirm response:", response);
       await new Promise(resolve => setTimeout(resolve, 5000));
       navigate('/login');
@@ -220,7 +211,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null);
   }, []);
 
-  // For debugging
   useEffect(() => {
     console.log("Auth state changed:", !!user);
   }, [user]);
