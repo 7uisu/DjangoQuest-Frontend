@@ -70,12 +70,10 @@ const TutorialList: React.FC = () => {
 
   // Calculate progress percentage
   const calculateProgress = (tutorial: Tutorial, userProgress?: ProgressData) => {
-    if (!userProgress) return 0;
+    if (!userProgress || userProgress.currentStep === null) return 0;
     if (userProgress.isCompleted) return 100;
-    if (userProgress.currentStep === null) return 0;
-    
-    // Find current step index
-    const currentStepIndex = tutorial.steps.findIndex(step => step.id === userProgress.currentStep);
+    const currentStepIndex = tutorial.steps.findIndex(step => step.order === userProgress.currentStep);
+    if (currentStepIndex === -1) return 0;
     return Math.round(((currentStepIndex + 1) / tutorial.steps.length) * 100);
   };
 
