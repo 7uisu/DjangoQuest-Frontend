@@ -6,7 +6,6 @@ import {
   Typography,
   Paper,
   Button,
-  Divider,
   CircularProgress,
   Stepper,
   Step,
@@ -16,6 +15,8 @@ import {
   Alert,
   Tabs,
   Tab,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   ChevronRight,
@@ -69,6 +70,8 @@ const TutorialLayout: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, isAuthenticated, getUserProfile } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
   const [currentTutorial, setCurrentTutorial] = useState<Tutorial | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -144,7 +147,7 @@ const TutorialLayout: React.FC = () => {
 
   useEffect(() => {
     if (!currentTutorial || !currentTutorial.steps[currentStepIndex]) return;
-  
+
     const fileType = currentTutorial.steps[currentStepIndex].fileType;
     if (fileType === 'html+css') {
       const bodyMatch = htmlCode.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
@@ -157,10 +160,10 @@ const TutorialLayout: React.FC = () => {
           <style>${cssCode}</style>
         </head>
         <body>
-          ${sanitizeHtml(bodyContent, { 
-            allowedTags: ['h1', 'p', 'div', 'span'], 
-            allowedAttributes: { '*': ['class'] } 
-          })}
+          ${sanitizeHtml(bodyContent, {
+        allowedTags: ['h1', 'p', 'div', 'span'],
+        allowedAttributes: { '*': ['class'] }
+      })}
         </body>
         </html>
       `);
@@ -412,62 +415,66 @@ const TutorialLayout: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', width: '100vw', paddingTop: "64px", boxSizing: "border-box" }}>
+    <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', minHeight: '100vh', width: '100vw', paddingTop: "64px", boxSizing: "border-box", backgroundColor: '#1e1e1e' }}>
       {/* Left Section - Tutorial Instructions */}
-      <Paper elevation={3} sx={{ width: '30%', p: 2, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <Button variant="outlined" startIcon={<ArrowBack />} onClick={() => navigate('/tutorials')} sx={{ mr: 2 }}>
-            Back to Tutorials
-          </Button>
-          <Typography variant="h5">
-            {currentTutorial.title} <Typography variant="subtitle2" component="span">(XP: {totalXp})</Typography>
-          </Typography>
-        </Box>
-        <Stepper activeStep={currentStepIndex} orientation="horizontal" sx={{ mb: 2 }}>
-          {currentTutorial.steps.map((step, index) => (
-            <Step key={step.id} completed={index < currentStepIndex}>
-              <StepLabel onClick={() => navigateToStep(index)} sx={{ cursor: 'pointer' }}>
-                {index + 1}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <Typography variant="h6" sx={{ mt: 2 }}>{currentStep.title}</Typography>
-        <Box sx={{ mt: 2, mb: 2 }} dangerouslySetInnerHTML={{ __html: currentStep.content }} />
-        {trivia && (
-          <Box sx={{ mt: 2, p: 1, bgcolor: '#f0f0f0', borderRadius: 1 }}>
-            <Typography variant="body2" color="textSecondary">
-              <strong>Trivia:</strong> {trivia}
+      <Paper elevation={3} sx={{ width: isMobile ? '100%' : '30%', maxHeight: isMobile ? '40vh' : 'none', display: 'flex', flexDirection: 'column', backgroundColor: '#252526', color: '#cccccc', borderRight: '1px solid #333', overflow: 'hidden' }}>
+        {/* Scrollable content area */}
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Button variant="outlined" startIcon={<ArrowBack />} onClick={() => navigate('/tutorials')} sx={{ mr: 2, color: '#cccccc', borderColor: '#555', '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' } }}>
+              Back
+            </Button>
+            <Typography variant="h5" sx={{ color: '#e0e0e0' }}>
+              {currentTutorial.title} <Typography variant="subtitle2" component="span" sx={{ color: '#4fc3f7' }}>(XP: {totalXp})</Typography>
             </Typography>
           </Box>
-        )}
-        <Box sx={{ mt: 'auto' }}>
-          <Divider sx={{ my: 2 }} />
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={showHint ? <Lightbulb /> : <LightbulbOutlined />}
-            onClick={() => setShowHint(!showHint)}
-            sx={{ mb: 1 }}
-          >
-            {showHint ? 'Hide Hint' : 'Show Hint'}
-          </Button>
+          <Stepper activeStep={currentStepIndex} orientation="horizontal" sx={{ mb: 2, '& .MuiStepLabel-label': { color: '#999' }, '& .MuiStepLabel-label.Mui-active': { color: '#fff' }, '& .MuiStepLabel-label.Mui-completed': { color: '#4caf50' }, '& .MuiStepIcon-root': { color: '#555' }, '& .MuiStepIcon-root.Mui-active': { color: '#1976d2' }, '& .MuiStepIcon-root.Mui-completed': { color: '#4caf50' } }}>
+            {currentTutorial.steps.map((step, index) => (
+              <Step key={step.id} completed={index < currentStepIndex}>
+                <StepLabel onClick={() => index <= currentStepIndex && navigateToStep(index)} sx={{ cursor: index <= currentStepIndex ? 'pointer' : 'not-allowed', opacity: index > currentStepIndex ? 0.5 : 1 }}>
+                  {index + 1}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <Typography variant="h6" sx={{ mt: 2, color: '#e0e0e0' }}>{currentStep.title}</Typography>
+          <Box sx={{ mt: 2, mb: 2, color: '#cccccc', '& a': { color: '#4fc3f7' }, '& code': { backgroundColor: '#333', padding: '2px 6px', borderRadius: '3px', color: '#ce9178' } }} dangerouslySetInnerHTML={{ __html: currentStep.content }} />
+          {trivia && (
+            <Box sx={{ mt: 2, p: 1.5, bgcolor: '#2d2d2d', borderRadius: 1, borderLeft: '3px solid #4fc3f7' }}>
+              <Typography variant="body2" sx={{ color: '#b0b0b0' }}>
+                <strong style={{ color: '#4fc3f7' }}>Trivia:</strong> {trivia}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+        {/* Fixed bottom action bar — always visible */}
+        <Box sx={{ borderTop: '1px solid #444', backgroundColor: '#2d2d2d', p: 1.5, flexShrink: 0 }}>
+          <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={showHint ? <Lightbulb /> : <LightbulbOutlined />}
+              onClick={() => setShowHint(!showHint)}
+              sx={{ color: '#cccccc', borderColor: '#555', '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' } }}
+            >
+              {showHint ? 'Hide Hint' : 'Show Hint'}
+            </Button>
+          </Box>
           <Collapse in={showHint}>
-            <Stack spacing={1} sx={{ mt: 1 }}>
-              <Typography variant="body2">Need more help?</Typography>
-              <Button variant="outlined" startIcon={<VisibilityOutlined />} onClick={showSolution} disabled={isSolutionVisible} fullWidth>
+            <Stack spacing={1} sx={{ mb: 1 }}>
+              <Button variant="outlined" size="small" startIcon={<VisibilityOutlined />} onClick={showSolution} disabled={isSolutionVisible} fullWidth sx={{ color: '#cccccc', borderColor: '#555', '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' } }}>
                 Show Solution
               </Button>
-              <Button variant="outlined" startIcon={<Refresh />} onClick={resetCode} fullWidth>
+              <Button variant="outlined" size="small" startIcon={<Refresh />} onClick={resetCode} fullWidth sx={{ color: '#cccccc', borderColor: '#555', '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' } }}>
                 Reset Code
               </Button>
             </Stack>
           </Collapse>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Button variant="contained" startIcon={<ChevronLeft />} disabled={currentStepIndex === 0} onClick={() => navigateToStep(currentStepIndex - 1)}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button variant="contained" size="small" startIcon={<ChevronLeft />} disabled={currentStepIndex === 0} onClick={() => navigateToStep(currentStepIndex - 1)}>
               Previous
             </Button>
-            <Button variant="contained" endIcon={<ChevronRight />} disabled={!isSuccess} onClick={handleNext}>
+            <Button variant="contained" size="small" endIcon={<ChevronRight />} disabled={!isSuccess} onClick={handleNext}>
               Next
             </Button>
           </Box>
@@ -475,7 +482,7 @@ const TutorialLayout: React.FC = () => {
       </Paper>
 
       {/* Middle Section - Code Editors with Tabs */}
-      <Box sx={{ width: '40%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <Box sx={{ width: isMobile ? '100%' : '40%', minHeight: isMobile ? '300px' : 'auto', display: 'flex', flexDirection: 'column', position: 'relative' }}>
         <Paper
           elevation={0}
           sx={{ p: 1, backgroundColor: '#1e1e1e', color: 'white', borderBottom: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
@@ -565,28 +572,28 @@ const TutorialLayout: React.FC = () => {
       </Box>
 
       {/* Right Section - Output/Fake Browser */}
-      <Paper elevation={3} sx={{ width: '30%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <Box sx={{ p: 1, backgroundColor: '#f5f5f5', borderBottom: '1px solid #ddd', display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Paper elevation={3} sx={{ width: isMobile ? '100%' : '30%', minHeight: isMobile ? '300px' : 'auto', display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: '#1e1e1e', borderLeft: '1px solid #333' }}>
+        <Box sx={{ p: 1, backgroundColor: '#2d2d2d', borderBottom: '1px solid #444', display: 'flex', alignItems: 'center', gap: 1 }}>
           <Box sx={{ display: 'flex', gap: 0.5 }}>
             <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ff5f57' }} />
             <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#febc2e' }} />
             <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#28c840' }} />
           </Box>
-          <Box sx={{ flex: 1, backgroundColor: 'white', borderRadius: 1, px: 1, py: 0.5, fontSize: '0.75rem', color: '#777' }}>
+          <Box sx={{ flex: 1, backgroundColor: '#3c3c3c', borderRadius: 1, px: 1, py: 0.5, fontSize: '0.75rem', color: '#999' }}>
             http://localhost:8000/
           </Box>
         </Box>
-        <Box sx={{ flex: 1, backgroundColor: 'white', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <Box sx={{ flex: 1, backgroundColor: '#ffffffff', display: 'flex', flexDirection: 'column', position: 'relative' }}>
           {(fileType === 'html' || fileType === 'css' || fileType === 'html+css') ? (
             <Box sx={{ flex: 1, overflow: 'auto' }}>
               <iframe title="output" srcDoc={renderedOutput} sandbox="allow-same-origin" style={{ width: '100%', height: '100%', border: 'none' }} />
             </Box>
           ) : output ? (
-            <Box sx={{ p: 2, fontFamily: 'monospace', whiteSpace: 'pre-wrap', overflow: 'auto', backgroundColor: isSuccess ? '#f0fff0' : '#fff0f0', flex: 1 }}>
-              <pre>{output}</pre>
+            <Box sx={{ p: 2, fontFamily: 'monospace', whiteSpace: 'pre-wrap', overflow: 'auto', backgroundColor: isSuccess ? '#1b3a1b' : '#3a1b1b', color: '#cccccc', flex: 1 }}>
+              <pre style={{ margin: 0, color: 'inherit' }}>{output}</pre>
             </Box>
           ) : (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: '#777' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: '#666' }}>
               <Typography variant="body2">Run your code to see the output here</Typography>
             </Box>
           )}

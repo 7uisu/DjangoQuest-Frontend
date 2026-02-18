@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { tutorialApi } from '../api/axios';
-import { 
-  Box, 
-  Typography, 
-  Button, 
-  CircularProgress, 
-  Grid, 
-  Card, 
-  CardContent, 
-  CardActions, 
-  Chip, 
-  Container, 
-  LinearProgress, 
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  Chip,
+  Container,
+  LinearProgress,
   Divider,
   Paper,
   Avatar,
@@ -22,10 +22,10 @@ import {
   CardMedia,
   Skeleton
 } from '@mui/material';
-import { 
-  School as SchoolIcon, 
-  Code as CodeIcon, 
-  CheckCircle as CheckCircleIcon, 
+import {
+  School as SchoolIcon,
+  Code as CodeIcon,
+  CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon,
   Bookmarks as BookmarksIcon
 } from '@mui/icons-material';
@@ -114,7 +114,9 @@ const TutorialList: React.FC = () => {
     display: 'flex',
     flexDirection: 'column',
     overflow: 'auto',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    backgroundColor: '#121212',
+    color: '#e0e0e0'
   };
 
   // Loading state with skeleton UI
@@ -131,15 +133,15 @@ const TutorialList: React.FC = () => {
           <Grid container spacing={3} sx={{ mt: 4 }}>
             {[1, 2, 3, 4, 5, 6].map((item) => (
               <Grid item xs={12} sm={6} md={4} key={item}>
-                <Card elevation={2} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <Skeleton variant="rectangular" height={140} />
+                <Card elevation={2} sx={{ height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#1e1e1e', border: '1px solid #333' }}>
+                  <Skeleton variant="rectangular" height={140} sx={{ bgcolor: '#333' }} />
                   <CardContent>
-                    <Skeleton width="80%" height={28} />
-                    <Skeleton width="100%" height={20} sx={{ mt: 1 }} />
-                    <Skeleton width="60%" height={20} sx={{ mt: 1 }} />
+                    <Skeleton width="80%" height={28} sx={{ bgcolor: '#333' }} />
+                    <Skeleton width="100%" height={20} sx={{ mt: 1, bgcolor: '#333' }} />
+                    <Skeleton width="60%" height={20} sx={{ mt: 1, bgcolor: '#333' }} />
                   </CardContent>
                   <CardActions sx={{ mt: 'auto', p: 2 }}>
-                    <Skeleton width={120} height={36} />
+                    <Skeleton width={120} height={36} sx={{ bgcolor: '#333' }} />
                   </CardActions>
                 </Card>
               </Grid>
@@ -155,13 +157,13 @@ const TutorialList: React.FC = () => {
     return (
       <Box sx={rootContainerStyle}>
         <Container maxWidth="sm" sx={{ py: 8, pt: '100px', flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Paper elevation={3} sx={{ p: 4, textAlign: 'center', borderRadius: 2, width: '100%' }}>
+          <Paper elevation={3} sx={{ p: 4, textAlign: 'center', borderRadius: 2, width: '100%', backgroundColor: '#1e1e1e', border: '1px solid #333' }}>
             <Typography variant="h6" color="error" gutterBottom>
               {error}
             </Typography>
-            <Button 
-              variant="contained" 
-              color="primary" 
+            <Button
+              variant="contained"
+              color="primary"
               onClick={() => window.location.reload()}
               sx={{ mt: 2 }}
             >
@@ -178,26 +180,26 @@ const TutorialList: React.FC = () => {
     <Box sx={rootContainerStyle}>
       <Container maxWidth="lg" sx={{ py: 8, pt: '100px', flexGrow: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <SchoolIcon fontSize="large" color="primary" sx={{ mr: 2 }} />
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+          <SchoolIcon fontSize="large" sx={{ mr: 2, color: '#4fc3f7' }} />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 700, color: '#e0e0e0' }}>
             Interactive Tutorials
           </Typography>
         </Box>
-        
-        <Paper 
-          elevation={0} 
-          sx={{ 
-            p: 3, 
-            mb: 4, 
-            bgcolor: theme.palette.mode === 'dark' ? 'rgb(255, 255, 255)' : 'rgb(255, 255, 255)',
+
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 4,
+            bgcolor: '#1e1e1e',
             borderRadius: 2,
-            border: `1px solid ${theme.palette.divider}`
+            border: '1px solid #333'
           }}
         >
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 500 }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, color: '#e0e0e0' }}>
             Level Up Your Coding Skills
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" sx={{ color: '#999' }}>
             Explore our interactive, step-by-step tutorials designed to help you master programming concepts through hands-on practice.
             {!isAuthenticated && " Sign in to track your progress and unlock all features."}
           </Typography>
@@ -209,19 +211,22 @@ const TutorialList: React.FC = () => {
             const isCompleted = userProgress?.isCompleted || false;
             const progressPercent = calculateProgress(tutorial, userProgress);
             const tutorialColor = getTutorialColor(tutorial.id);
-            
+
             return (
               <Grid item xs={12} sm={6} md={4} key={tutorial.id}>
-                <Card 
-                  elevation={2} 
-                  sx={{ 
+                <Card
+                  elevation={2}
+                  sx={{
                     height: '100%',
-                    display: 'flex', 
+                    display: 'flex',
                     flexDirection: 'column',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s',
+                    backgroundColor: '#1e1e1e',
+                    border: '1px solid #333',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: theme.shadows[8],
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                      borderColor: '#555',
                     },
                     borderRadius: 2,
                     overflow: 'hidden'
@@ -229,8 +234,8 @@ const TutorialList: React.FC = () => {
                 >
                   <CardHeader
                     avatar={
-                      <Avatar 
-                        sx={{ 
+                      <Avatar
+                        sx={{
                           bgcolor: tutorialColor,
                           width: 40,
                           height: 40
@@ -241,7 +246,7 @@ const TutorialList: React.FC = () => {
                     }
                     title={
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Typography variant="h6" component="h2" sx={{ fontWeight: 500 }}>
+                        <Typography variant="h6" component="h2" sx={{ fontWeight: 500, color: '#e0e0e0' }}>
                           {tutorial.title}
                         </Typography>
                         {isCompleted && (
@@ -251,19 +256,19 @@ const TutorialList: React.FC = () => {
                     }
                     sx={{ pb: 0 }}
                   />
-                  
+
                   <CardContent sx={{ pt: 1, flexGrow: 1 }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: '#999' }}>
                       {tutorial.description}
                     </Typography>
-                    
+
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                      <BookmarksIcon fontSize="small" sx={{ color: 'text.secondary', mr: 1 }} />
-                      <Typography variant="body2" color="text.secondary">
+                      <BookmarksIcon fontSize="small" sx={{ color: '#777', mr: 1 }} />
+                      <Typography variant="body2" sx={{ color: '#777' }}>
                         {tutorial.steps.length} Steps
                       </Typography>
                     </Box>
-                    
+
                     {isAuthenticated && (
                       <Box sx={{ mt: 2 }}>
                         {isCompleted ? (
@@ -277,28 +282,36 @@ const TutorialList: React.FC = () => {
                         ) : userProgress ? (
                           <>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                              <Typography variant="caption" color="text.secondary">
+                              <Typography variant="caption" sx={{ color: '#999' }}>
                                 Progress ({progressPercent}%)
                               </Typography>
-                              <Typography variant="caption" color="primary">
-                                Step {userProgress.currentStep ? 
-                                  tutorial.steps.find(s => s.id === userProgress.currentStep)?.order || '?' : 1} 
+                              <Typography variant="caption" sx={{ color: '#4fc3f7' }}>
+                                Step {userProgress.currentStep ?
+                                  tutorial.steps.find(s => s.id === userProgress.currentStep)?.order || '?' : 1}
                                 of {tutorial.steps.length}
                               </Typography>
                             </Box>
-                            <LinearProgress 
-                              variant="determinate" 
-                              value={progressPercent} 
-                              sx={{ height: 6, borderRadius: 3 }} 
+                            <LinearProgress
+                              variant="determinate"
+                              value={progressPercent}
+                              sx={{ height: 6, borderRadius: 3 }}
                             />
                           </>
                         ) : (
-                          <Chip label="Not started" size="small" variant="outlined" />
+                          <Chip
+                            label="Not started"
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              color: "white",
+                              borderColor: "white"
+                            }}
+                          />
                         )}
                       </Box>
                     )}
                   </CardContent>
-                  
+
                   <CardActions sx={{ p: 2, pt: 0 }}>
                     <Button
                       variant={isCompleted ? "outlined" : "contained"}
@@ -308,7 +321,7 @@ const TutorialList: React.FC = () => {
                       disabled={!isAuthenticated}
                       endIcon={<ArrowForwardIcon />}
                       size={isMobile ? "medium" : "large"}
-                      sx={{ 
+                      sx={{
                         borderRadius: 1.5,
                         fontWeight: 500,
                         textTransform: 'none'
@@ -322,16 +335,16 @@ const TutorialList: React.FC = () => {
             );
           })}
         </Grid>
-        
+
         {!isAuthenticated && (
-          <Paper 
-            elevation={2} 
-            sx={{ 
-              mt: 4, 
-              p: 3, 
-              textAlign: 'center', 
+          <Paper
+            elevation={2}
+            sx={{
+              mt: 4,
+              p: 3,
+              textAlign: 'center',
               borderRadius: 2,
-              background: `linear-gradient(45deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+              background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #01579b 100%)',
               color: 'white'
             }}
           >
@@ -341,15 +354,15 @@ const TutorialList: React.FC = () => {
             <Typography variant="body1" sx={{ mb: 2 }}>
               Sign in to save your progress and unlock all tutorials.
             </Typography>
-            <Button 
-              component={Link} 
-              to="/login" 
-              variant="contained" 
+            <Button
+              component={Link}
+              to="/login"
+              variant="contained"
               color="secondary"
               size="large"
-              sx={{ 
-                fontWeight: 600, 
-                px: 4, 
+              sx={{
+                fontWeight: 600,
+                px: 4,
                 py: 1,
                 textTransform: 'none',
                 boxShadow: theme.shadows[4]
