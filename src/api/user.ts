@@ -6,6 +6,8 @@ export interface ProfileData {
   avatar: string | null;
   bio: string;
   total_xp: number;
+  classroom_name: string | null;
+  teacher_name: string | null;
 }
 
 // Achievement structure

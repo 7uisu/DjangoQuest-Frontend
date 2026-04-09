@@ -64,7 +64,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const userData = await getUserProfile();
       setUser(userData);
       
-      navigate('/dashboard');
+      // Role-based redirect: teachers go to teacher dashboard
+      if (userData.is_teacher) {
+        navigate('/teacher-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
       const errorMessage = err.response?.data?.detail || 'Login failed. Please check your credentials.';
       console.log("Login error:", errorMessage);

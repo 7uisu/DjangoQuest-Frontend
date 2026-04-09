@@ -27,7 +27,7 @@ import {
 } from '@mui/icons-material';
 
 const Login: React.FC = () => {
-  const { login, isAuthenticated, isLoading, error, clearError } = useAuth();
+  const { login, isAuthenticated, isLoading, error, clearError, user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +46,7 @@ const Login: React.FC = () => {
   };
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to={user?.is_teacher ? '/teacher-dashboard' : '/dashboard'} />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,8 +65,8 @@ const Login: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        width: '100vw',
+        flex: 1,
+        width: '100%',
         background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 50%, ${theme.palette.secondary.dark} 100%)`,
         backgroundSize: 'cover',
         backdropFilter: 'blur(8px)',
@@ -74,10 +74,10 @@ const Login: React.FC = () => {
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-        pt: 0,
-        px: 0,
-        mx: 0,
-        overflow: 'hidden',
+        pt: { xs: 12, md: 14 },
+        pb: { xs: 8, md: 10 },
+        px: 2,
+        overflow: 'auto',
       }}
     >
       {/* Background pattern */}

@@ -15,6 +15,8 @@ import {
   Container,
   Fade,
   Divider,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material';
 import { Link as RouterLink, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -25,6 +27,8 @@ import {
   Lock as LockIcon,
   Person as PersonIcon,
   Login as LoginIcon,
+  School as SchoolIcon,
+  VpnKey as KeyIcon,
 } from '@mui/icons-material';
 
 const Register: React.FC = () => {
@@ -39,6 +43,8 @@ const Register: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
+  const [role, setRole] = useState<'student' | 'teacher'>('student');
+  const [educatorCode, setEducatorCode] = useState('');
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -90,12 +96,13 @@ const Register: React.FC = () => {
     setLocalLoading(true);
 
     try {
-      await register({ email, username, password, password2 });
+      await register({ email, username, password, password2, role, educator_code: role === 'teacher' ? educatorCode : undefined });
       setSuccess(true);
       setEmail('');
       setUsername('');
       setPassword('');
       setPassword2('');
+      setEducatorCode('');
     } catch (err: any) {
       console.error('Registration error:', err);
       if (err.response?.data) {
@@ -132,8 +139,8 @@ const Register: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        width: '100vw',
+        flex: 1,
+        width: '100%',
         background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 50%, ${theme.palette.secondary.dark} 100%)`,
         backgroundSize: 'cover',
         backdropFilter: 'blur(8px)',
@@ -141,10 +148,10 @@ const Register: React.FC = () => {
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-        pt: 0,
-        px: 0,
-        mx: 0,
-        overflow: 'hidden',
+        pt: { xs: 12, md: 14 },
+        pb: { xs: 8, md: 10 },
+        px: 2,
+        overflow: 'auto',
       }}
     >
       {/* Background pattern */}
@@ -257,10 +264,27 @@ const Register: React.FC = () => {
 
               {/* Non-mobile title */}
               {!isMobile && (
-                <Typography variant="h5" component="h2" sx={{ mb: 4, fontWeight: 500 }}>
+                <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 500 }}>
                   Create your account
                 </Typography>
               )}
+
+              {/* Role toggle */}
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                <ToggleButtonGroup
+                  value={role}
+                  exclusive
+                  onChange={(_, val) => { if (val) setRole(val); }}
+                  sx={{ '& .MuiToggleButton-root': { textTransform: 'none', px: 3, fontWeight: 600 } }}
+                >
+                  <ToggleButton value="student">
+                    <PersonIcon sx={{ mr: 1 }} /> Student
+                  </ToggleButton>
+                  <ToggleButton value="teacher">
+                    <SchoolIcon sx={{ mr: 1 }} /> Teacher
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
 
               {generalError && (
                 <Fade in={!!generalError}>
@@ -323,7 +347,7 @@ const Register: React.FC = () => {
                 />
                 <TextField
                   fullWidth
-                  label="Username"
+                  label="Username (In-Game Username)"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={localLoading || isLoading}
@@ -332,7 +356,7 @@ const Register: React.FC = () => {
                   placeholder="Choose a username"
                   required
                   error={!!errors.username}
-                  helperText={errors.username || ''}
+                  helperText={errors.username || 'This will be your username inside the DjangoQuest game.'}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -351,6 +375,40 @@ const Register: React.FC = () => {
                     },
                   }}
                 />
+
+                {/* Educator Access Code (teachers only) */}
+                {role === 'teacher' && (
+                  <TextField
+                    fullWidth
+                    label="Educator Access Code"
+                    value={educatorCode}
+                    onChange={(e) => setEducatorCode(e.target.value)}
+                    disabled={localLoading || isLoading}
+                    margin="normal"
+                    variant="outlined"
+                    placeholder="e.g. CAPSTONE-2026"
+                    required
+                    error={!!errors.educator_code}
+                    helperText={errors.educator_code || 'Required for teacher registration.'}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <KeyIcon color="action" />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      mb: 2.5,
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor:
+                          theme.palette.mode === 'dark'
+                            ? 'rgba(255,255,255,0.05)'
+                            : 'rgba(0,0,0,0.02)',
+                      },
+                    }}
+                  />
+                )}
                 <TextField
                   fullWidth
                   label="Password"

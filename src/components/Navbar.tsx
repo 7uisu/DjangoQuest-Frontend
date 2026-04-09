@@ -70,7 +70,9 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
               <Button color="inherit" onClick={() => handleNavigation("download")}>Download</Button>
               <Button color="inherit" component={Link} to="/tutorials">Tutorials</Button>
               {isAuthenticated && (
-                <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
+                <>
+                  <Button color="inherit" component={Link} to={user?.is_teacher ? "/teacher-dashboard" : "/dashboard"}>Dashboard</Button>
+                </>
               )}
             </Box>
           )}
@@ -213,7 +215,7 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
               <ListItemText primary="Tutorials" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
             </ListItemButton>
             {isAuthenticated && (
-              <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+              <ListItemButton component={Link} to={user?.is_teacher ? "/teacher-dashboard" : "/dashboard"} onClick={() => setMobileMenuOpen(false)}>
                 <ListItemText primary="Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
               </ListItemButton>
             )}

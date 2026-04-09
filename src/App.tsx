@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
 import Profile from "./pages/Profile";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetConfirm from "./pages/PasswordResetConfirm";
@@ -24,7 +25,7 @@ const App = () => {
       <AuthProvider>
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Navbar setCurrentSection={setCurrentSection} />
-          <Box component="main" sx={{ flex: 1 }}>
+          <Box component="main" sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Routes>
               <Route path="/" element={<Home currentSection={currentSection} setCurrentSection={setCurrentSection} />} />
               <Route path="/login" element={<Login />} />
@@ -36,6 +37,7 @@ const App = () => {
               <Route path="/tutorials/:id" element={<TutorialLayout />} /> {/* Specific tutorial */}
               <Route element={<PrivateRoutes />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>
             </Routes>

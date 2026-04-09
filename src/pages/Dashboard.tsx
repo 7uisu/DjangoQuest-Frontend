@@ -47,6 +47,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { updateUserProfile } from '../api/user';
 import { tutorialApi } from '../api/axios';
+import { unenrollClassroom, enrollClassroom } from '../api/game';
 
 // Styled components (unchanged)
 const GradientPaper = styled(Paper)(({ theme }) => ({
@@ -110,6 +111,14 @@ const Dashboard: React.FC = () => {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [resetError, setResetError] = useState('');
+  
+  const [unenrollDialogOpen, setUnenrollDialogOpen] = useState(false);
+  const [unenrolling, setUnenrolling] = useState(false);
+
+  const [enrollCode, setEnrollCode] = useState('');
+  const [enrolling, setEnrolling] = useState(false);
+  const [enrollError, setEnrollError] = useState('');
+  
   const theme = useTheme();
 
   const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -243,6 +252,52 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleUnenroll = async () => {
+    if (!user) return;
+    setUnenrolling(true);
+    try {
+      await unenrollClassroom();
+      const updatedUser = {
+        ...user,
+        profile: {
+          ...user.profile,
+          classroom_name: null,
+          teacher_name: null,
+        },
+      } as const;
+      setUser(updatedUser);
+      setUnenrollDialogOpen(false);
+    } catch (err: any) {
+      console.error('Failed to unenroll:', err);
+    } finally {
+      setUnenrolling(false);
+    }
+  };
+
+  const handleEnroll = async () => {
+    if (!user || !enrollCode.trim()) return;
+    setEnrolling(true);
+    setEnrollError('');
+    try {
+      const result = await enrollClassroom(enrollCode.trim());
+      const updatedUser = {
+        ...user,
+        profile: {
+          ...user.profile,
+          classroom_name: result.classroom_name,
+          teacher_name: result.teacher,
+        },
+      } as const;
+      setUser(updatedUser);
+      setEnrollCode('');
+    } catch (err: any) {
+      console.error('Failed to enroll:', err);
+      setEnrollError(err.response?.data?.detail || 'Failed to enroll in classroom. Please check your code.');
+    } finally {
+      setEnrolling(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
@@ -310,6 +365,40 @@ const Dashboard: React.FC = () => {
                       <Typography variant="body1" gutterBottom sx={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Email:</span><span>{user.email}</span></Typography>
                       <Typography variant="body1" gutterBottom sx={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Member since:</span><span>{new Date(user.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span></Typography>
                       <Typography variant="body1" gutterBottom sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Level:</span><span>Level {currentLevel}</span></Typography>
+                      
+                      {user.profile.classroom_name ? (
+                        <Box sx={{ mt: 2, mb: 3, p: 2, bgcolor: alpha(theme.palette.primary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}` }}>
+                          <Typography variant="body2" sx={{ fontWeight: 'bold', color: theme.palette.primary.light }}>Enrolled Classroom</Typography>
+                          <Typography variant="h6" sx={{ color: '#ffffff', mt: 0.5 }}>{user.profile.classroom_name}</Typography>
+                          <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1.5 }}>Teacher: {user.profile.teacher_name}</Typography>
+                          <Button size="small" variant="outlined" color="error" onClick={() => setUnenrollDialogOpen(true)} sx={{ borderRadius: 4, textTransform: 'none' }}>Unenroll</Button>
+                        </Box>
+                      ) : (
+                        <Box sx={{ mt: 2, mb: 3, p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}` }}>
+                          <Typography variant="body2" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Join a Classroom</Typography>
+                          <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1.5, mt: 0.5 }}>Enter your teacher's code to enroll.</Typography>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <TextField 
+                              size="small" 
+                              placeholder="Enrollment Code" 
+                              value={enrollCode} 
+                              onChange={(e) => setEnrollCode(e.target.value)}
+                              sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' } }}
+                            />
+                            <Button 
+                              variant="contained" 
+                              color="secondary" 
+                              onClick={handleEnroll} 
+                              disabled={enrolling || !enrollCode.trim()}
+                              sx={{ textTransform: 'none', px: 3, borderRadius: 2 }}
+                            >
+                              {enrolling ? <CircularProgress size={20} /> : 'Enroll'}
+                            </Button>
+                          </Box>
+                          {enrollError && <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>{enrollError}</Typography>}
+                        </Box>
+                      )}
+                      
                       <Box sx={{ mt: 2, mb: 4 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                           <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ffffff' }}>XP Progress</Typography>
@@ -342,7 +431,7 @@ const Dashboard: React.FC = () => {
             <Grow in={true} timeout={1000}>
               <GradientPaper sx={{ p: 3, mb: 4 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2, mb: 2 }}>
                     <Typography variant="h5" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#ffffff' }}>
                       <LevelUpIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
                       Progress Snapshot
@@ -457,6 +546,22 @@ const Dashboard: React.FC = () => {
               disabled={resetting}
             >
               {resetting ? <CircularProgress size={24} /> : 'Reset'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Unenroll Dialog */}
+        <Dialog open={unenrollDialogOpen} onClose={() => setUnenrollDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff' } }}>
+          <DialogTitle>Unenroll Classroom</DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.8) }}>
+              Are you sure you want to unenroll from <strong>{user.profile.classroom_name}</strong>? You will lose access to the teacher's dashboard, but you will keep your game progress.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setUnenrollDialogOpen(false)} sx={{ color: '#fff' }} disabled={unenrolling}>Cancel</Button>
+            <Button onClick={handleUnenroll} variant="contained" color="error" disabled={unenrolling}>
+              {unenrolling ? <CircularProgress size={24} /> : 'Unenroll'}
             </Button>
           </DialogActions>
         </Dialog>

@@ -17,6 +17,18 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      // Proxy /api/dashboard to backend
+      '/api/dashboard': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      // Proxy /api/game to backend
+      '/api/game': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

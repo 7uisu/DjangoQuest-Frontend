@@ -82,6 +82,8 @@ const createApiInstance = (baseURL: string) => {
   return instance;
 };
 
-// Export instances for users and tutorials
+// Export instances for users, tutorials, dashboard, and game
 export const userApi = createApiInstance('/api/users'); // For auth and user endpoints
 export const tutorialApi = createApiInstance('/api/tutorials'); // For tutorial endpoints
+export const dashboardApi = createApiInstance('/api/dashboard'); // For teacher dashboard endpoints
+export const gameApi = createApiInstance('/api/game'); // For game client-oriented endpoints

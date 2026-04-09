@@ -31,6 +31,8 @@ export interface User {
   first_name: string;
   last_name: string;
   is_verified: boolean;
+  is_teacher: boolean;
+  is_student: boolean;
   date_joined: string;
   profile: ProfileData;
   achievements: UserAchievement[];
@@ -48,6 +50,8 @@ export interface RegisterData {
   password2: string;
   first_name?: string;
   last_name?: string;
+  role?: 'student' | 'teacher';
+  educator_code?: string;
 }
 
 export interface TokenResponse {
