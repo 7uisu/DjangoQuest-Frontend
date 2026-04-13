@@ -14,6 +14,12 @@ export interface StudentData {
   username: string;
   email: string;
   date_joined: string;
+  story_progress: number;
+  challenges_completed: number;
+  learning_modules_completed: number;
+  ch1_quiz_score: number;
+  ch1_did_remedial: boolean;
+  ch1_remedial_score: number;
 }
 
 export interface ClassroomDetailData extends ClassroomData {

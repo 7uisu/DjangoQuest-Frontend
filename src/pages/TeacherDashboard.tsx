@@ -31,6 +31,7 @@ import {
   alpha,
   styled,
   Divider,
+  LinearProgress,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -390,6 +391,10 @@ const TeacherDashboard: React.FC = () => {
                     <TableHead>
                       <TableRow>
                         <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Username</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Story Progress</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Challenges</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Learning</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Ch1 Quiz</TableCell>
                         <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Email</TableCell>
                         <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Joined</TableCell>
                         <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="right">Actions</TableCell>
@@ -399,6 +404,49 @@ const TeacherDashboard: React.FC = () => {
                       {selectedClassroom.students.map((student) => (
                         <TableRow key={student.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) } }}>
                           <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.username}</TableCell>
+                          <TableCell sx={{ borderColor: alpha(theme.palette.common.white, 0.1), minWidth: 150 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <LinearProgress
+                                variant="determinate"
+                                value={student.story_progress ?? 0}
+                                sx={{
+                                  flex: 1,
+                                  height: 8,
+                                  borderRadius: 4,
+                                  bgcolor: alpha(theme.palette.common.white, 0.1),
+                                  '& .MuiLinearProgress-bar': {
+                                    borderRadius: 4,
+                                    background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
+                                  },
+                                }}
+                              />
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.8), minWidth: 36, textAlign: 'right' }}>
+                                {(student.story_progress ?? 0).toFixed(0)}%
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                            <Chip label={student.challenges_completed ?? 0} size="small" sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light, fontWeight: 'bold' }} />
+                          </TableCell>
+                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                            <Chip label={`${student.learning_modules_completed ?? 0} / 7`} size="small" sx={{ bgcolor: alpha(theme.palette.warning.main, 0.2), color: theme.palette.warning.light, fontWeight: 'bold' }} />
+                          </TableCell>
+                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                              <Chip
+                                label={`${student.ch1_quiz_score ?? 0} / 5`}
+                                size="small"
+                                sx={{ bgcolor: alpha(theme.palette.success.main, 0.2), color: theme.palette.success.light, fontWeight: 'bold' }}
+                              />
+                              {student.ch1_did_remedial && (
+                                <Chip
+                                  label={`Remedial: ${student.ch1_remedial_score ?? 0} / 5`}
+                                  size="small"
+                                  sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontWeight: 'bold', fontSize: '0.65rem' }}
+                                />
+                              )}
+                            </Box>
+                          </TableCell>
                           <TableCell sx={{ color: alpha(theme.palette.common.white, 0.8), borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.email}</TableCell>
                           <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), borderColor: alpha(theme.palette.common.white, 0.1) }}>
                             {new Date(student.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}

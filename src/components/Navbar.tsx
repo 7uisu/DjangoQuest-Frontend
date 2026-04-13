@@ -71,7 +71,14 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
               <Button color="inherit" component={Link} to="/tutorials">Tutorials</Button>
               {isAuthenticated && (
                 <>
-                  <Button color="inherit" component={Link} to={user?.is_teacher ? "/teacher-dashboard" : "/dashboard"}>Dashboard</Button>
+                  {user?.is_teacher ? (
+                    <>
+                      <Button color="inherit" component={Link} to="/teacher-dashboard">Teacher Dashboard</Button>
+                      <Button color="inherit" component={Link} to="/profile">My Profile</Button>
+                    </>
+                  ) : (
+                    <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
+                  )}
                 </>
               )}
             </Box>
@@ -215,9 +222,22 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
               <ListItemText primary="Tutorials" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
             </ListItemButton>
             {isAuthenticated && (
-              <ListItemButton component={Link} to={user?.is_teacher ? "/teacher-dashboard" : "/dashboard"} onClick={() => setMobileMenuOpen(false)}>
-                <ListItemText primary="Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-              </ListItemButton>
+              <>
+                {user?.is_teacher ? (
+                  <>
+                    <ListItemButton component={Link} to="/teacher-dashboard" onClick={() => setMobileMenuOpen(false)}>
+                      <ListItemText primary="Teacher Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                    </ListItemButton>
+                    <ListItemButton component={Link} to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                      <ListItemText primary="My Profile" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                    </ListItemButton>
+                  </>
+                ) : (
+                  <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <ListItemText primary="Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                  </ListItemButton>
+                )}
+              </>
             )}
           </List>
           
