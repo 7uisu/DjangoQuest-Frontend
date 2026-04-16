@@ -51,6 +51,7 @@ interface Step {
   fileType: string;
   order: number;
   trivia?: string;
+  baseTemplate?: string;
 }
 
 interface Tutorial {
@@ -89,6 +90,8 @@ const TutorialLayout: React.FC = () => {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [checkLoading, setCheckLoading] = useState(false);
   const [trivia, setTrivia] = useState<string>('');
+  const [djangoPreview, setDjangoPreview] = useState<string>('');  // rendered HTML for django type
+  const [djangoActiveTab, setDjangoActiveTab] = useState(1); // 0 = base.html (read-only), 1 = template.html (editable)
 
   useEffect(() => {
     const fetchTutorialsAndProgress = async () => {
@@ -253,6 +256,19 @@ const TutorialLayout: React.FC = () => {
       } else {
         setTrivia('');
       }
+      // For django type — also call render-template to update the live preview
+      if (currentTutorial.steps[currentStepIndex].fileType === 'django') {
+        try {
+          const renderRes = await tutorialApi.post<{ html: string; success: boolean }>('/render-template/', {
+            tutorialId: currentTutorial.id,
+            stepIndex: currentStepOrder,
+            code: code,
+          });
+          setDjangoPreview(renderRes.data.html);
+        } catch {
+          // render failure is non-critical
+        }
+      }
     } catch (error) {
       console.error('Error checking code:', error);
       setOutput('Error checking your code. Please try again.');
@@ -376,6 +392,7 @@ const TutorialLayout: React.FC = () => {
       setCssCode('');
     }
     setActiveTab(0); // Reset to first tab
+    setDjangoActiveTab(1); // Reset to editable template.html tab
     setShowHint(false);
     setIsSolutionVisible(false);
   };
@@ -488,7 +505,7 @@ const TutorialLayout: React.FC = () => {
           sx={{ p: 1, backgroundColor: '#1e1e1e', color: 'white', borderBottom: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         >
           <Typography variant="body2">
-            {fileType === 'html+css' ? (activeTab === 0 ? 'index.html' : 'styles.css') : fileType === 'html' ? 'index.html' : fileType === 'css' ? 'styles.css' : fileType === 'js' ? 'script.js' : 'models.py'}
+            {fileType === 'html+css' ? (activeTab === 0 ? 'index.html' : 'styles.css') : fileType === 'html' ? 'index.html' : fileType === 'css' ? 'styles.css' : fileType === 'js' ? 'script.js' : fileType === 'django' ? (djangoActiveTab === 0 ? 'base.html' : 'template.html') : fileType === 'python' ? 'code.py' : 'code.py'}
           </Typography>
           {saveStatus === 'saving' && <Typography variant="caption">Saving...</Typography>}
           {saveStatus === 'saved' && <Typography variant="caption">Saved</Typography>}
@@ -515,12 +532,34 @@ const TutorialLayout: React.FC = () => {
                 backgroundColor: '#1e1e1e',
               },
               '& .MuiTabs-indicator': {
-                backgroundColor: '#1976d2', // Primary color
+                backgroundColor: '#1976d2',
               },
             }}
           >
             <Tab label="index.html" />
             <Tab label="styles.css" />
+          </Tabs>
+        )}
+        {fileType === 'django' && (
+          <Tabs
+            value={djangoActiveTab}
+            onChange={(_e, v) => setDjangoActiveTab(v)}
+            sx={{
+              backgroundColor: '#252526',
+              borderBottom: '1px solid #333',
+              '& .MuiTab-root': {
+                color: 'white',
+                padding: '6px 16px',
+                minWidth: '110px',
+                textTransform: 'none',
+                '&:hover': { backgroundColor: '#333' },
+              },
+              '& .Mui-selected': { color: '#fff', backgroundColor: '#1e1e1e' },
+              '& .MuiTabs-indicator': { backgroundColor: '#1976d2' },
+            }}
+          >
+            <Tab label="base.html 🔒" />
+            <Tab label="template.html" />
           </Tabs>
         )}
         <Box sx={{ flex: 1 }}>
@@ -547,10 +586,34 @@ const TutorialLayout: React.FC = () => {
                 />
               )}
             </>
+          ) : fileType === 'django' ? (
+            <>
+              {djangoActiveTab === 0 && (
+                // base.html — read-only, shows the step's base template
+                <Editor
+                  height="100%"
+                  defaultLanguage="html"
+                  value={currentStep.baseTemplate || '<!-- base.html will appear here -->'}
+                  theme="vs-dark"
+                  options={{ ...editorOptions, readOnly: true }}
+                />
+              )}
+              {djangoActiveTab === 1 && (
+                // template.html — editable, student writes here
+                <Editor
+                  height="100%"
+                  defaultLanguage="html"
+                  value={code}
+                  onChange={(value) => handleCodeChange(value, 'single')}
+                  theme="vs-dark"
+                  options={editorOptions}
+                />
+              )}
+            </>
           ) : (
             <Editor
               height="100%"
-              defaultLanguage={fileType}
+              defaultLanguage={fileType === 'django' ? 'html' : fileType}
               value={code}
               onChange={(value) => handleCodeChange(value, 'single')}
               theme="vs-dark"
@@ -588,6 +651,23 @@ const TutorialLayout: React.FC = () => {
             <Box sx={{ flex: 1, overflow: 'auto' }}>
               <iframe title="output" srcDoc={renderedOutput} sandbox="allow-same-origin" style={{ width: '100%', height: '100%', border: 'none' }} />
             </Box>
+          ) : fileType === 'django' ? (
+            // Django: show rendered template preview if available, otherwise placeholder
+            djangoPreview ? (
+              <Box sx={{ flex: 1, overflow: 'auto' }}>
+                <iframe
+                  title="django-preview"
+                  srcDoc={djangoPreview}
+                  sandbox="allow-same-origin"
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                />
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: '#666', flexDirection: 'column', gap: 1 }}>
+                <Typography variant="body2">Click "Run Code" to see the rendered template</Typography>
+                <Typography variant="caption" sx={{ color: '#888' }}>Your Django template will render here like a real browser</Typography>
+              </Box>
+            )
           ) : output ? (
             <Box sx={{ p: 2, fontFamily: 'monospace', whiteSpace: 'pre-wrap', overflow: 'auto', backgroundColor: isSuccess ? '#1b3a1b' : '#3a1b1b', color: '#cccccc', flex: 1 }}>
               <pre style={{ margin: 0, color: 'inherit' }}>{output}</pre>
