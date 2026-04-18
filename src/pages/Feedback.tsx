@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import { Feedback as FeedbackIcon, Send as SendIcon } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
-import { userApi } from '../api/axios';
 
 interface FeedbackData {
   rating: number;
@@ -28,7 +27,7 @@ interface FeedbackData {
 }
 
 const Feedback: React.FC = () => {
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   const [formData, setFormData] = useState<FeedbackData>({
     rating: 0,
     category: '',

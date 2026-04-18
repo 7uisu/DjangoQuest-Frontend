@@ -5,7 +5,6 @@ import {
   Box,
   Typography,
   Button,
-  CircularProgress,
   Grid,
   Card,
   CardContent,
@@ -13,13 +12,11 @@ import {
   Chip,
   Container,
   LinearProgress,
-  Divider,
   Paper,
   Avatar,
   useTheme,
   useMediaQuery,
   CardHeader,
-  CardMedia,
   Skeleton
 } from '@mui/material';
 import {

@@ -36,6 +36,8 @@ export interface UserData {
   first_name: string;
   last_name: string;
   is_verified: boolean;
+  is_teacher: boolean;
+  is_student: boolean;
   date_joined: string;
   profile: ProfileData;
   achievements: UserAchievementData[];

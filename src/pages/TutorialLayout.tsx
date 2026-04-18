@@ -31,7 +31,6 @@ import {
 import sanitizeHtml from 'sanitize-html';
 import { useAuth } from '../hooks/useAuth';
 import { tutorialApi } from '../api/axios';
-import { User } from '../hooks/AuthContext';
 
 function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
@@ -308,9 +307,6 @@ const TutorialLayout: React.FC = () => {
   const completeCurrentTutorial = async () => {
     if (!currentTutorial || !isAuthenticated) return;
     try {
-      const codeToSave = currentTutorial.steps[currentStepIndex].fileType === 'html+css'
-        ? `index.html:${htmlCode}\nstyles.css:${cssCode}`
-        : code;
       const response = await tutorialApi.post<{ nextTutorial: number | null }>(
         `/tutorials/${currentTutorial.id}/complete/`
       );
@@ -397,7 +393,7 @@ const TutorialLayout: React.FC = () => {
     setIsSolutionVisible(false);
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 

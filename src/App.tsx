@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './hooks/AuthProvider';
 import PrivateRoutes from "./routes/PrivateRoutes";
@@ -42,7 +42,7 @@ const App = () => {
               </Route>
             </Routes>
           </Box>
-          <Footer setCurrentSection={setCurrentSection} />
+          <Footer />
         </Box>
       </AuthProvider>
     </Router>
