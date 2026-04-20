@@ -22,6 +22,11 @@ import {
   styled,
   Fade,
   Grow,
+  LinearProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   PhotoCamera as PhotoCameraIcon,
@@ -92,6 +97,7 @@ const Profile: React.FC = () => {
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.profile?.avatar || null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const theme = useTheme();
 
   useEffect(() => {
@@ -427,8 +433,71 @@ const Profile: React.FC = () => {
             </Grow>
           </Grid2>
 
-          {/* Achievements */}
+          {/* Game Progress Card */}
           <Grid2 size={{ xs: 12, md: 8 }}>
+            <Grow in={true} timeout={900}>
+              <GradientPaper sx={{ p: 3, mb: 4 }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3, color: '#ffffff' }}>
+                  Game Progression Analytics
+                </Typography>
+
+                <Grid2 container spacing={3}>
+                  <Grid2 size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8), mb: 1 }}>
+                      Story Mode Progress {(user.story_progress ?? 0).toFixed(0)}%
+                    </Typography>
+                    <LinearProgress
+                      variant="determinate"
+                      value={user.story_progress ?? 0}
+                      sx={{
+                        height: 10,
+                        borderRadius: 5,
+                        bgcolor: alpha(theme.palette.common.white, 0.1),
+                        '& .MuiLinearProgress-bar': {
+                          background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
+                        },
+                      }}
+                    />
+                  </Grid2>
+
+                  <Grid2 size={{ xs: 12, sm: 6 }} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <Box>
+                      <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8), mb: 0.5 }}>
+                        Learning Mode Sandbox
+                      </Typography>
+                      <Chip
+                        label={user.learning_mode_gwa && user.learning_mode_gwa > 0 ? `Current GWA: ${user.learning_mode_gwa.toFixed(2)}` : 'Not Started'}
+                        sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.2), color: theme.palette.secondary.light, fontWeight: 'bold' }}
+                      />
+                    </Box>
+                  </Grid2>
+
+                  <Grid2 size={{ xs: 12 }}>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                      <Chip label={`Python History Quiz: ${user.ch1_quiz_score ?? 0} / 5`} sx={{ bgcolor: alpha(theme.palette.primary.main, 0.2), color: theme.palette.primary.light }} />
+                      <Chip label={`Story Challenges: ${user.challenges_completed ?? 0}`} sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light }} />
+                      <Chip label={`College Professors Conquered: ${user.learning_modules_completed ?? 0} / 7`} sx={{ bgcolor: alpha(theme.palette.warning.main, 0.2), color: theme.palette.warning.light }} />
+                      <Chip label={`Overall GWA: ${(user.story_mode_gwa ?? 0).toFixed(2)}`} sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.2), color: theme.palette.secondary.light, fontWeight: 'bold' }} />
+                      {user.ch1_did_remedial && (
+                        <Chip label={`Python History Remedial: ${user.ch1_remedial_score ?? 0} / 5`} sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light }} />
+                      )}
+                    </Box>
+                  </Grid2>
+
+                  <Grid2 size={{ xs: 12 }} sx={{ mt: 1 }}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => setDetailsOpen(true)}
+                      sx={{ borderColor: alpha(theme.palette.common.white, 0.3), color: '#fff' }}
+                    >
+                      View Detailed Module Analytics
+                    </Button>
+                  </Grid2>
+                </Grid2>
+              </GradientPaper>
+            </Grow>
+
+            {/* Achievements */}
             <Grow in={true} timeout={1000}>
               <GradientPaper sx={{ p: 3 }}>
                 <Typography
@@ -487,6 +556,96 @@ const Profile: React.FC = () => {
           </Grid2>
         </Grid2>
       </Container>
+
+      {/* Advanced Details Dialog */}
+      <Dialog
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: { bgcolor: theme.palette.grey[900], color: '#fff', border: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }
+        }}
+      >
+        <DialogTitle sx={{ borderBottom: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, pb: 2 }}>
+          <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2 }}>
+            Detailed Module Diagnostics for @{user.username}
+          </Typography>
+          {user.detailed_grades && user.detailed_grades.length > 0 && (
+            <Box sx={{ p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Cumulative Grade Weighted Average</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(user.story_mode_gwa ?? 0).toFixed(2)}</Typography>
+            </Box>
+          )}
+        </DialogTitle>
+        <DialogContent sx={{ py: 3 }}>
+          {/* ── Story Mode Grades Section ── */}
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.warning.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.warning.main, 0.3)}`, pb: 1 }}>
+            📖 Story Mode Grades
+          </Typography>
+          {!user.detailed_grades || user.detailed_grades.length === 0 ? (
+            <Typography sx={{ color: alpha(theme.palette.common.white, 0.6), mb: 3 }}>No story mode grades yet.</Typography>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
+              {user.detailed_grades.map((prof: any, idx: number) => (
+                <Box key={idx} sx={{ p: 2, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 2 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.primary.light, mb: 1 }}>{prof.professor}</Typography>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Final Grade</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.grade === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.grade}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Retakes</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.retakes === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.retakes}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Removal Passed</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.removal_exam === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>
+                        {prof.removal_exam === true ? "Passed" : (prof.grade === 5.0 && prof.retakes > 0) ? "Failed" : "N/A"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  {prof.professor === "Professor Query" && prof.ai_data && prof.grade !== 'Not Attempted' && (
+                    <Box sx={{ mt: 2, pt: 1, borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }}>
+                      <Typography variant="caption" sx={{ color: theme.palette.info.light, fontWeight: 'bold', display: 'block', mb: 1 }}>
+                        🤖 AI Relationship Minigame Status
+                      </Typography>
+                      {prof.ai_data.ai_fully_offline ? (
+                        <Typography variant="body2" sx={{ color: theme.palette.error.main, fontWeight: 'bold' }}>❌ Fully Offline (All 3 Modules Skipped)</Typography>
+                      ) : (prof.ai_data.ai_oto_skipped || prof.ai_data.ai_otm_skipped || prof.ai_data.ai_mtm_skipped) ? (
+                        <Typography variant="body2" sx={{ color: theme.palette.warning.main, fontWeight: 'bold' }}>⚠️ Partial Connection (Some Modules Auto-Skipped)</Typography>
+                      ) : (
+                        <Typography variant="body2" sx={{ color: theme.palette.success.main, fontWeight: 'bold' }}>✅ Online — All Modules Completed</Typography>
+                      )}
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          {/* ── Learning Mode Grades Section ── */}
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.info.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.info.main, 0.3)}`, pb: 1 }}>
+            📚 Learning Mode Grades (Sandbox)
+          </Typography>
+          {!user.learning_mode_detailed_grades || user.learning_mode_detailed_grades.length === 0 ? (
+            <Typography sx={{ color: alpha(theme.palette.common.white, 0.6) }}>No learning mode grades yet. Play professors in Learning Mode to see grades here.</Typography>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              {user.learning_mode_detailed_grades.map((entry: any, idx: number) => (
+                <Box key={idx} sx={{ p: 1.5, bgcolor: alpha(theme.palette.info.main, 0.08), borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" sx={{ color: theme.palette.info.light, fontWeight: 'bold' }}>{entry.professor}</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#fff' }}>{entry.label || entry.grade}</Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, p: 2 }}>
+          <Button onClick={() => setDetailsOpen(false)} sx={{ color: '#fff' }}>Close Menu</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

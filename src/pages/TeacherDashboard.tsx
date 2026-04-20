@@ -44,6 +44,9 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   PersonRemove as KickIcon,
+  Search as SearchIcon,
+  Visibility as VisibilityIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -100,6 +103,11 @@ const TeacherDashboard: React.FC = () => {
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<{ id: number; username: string } | null>(null);
   const [removing, setRemoving] = useState(false);
+
+  // Detailed Grades and Search
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [detailsTarget, setDetailsTarget] = useState<any | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch classrooms
   useEffect(() => {
@@ -386,96 +394,145 @@ const TeacherDashboard: React.FC = () => {
                   No students enrolled yet. Share the enrollment code with your students!
                 </Typography>
               ) : (
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Username</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Story Progress</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Challenges</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Learning</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Ch1 Quiz</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Email</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Joined</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="right">Actions</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {selectedClassroom.students.map((student) => (
-                        <TableRow key={student.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) } }}>
-                          <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.username}</TableCell>
-                          <TableCell sx={{ borderColor: alpha(theme.palette.common.white, 0.1), minWidth: 150 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <LinearProgress
-                                variant="determinate"
-                                value={student.story_progress ?? 0}
-                                sx={{
-                                  flex: 1,
-                                  height: 8,
-                                  borderRadius: 4,
-                                  bgcolor: alpha(theme.palette.common.white, 0.1),
-                                  '& .MuiLinearProgress-bar': {
-                                    borderRadius: 4,
-                                    background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
-                                  },
-                                }}
-                              />
-                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.8), minWidth: 36, textAlign: 'right' }}>
-                                {(student.story_progress ?? 0).toFixed(0)}%
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
-                            <Chip label={student.challenges_completed ?? 0} size="small" sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light, fontWeight: 'bold' }} />
-                          </TableCell>
-                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
-                            <Chip label={`${student.learning_modules_completed ?? 0} / 7`} size="small" sx={{ bgcolor: alpha(theme.palette.warning.main, 0.2), color: theme.palette.warning.light, fontWeight: 'bold' }} />
-                          </TableCell>
-                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-                              <Chip
-                                label={`${student.ch1_quiz_score ?? 0} / 5`}
-                                size="small"
-                                sx={{ bgcolor: alpha(theme.palette.success.main, 0.2), color: theme.palette.success.light, fontWeight: 'bold' }}
-                              />
-                              {student.ch1_did_remedial && (
-                                <Chip
-                                  label={`Remedial: ${student.ch1_remedial_score ?? 0} / 5`}
-                                  size="small"
-                                  sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontWeight: 'bold', fontSize: '0.65rem' }}
-                                />
-                              )}
-                            </Box>
-                          </TableCell>
-                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.8), borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.email}</TableCell>
-                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), borderColor: alpha(theme.palette.common.white, 0.1) }}>
-                            {new Date(student.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                          </TableCell>
-                          <TableCell align="right" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
-                            <Tooltip title="Reset password">
-                              <IconButton
-                                size="small"
-                                onClick={() => { setResetTarget({ id: student.id, username: student.username }); setResetDialogOpen(true); }}
-                                sx={{ color: theme.palette.warning.main }}
-                              >
-                                <ResetIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Remove student">
-                              <IconButton
-                                size="small"
-                                onClick={() => { setRemoveTarget({ id: student.id, username: student.username }); setRemoveDialogOpen(true); }}
-                                sx={{ color: theme.palette.error.main }}
-                              >
-                                <KickIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
+                <Box>
+                  <TextField
+                    fullWidth
+                    placeholder="Search by username or email..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    InputProps={{
+                      startAdornment: <SearchIcon sx={{ color: alpha(theme.palette.common.white, 0.5), mr: 1 }} />,
+                    }}
+                    sx={{
+                      mb: 3,
+                      '& .MuiInputBase-root': { bgcolor: alpha(theme.palette.common.white, 0.05), color: '#fff', borderRadius: 2 },
+                      '& .MuiOutlinedInput-notchedOutline': { borderColor: alpha(theme.palette.common.white, 0.2) },
+                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: alpha(theme.palette.common.white, 0.4) },
+                    }}
+                  />
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Username</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Story Progress</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Challenges</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Learning</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Python History Quiz</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Cumulative GWAs</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Email</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Joined</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="right">Actions</TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                      </TableHead>
+                      <TableBody>
+                        {selectedClassroom.students.filter(s => s.username.toLowerCase().includes(searchQuery.toLowerCase()) || s.email.toLowerCase().includes(searchQuery.toLowerCase())).map((student) => (
+                          <TableRow key={student.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) } }}>
+                            <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.username}</TableCell>
+                            <TableCell sx={{ borderColor: alpha(theme.palette.common.white, 0.1), minWidth: 150 }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <LinearProgress
+                                  variant="determinate"
+                                  value={student.story_progress ?? 0}
+                                  sx={{
+                                    flex: 1,
+                                    height: 8,
+                                    borderRadius: 4,
+                                    bgcolor: alpha(theme.palette.common.white, 0.1),
+                                    '& .MuiLinearProgress-bar': {
+                                      borderRadius: 4,
+                                      background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
+                                    },
+                                  }}
+                                />
+                                <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.8), minWidth: 36, textAlign: 'right' }}>
+                                  {(student.story_progress ?? 0).toFixed(0)}%
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                              <Chip label={student.challenges_completed ?? 0} size="small" sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light, fontWeight: 'bold' }} />
+                            </TableCell>
+                            <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                              <Chip label={`${student.learning_modules_completed ?? 0} / 7`} size="small" sx={{ bgcolor: alpha(theme.palette.warning.main, 0.2), color: theme.palette.warning.light, fontWeight: 'bold' }} />
+                            </TableCell>
+                            <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                                <Chip
+                                  label={`${student.ch1_quiz_score ?? 0} / 5`}
+                                  size="small"
+                                  sx={{ bgcolor: alpha(theme.palette.success.main, 0.2), color: theme.palette.success.light, fontWeight: 'bold' }}
+                                />
+                                {student.ch1_did_remedial && (
+                                  <Chip
+                                    label={`Remedial: ${student.ch1_remedial_score ?? 0} / 5`}
+                                    size="small"
+                                    sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontWeight: 'bold', fontSize: '0.65rem' }}
+                                  />
+                                )}
+                              </Box>
+                            </TableCell>
+                            <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, alignItems: 'center' }}>
+                                {(student.story_mode_gwa ?? 0) > 0 ? (
+                                  <Chip
+                                    label={`Story: ${student.story_mode_gwa?.toFixed(2)}`}
+                                    size="small"
+                                    sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.2), color: theme.palette.secondary.light, fontWeight: 'bold', fontSize: '0.65rem' }}
+                                  />
+                                ) : (
+                                  <Chip label="Story: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
+                                )}
+                                {(student.learning_mode_gwa ?? 0) > 0 ? (
+                                  <Chip
+                                    label={`Sandbox: ${student.learning_mode_gwa?.toFixed(2)}`}
+                                    size="small"
+                                    sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light, fontWeight: 'bold', fontSize: '0.65rem' }}
+                                  />
+                                ) : (
+                                  <Chip label="Sandbox: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
+                                )}
+                              </Box>
+                            </TableCell>
+                            <TableCell sx={{ color: alpha(theme.palette.common.white, 0.8), borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.email}</TableCell>
+                            <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                              {new Date(student.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                            </TableCell>
+                            <TableCell align="right" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                              <Tooltip title="View Detailed Grades">
+                                <IconButton
+                                  size="small"
+                                  onClick={() => { setDetailsTarget(student); setDetailsDialogOpen(true); }}
+                                  sx={{ color: theme.palette.info.main }}
+                                >
+                                  <VisibilityIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Reset password">
+                                <IconButton
+                                  size="small"
+                                  onClick={() => { setResetTarget({ id: student.id, username: student.username }); setResetDialogOpen(true); }}
+                                  sx={{ color: theme.palette.warning.main }}
+                                >
+                                  <ResetIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Remove student">
+                                <IconButton
+                                  size="small"
+                                  onClick={() => { setRemoveTarget({ id: student.id, username: student.username }); setRemoveDialogOpen(true); }}
+                                  sx={{ color: theme.palette.error.main }}
+                                >
+                                  <KickIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
               )}
             </GradientPaper>
           </Fade>
@@ -523,7 +580,7 @@ const TeacherDashboard: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       {/* Edit Classroom Dialog */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
         <DialogTitle>Rename Classroom</DialogTitle>
@@ -562,7 +619,7 @@ const TeacherDashboard: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       {/* Remove Student Dialog */}
       <Dialog open={removeDialogOpen} onClose={() => setRemoveDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
         <DialogTitle>Remove Student</DialogTitle>
@@ -577,6 +634,90 @@ const TeacherDashboard: React.FC = () => {
             {removing ? <CircularProgress size={24} /> : 'Remove Student'}
           </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* View Detailed Grades Dialog */}
+      <Dialog open={detailsDialogOpen} onClose={() => setDetailsDialogOpen(false)} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+        <DialogTitle sx={{ pb: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Detailed Grades for {detailsTarget?.username}</Typography>
+            <IconButton onClick={() => setDetailsDialogOpen(false)} sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          {detailsTarget?.detailed_grades && detailsTarget.detailed_grades.length > 0 && (
+            <Box sx={{ p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Cumulative Grade Weighted Average</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(detailsTarget?.story_mode_gwa ?? 0).toFixed(2)}</Typography>
+            </Box>
+          )}
+        </DialogTitle>
+        <DialogContent dividers sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+          {/* ── Story Mode Grades Section ── */}
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.warning.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.warning.main, 0.3)}`, pb: 1 }}>
+            📖 Story Mode Grades
+          </Typography>
+          {detailsTarget?.detailed_grades && detailsTarget.detailed_grades.length > 0 ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
+              {detailsTarget.detailed_grades.map((prof: any, idx: number) => (
+                <Box key={idx} sx={{ p: 2, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 2 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.primary.light, mb: 1 }}>{prof.professor}</Typography>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Final Grade</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.grade === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.grade}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Retakes</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.retakes === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.retakes}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Removal Passed</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.removal_exam === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>
+                        {prof.removal_exam === true ? "Passed" : (prof.grade === 5.0 && prof.retakes > 0) ? "Failed" : "N/A"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  {prof.professor === "Professor Query" && prof.ai_data && prof.grade !== 'Not Attempted' && (
+                    <Box sx={{ mt: 2, pt: 1, borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }}>
+                      <Typography variant="caption" sx={{ color: theme.palette.info.light, fontWeight: 'bold', display: 'block', mb: 1 }}>
+                        🤖 AI Relationship Minigame Status
+                      </Typography>
+                      {prof.ai_data.ai_fully_offline ? (
+                        <Typography variant="body2" sx={{ color: theme.palette.error.main, fontWeight: 'bold' }}>❌ Fully Offline (All 3 Modules Skipped)</Typography>
+                      ) : (prof.ai_data.ai_oto_skipped || prof.ai_data.ai_otm_skipped || prof.ai_data.ai_mtm_skipped) ? (
+                        <Typography variant="body2" sx={{ color: theme.palette.warning.main, fontWeight: 'bold' }}>⚠️ Partial Connection (Some Modules Auto-Skipped)</Typography>
+                      ) : (
+                        <Typography variant="body2" sx={{ color: theme.palette.success.main, fontWeight: 'bold' }}>✅ Online — All Modules Completed</Typography>
+                      )}
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Typography sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 3 }}>
+              No story mode grades yet.
+            </Typography>
+          )}
+
+          {/* ── Learning Mode Grades Section ── */}
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.info.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.info.main, 0.3)}`, pb: 1 }}>
+            📚 Learning Mode Grades (Sandbox)
+          </Typography>
+          {detailsTarget?.learning_mode_detailed_grades && detailsTarget.learning_mode_detailed_grades.length > 0 ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              {detailsTarget.learning_mode_detailed_grades.map((entry: any, idx: number) => (
+                <Box key={idx} sx={{ p: 1.5, bgcolor: alpha(theme.palette.info.main, 0.08), borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" sx={{ color: theme.palette.info.light, fontWeight: 'bold' }}>{entry.professor}</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#fff' }}>{entry.grade}</Typography>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Typography sx={{ color: alpha(theme.palette.common.white, 0.7) }}>No learning mode grades yet.</Typography>
+          )}
+        </DialogContent>
       </Dialog>
     </Box>
   );

@@ -38,6 +38,16 @@ export interface User {
   date_joined: string;
   profile: ProfileData;
   achievements: UserAchievement[];
+  story_progress?: number;
+  challenges_completed?: number;
+  learning_modules_completed?: number;
+  ch1_quiz_score?: number;
+  ch1_did_remedial?: boolean;
+  ch1_remedial_score?: number;
+  detailed_grades?: any[];
+  story_mode_gwa?: number;
+  learning_mode_gwa?: number;
+  learning_mode_detailed_grades?: { professor: string; grade: number; label?: string }[];
 }
 
 export interface LoginCredentials {
