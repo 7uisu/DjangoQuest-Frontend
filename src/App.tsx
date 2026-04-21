@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
+import ClassroomStudents from "./pages/ClassroomStudents";
 import Profile from "./pages/Profile";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetConfirm from "./pages/PasswordResetConfirm";
@@ -38,6 +39,7 @@ const App = () => {
               <Route element={<PrivateRoutes />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+                <Route path="/teacher-dashboard/class/:id" element={<ClassroomStudents />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>
             </Routes>
