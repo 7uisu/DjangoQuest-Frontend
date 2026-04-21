@@ -6,7 +6,7 @@ const createApiInstance = (baseURL: string) => {
   const instance = axios.create({
     baseURL: import.meta.env?.VITE_API_URL || baseURL, // Use env var or fallback
     headers: { 'Content-Type': 'application/json' },
-    timeout: 10000, // 10-second timeout
+    timeout: 30000, // 30-second timeout
   });
 
   // Inject JWT token into every request

@@ -7,11 +7,9 @@ import App from "./App.tsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ParallaxProvider>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </ParallaxProvider>
-  </StrictMode>
+  <ParallaxProvider>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </ParallaxProvider>
 );

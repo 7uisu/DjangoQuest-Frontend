@@ -17,6 +17,7 @@ import {
   Divider,
   ToggleButtonGroup,
   ToggleButton,
+  Grid,
 } from '@mui/material';
 import { Link as RouterLink, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -29,12 +30,15 @@ import {
   Login as LoginIcon,
   School as SchoolIcon,
   VpnKey as KeyIcon,
+  Badge as BadgeIcon,
 } from '@mui/icons-material';
 
 const Register: React.FC = () => {
   const { register, isAuthenticated, isLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -49,12 +53,10 @@ const Register: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Redirect if already authenticated
   if (isAuthenticated) {
     return <Navigate to="/dashboard" />;
   }
 
-  // Client-side validation
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -62,6 +64,14 @@ const Register: React.FC = () => {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Email is invalid';
+    }
+
+    if (!firstName) {
+      newErrors.first_name = 'First name is required';
+    }
+
+    if (!lastName) {
+      newErrors.last_name = 'Last name is required';
     }
 
     if (!username) {
@@ -96,10 +106,21 @@ const Register: React.FC = () => {
     setLocalLoading(true);
 
     try {
-      await register({ email, username, password, password2, role, educator_code: role === 'teacher' ? educatorCode : undefined });
+      await register({
+        email,
+        username,
+        password,
+        password2,
+        first_name: firstName,
+        last_name: lastName,
+        role,
+        educator_code: role === 'teacher' ? educatorCode : undefined,
+      });
       setSuccess(true);
       setEmail('');
       setUsername('');
+      setFirstName('');
+      setLastName('');
       setPassword('');
       setPassword2('');
       setEducatorCode('');
@@ -128,12 +149,15 @@ const Register: React.FC = () => {
     }
   };
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleShowPassword2 = () => {
-    setShowPassword2(!showPassword2);
+  const sharedInputSx = {
+    mb: 2.5,
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 2,
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? 'rgba(255,255,255,0.05)'
+          : 'rgba(0,0,0,0.02)',
+    },
   };
 
   return (
@@ -183,7 +207,7 @@ const Register: React.FC = () => {
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
             }}
           >
-            {/* Decorative side panel - hidden on mobile */}
+            {/* Decorative side panel */}
             {!isMobile && (
               <Box
                 sx={{
@@ -248,7 +272,6 @@ const Register: React.FC = () => {
                 justifyContent: 'center',
               }}
             >
-              {/* Mobile title - only shown on mobile */}
               {isMobile && (
                 <Typography
                   variant="h4"
@@ -262,7 +285,6 @@ const Register: React.FC = () => {
                 </Typography>
               )}
 
-              {/* Non-mobile title */}
               {!isMobile && (
                 <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 500 }}>
                   Create your account
@@ -288,14 +310,7 @@ const Register: React.FC = () => {
 
               {generalError && (
                 <Fade in={!!generalError}>
-                  <Alert
-                    severity="error"
-                    sx={{
-                      mb: 3,
-                      borderRadius: 2,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    }}
-                  >
+                  <Alert severity="error" sx={{ mb: 3, borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                     {generalError}
                   </Alert>
                 </Fade>
@@ -334,17 +349,57 @@ const Register: React.FC = () => {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{
-                    mb: 2.5,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      backgroundColor:
-                        theme.palette.mode === 'dark'
-                          ? 'rgba(255,255,255,0.05)'
-                          : 'rgba(0,0,0,0.02)',
-                    },
-                  }}
+                  sx={sharedInputSx}
                 />
+
+                {/* First name + Last name side by side */}
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="First Name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      disabled={localLoading || isLoading}
+                      variant="outlined"
+                      placeholder="Juan"
+                      required
+                      error={!!errors.first_name}
+                      helperText={errors.first_name || ''}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <BadgeIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={sharedInputSx}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Last Name"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      disabled={localLoading || isLoading}
+                      variant="outlined"
+                      placeholder="Dela Cruz"
+                      required
+                      error={!!errors.last_name}
+                      helperText={errors.last_name || ''}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <BadgeIcon color="action" />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={sharedInputSx}
+                    />
+                  </Grid>
+                </Grid>
+
                 <TextField
                   fullWidth
                   label="Username (In-Game Username)"
@@ -364,16 +419,7 @@ const Register: React.FC = () => {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{
-                    mb: 2.5,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      backgroundColor:
-                        theme.palette.mode === 'dark'
-                          ? 'rgba(255,255,255,0.05)'
-                          : 'rgba(0,0,0,0.02)',
-                    },
-                  }}
+                  sx={sharedInputSx}
                 />
 
                 {/* Educator Access Code (teachers only) */}
@@ -386,7 +432,7 @@ const Register: React.FC = () => {
                     disabled={localLoading || isLoading}
                     margin="normal"
                     variant="outlined"
-                    placeholder="e.g. CAPSTONE-2026"
+                    placeholder="e.g. CODE-1234"
                     required
                     error={!!errors.educator_code}
                     helperText={errors.educator_code || 'Required for teacher registration.'}
@@ -397,18 +443,10 @@ const Register: React.FC = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{
-                      mb: 2.5,
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 2,
-                        backgroundColor:
-                          theme.palette.mode === 'dark'
-                            ? 'rgba(255,255,255,0.05)'
-                            : 'rgba(0,0,0,0.02)',
-                      },
-                    }}
+                    sx={sharedInputSx}
                   />
                 )}
+
                 <TextField
                   fullWidth
                   label="Password"
@@ -430,7 +468,7 @@ const Register: React.FC = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={toggleShowPassword}
+                          onClick={() => setShowPassword(!showPassword)}
                           edge="end"
                           size="small"
                           aria-label={showPassword ? 'Hide password' : 'Show password'}
@@ -440,17 +478,9 @@ const Register: React.FC = () => {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{
-                    mb: 2.5,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      backgroundColor:
-                        theme.palette.mode === 'dark'
-                          ? 'rgba(255,255,255,0.05)'
-                          : 'rgba(0,0,0,0.02)',
-                    },
-                  }}
+                  sx={sharedInputSx}
                 />
+
                 <TextField
                   fullWidth
                   label="Confirm Password"
@@ -472,7 +502,7 @@ const Register: React.FC = () => {
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={toggleShowPassword2}
+                          onClick={() => setShowPassword2(!showPassword2)}
                           edge="end"
                           size="small"
                           aria-label={showPassword2 ? 'Hide password' : 'Show password'}
@@ -482,16 +512,7 @@ const Register: React.FC = () => {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{
-                    mb: 1,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      backgroundColor:
-                        theme.palette.mode === 'dark'
-                          ? 'rgba(255,255,255,0.05)'
-                          : 'rgba(0,0,0,0.02)',
-                    },
-                  }}
+                  sx={{ ...sharedInputSx, mb: 1 }}
                 />
 
                 <Button

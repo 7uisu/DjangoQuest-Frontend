@@ -47,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true);
     setError(null);
     console.log("Attempting login with:", credentials);
-    
+
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     console.log("Cleared tokens before login");
@@ -56,14 +56,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await userApi.post<TokenResponse>('/token/', credentials); // Use userApi
       const { access, refresh } = response.data;
       console.log("Login successful, tokens:", { access, refresh });
-      
+
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
       console.log("Stored refresh token:", localStorage.getItem('refresh_token'));
-      
+
       const userData = await getUserProfile();
       setUser(userData);
-      
+
       // Role-based redirect: teachers go to teacher dashboard
       if (userData.is_teacher) {
         navigate('/teacher-dashboard');
@@ -83,14 +83,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const register: AuthContextType['register'] = async (data) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await userApi.post('/register/', data); // Use userApi
       navigate('/login');
     } catch (err: any) {
+      // Ignore navigation-triggered cancellations — registration already succeeded
+      if (err.code === 'ERR_CANCELED' || err.message?.includes('timeout')) return;
       const errorMessage = err.response?.data?.detail || 'Registration failed. Please try again.';
       setError(errorMessage);
-      throw new Error(errorMessage);
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -99,7 +101,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout: AuthContextType['logout'] = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const refreshToken = localStorage.getItem('refresh_token');
       console.log("Refresh token before logout:", refreshToken);
@@ -134,7 +136,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const updateProfile: AuthContextType['updateProfile'] = async (data) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       let response;
       if (data.profile?.avatar instanceof File) {
@@ -144,14 +146,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (data.username) formData.append('username', data.username);
         if (data.profile.bio) formData.append('profile.bio', data.profile.bio);
         if (data.profile.avatar) formData.append('profile.avatar', data.profile.avatar);
-        
+
         response = await userApi.patch('/profile/', formData, { // Use userApi
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
         response = await userApi.patch('/profile/', data); // Use userApi
       }
-      
+
       const updatedUser = response.data;
       setUser(updatedUser);
       return updatedUser;
@@ -166,7 +168,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const getUserAchievements: AuthContextType['getUserAchievements'] = async () => {
     setError(null);
-    
+
     try {
       const response = await userApi.get('/user-achievements/'); // Use userApi
       return response.data;
