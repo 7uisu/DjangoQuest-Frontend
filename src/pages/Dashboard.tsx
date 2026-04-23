@@ -678,20 +678,31 @@ const Dashboard: React.FC = () => {
                         </Typography>
                       </Box>
                     </Box>
-                    {prof.professor === "Professor Query" && prof.ai_data && prof.grade !== 'Not Attempted' && (
+                    {prof.ai_data && prof.grade !== 'Not Attempted' && (() => {
+                      const aiLabels: Record<string, string> = {
+                        'Professor Query': '🤖 AI Relationship Minigame',
+                        'Professor Syntax': '🤖 AI Data Type Detective',
+                        'Professor View': '🤖 AI URL Router Minigame',
+                        'Professor Auth': '🤖 AI ID Checker Minigame',
+                        'Professor REST': '🤖 AI HTTP Verbs Minigame',
+                      };
+                      const label = aiLabels[prof.professor] || '🤖 AI Minigame';
+                      const hasSkips = Object.entries(prof.ai_data).some(([k, v]) => k.includes('skipped') && v === true);
+                      return (
                       <Box sx={{ mt: 2, pt: 1, borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }}>
                         <Typography variant="caption" sx={{ color: theme.palette.info.light, fontWeight: 'bold', display: 'block', mb: 1 }}>
-                          🤖 AI Relationship Minigame Status
+                          {label} Status
                         </Typography>
                         {prof.ai_data.ai_fully_offline ? (
-                          <Typography variant="body2" sx={{ color: theme.palette.error.main, fontWeight: 'bold' }}>❌ Fully Offline (All 3 Modules Skipped)</Typography>
-                        ) : (prof.ai_data.ai_oto_skipped || prof.ai_data.ai_otm_skipped || prof.ai_data.ai_mtm_skipped) ? (
-                          <Typography variant="body2" sx={{ color: theme.palette.warning.main, fontWeight: 'bold' }}>⚠️ Partial Connection (Some Modules Auto-Skipped)</Typography>
+                          <Typography variant="body2" sx={{ color: theme.palette.error.main, fontWeight: 'bold' }}>❌ Fully Offline (Auto-Skipped)</Typography>
+                        ) : hasSkips ? (
+                          <Typography variant="body2" sx={{ color: theme.palette.warning.main, fontWeight: 'bold' }}>⚠️ Partial Connection (Some Auto-Skipped)</Typography>
                         ) : (
-                          <Typography variant="body2" sx={{ color: theme.palette.success.main, fontWeight: 'bold' }}>✅ Online — All Modules Completed</Typography>
+                          <Typography variant="body2" sx={{ color: theme.palette.success.main, fontWeight: 'bold' }}>✅ Online — Completed</Typography>
                         )}
                       </Box>
-                    )}
+                      );
+                    })()}
                   </Box>
                 ))}
               </Box>
