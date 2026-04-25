@@ -11,6 +11,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Translate raw backend errors into user-friendly messages
+  const friendlyError = (raw: string): string => {
+    const map: Record<string, string> = {
+      'No active account found with the given credentials': 'Incorrect email or password. Please try again.',
+      'No active account found with the given credentials.': 'Incorrect email or password. Please try again.',
+      'Unable to log in with provided credentials.': 'Incorrect email or password. Please try again.',
+      'Authentication credentials were not provided.': 'You are not logged in. Please sign in to continue.',
+      'Token is invalid or expired': 'Your session has expired. Please log in again.',
+      'Token is blacklisted': 'Your session has expired. Please log in again.',
+      'Not found.': 'The requested resource was not found.',
+      'Given token not valid for any token type': 'Your session has expired. Please log in again.',
+      'This field may not be blank.': 'This field cannot be empty.',
+      'A user with that username already exists.': 'This username is already taken. Please choose a different one.',
+      'user with this email already exists.': 'This email is already registered. Try logging in instead.',
+    };
+    return map[raw] || raw;
+  };
+
   // Check auth on mount
   useEffect(() => {
     console.log("checkAuth triggered");
@@ -64,14 +82,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const userData = await getUserProfile();
       setUser(userData);
 
-      // Role-based redirect: teachers go to teacher dashboard
-      if (userData.is_teacher) {
+      // Role-based redirect: admin > teacher > student
+      if (userData.is_staff) {
+        navigate('/admin-dashboard');
+      } else if (userData.is_teacher) {
         navigate('/teacher-dashboard');
       } else {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || 'Login failed. Please check your credentials.';
+      const rawMessage = err.response?.data?.detail || 'Login failed. Please check your email and password.';
+      const errorMessage = friendlyError(rawMessage);
       console.log("Login error:", errorMessage);
       setError(errorMessage);
       throw new Error(errorMessage);
@@ -90,7 +111,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (err: any) {
       // Ignore navigation-triggered cancellations — registration already succeeded
       if (err.code === 'ERR_CANCELED' || err.message?.includes('timeout')) return;
-      const errorMessage = err.response?.data?.detail || 'Registration failed. Please try again.';
+      const errorMessage = friendlyError(err.response?.data?.detail || 'Registration failed. Please try again.');
       setError(errorMessage);
       throw err;
     } finally {
@@ -158,7 +179,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(updatedUser);
       return updatedUser;
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || 'Profile update failed.';
+      const errorMessage = friendlyError(err.response?.data?.detail || 'Profile update failed.');
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -173,7 +194,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await userApi.get('/user-achievements/'); // Use userApi
       return response.data;
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || 'Failed to fetch achievements.';
+      const errorMessage = friendlyError(err.response?.data?.detail || 'Failed to load achievements. Please try again.');
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -186,7 +207,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await apiRequestPasswordReset(data);
       console.log("Password reset request response:", response);
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || 'Password reset request failed.';
+      const errorMessage = friendlyError(err.response?.data?.detail || 'Password reset request failed. Please try again.');
       console.log("Password reset error:", err.response?.status, err.response?.data);
       setError(errorMessage);
       throw new Error(errorMessage);
@@ -204,7 +225,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await new Promise(resolve => setTimeout(resolve, 5000));
       navigate('/login');
     } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || 'Password reset confirmation failed.';
+      const errorMessage = friendlyError(err.response?.data?.detail || 'Password reset failed. The link may have expired.');
       console.log("Password reset confirm error:", err.response?.status, err.response?.data);
       setError(errorMessage);
       throw new Error(errorMessage);

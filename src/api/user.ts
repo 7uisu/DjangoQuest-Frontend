@@ -28,6 +28,16 @@ export interface UserAchievementData {
   date_unlocked: string;
 }
 
+// Certificate data from backend
+export interface CertificateData {
+  id: string;
+  professor: string;
+  topic: string;
+  professor_key: string;
+  completed: boolean;
+  completed_at: string | null;
+}
+
 // Full user data
 export interface UserData {
   id: number;
@@ -41,6 +51,7 @@ export interface UserData {
   date_joined: string;
   profile: ProfileData;
   achievements: UserAchievementData[];
+  certificates?: CertificateData[];
   story_progress?: number;
   challenges_completed?: number;
   learning_modules_completed?: number;
@@ -99,4 +110,28 @@ export const getUserAchievements = async (): Promise<UserAchievementData[]> => {
 export const getAchievements = async (): Promise<AchievementData[]> => {
   const response = await userApi.get('/achievements/');
   return response.data;
+};
+
+// Download certificate PDF
+export const downloadCertificate = async (professorKey: string): Promise<void> => {
+  const response = await userApi.get(`/certificates/${professorKey}/image/`, {
+    responseType: 'blob',
+  });
+  const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `certificate-${professorKey}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+};
+
+// View certificate PDF in a new tab
+export const viewCertificate = async (professorKey: string): Promise<void> => {
+  const response = await userApi.get(`/certificates/${professorKey}/image/`, {
+    responseType: 'blob',
+  });
+  const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+  window.open(url, '_blank');
 };

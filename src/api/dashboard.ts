@@ -13,6 +13,8 @@ export interface StudentData {
   id: number;
   username: string;
   email: string;
+  first_name?: string;
+  last_name?: string;
   date_joined: string;
   story_progress: number;
   challenges_completed: number;

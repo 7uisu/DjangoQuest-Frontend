@@ -188,6 +188,141 @@ const ClassroomStudents: React.FC = () => {
         {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }} onClose={() => setError('')}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }} onClose={() => setSuccess('')}>{success}</Alert>}
 
+        {/* ── Classroom Analytics ── */}
+        {selectedClassroom.students.length > 0 && (() => {
+          const students = selectedClassroom.students;
+          const gwas = students.map(s => s.story_mode_gwa ?? 0).filter(g => g > 0);
+          const avgGwa = gwas.length > 0 ? gwas.reduce((a, b) => a + b, 0) / gwas.length : 0;
+          const avgProgress = students.reduce((sum, s) => sum + (s.story_progress ?? 0), 0) / students.length;
+          const remedialCount = students.filter(s => s.ch1_did_remedial).length;
+          const professorMap = [
+            { key: 'y1s1', name: 'Prof. Markup', topic: 'HTML Basics' },
+            { key: 'y1s2', name: 'Prof. Syntax', topic: 'Python Data Types' },
+            { key: 'y2s1', name: 'Prof. View', topic: 'Django Views & URL Routing' },
+            { key: 'y2s2', name: 'Prof. Query', topic: 'Django ORM & Relationships' },
+            { key: 'y3s1', name: 'Prof. Auth', topic: 'Authentication & CRUD' },
+            { key: 'y3s2', name: 'Prof. Token', topic: 'Forms & Security' },
+            { key: 'y3mid', name: 'Prof. REST', topic: 'RESTful API Design' },
+          ];
+          // Per-professor stats from detailed_grades
+          const profStats = professorMap.map(p => {
+            const grades = students
+              .map(s => {
+                const dg = s.detailed_grades?.find((g: any) => g.professor?.includes(p.name.replace('Prof. ', 'Professor ')));
+                return dg;
+              })
+              .filter((g: any) => g && g.grade !== 'Not Attempted');
+            const attempted = grades.length;
+            const passed = grades.filter((g: any) => typeof g.grade === 'number' && g.grade <= 3.0).length;
+            const failed = grades.filter((g: any) => g.grade === 5.0).length;
+            const retakes = grades.filter((g: any) => typeof g.retakes === 'number' && g.retakes > 0).length;
+            const avgGrade = attempted > 0
+              ? grades.reduce((sum: number, g: any) => sum + (typeof g.grade === 'number' ? g.grade : 0), 0) / attempted
+              : 0;
+            return { ...p, attempted, passed, failed, retakes, avgGrade, total: students.length };
+          });
+          // Sort ascending: 1.0 (best), 5.0 (worst)
+          const sortedByGwa = [...students].filter(s => (s.story_mode_gwa ?? 0) > 0).sort((a, b) => (a.story_mode_gwa ?? 0) - (b.story_mode_gwa ?? 0));
+          const atRisk = sortedByGwa.filter(s => (s.story_mode_gwa ?? 0) >= 3.0).reverse();
+          const top3 = sortedByGwa.slice(0, 3);
+          const zeroProgress = students.filter(s => (s.story_progress ?? 0) === 0);
+          // Ch1 vs Ch2 insight
+          const remedialStudents = students.filter(s => s.ch1_did_remedial);
+          const remedialBelowAvg = remedialStudents.filter(s => (s.story_mode_gwa ?? 0) > avgGwa).length;
+
+          return (
+            <Fade in timeout={400}>
+              <Box sx={{ mb: 3 }}>
+                {/* Summary Stats Row */}
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: '1fr 1fr 1fr 1fr 1fr' }, gap: 2, mb: 3 }}>
+                  {[
+                    { label: 'Students', value: students.length, color: theme.palette.primary.main },
+                    { label: 'Class Avg GWA', value: avgGwa > 0 ? avgGwa.toFixed(2) : 'N/A', color: avgGwa <= 2.0 ? theme.palette.success.main : avgGwa <= 3.0 ? theme.palette.warning.main : theme.palette.error.main },
+                    { label: 'Avg Progress', value: `${avgProgress.toFixed(0)}%`, color: theme.palette.info.main },
+                    { label: 'Ch1 Remedial', value: `${remedialCount}/${students.length}`, color: theme.palette.warning.main },
+                    { label: 'Zero Progress', value: zeroProgress.length, color: zeroProgress.length > 0 ? theme.palette.error.main : theme.palette.success.main },
+                  ].map(stat => (
+                    <GradientPaper key={stat.label} sx={{ p: 1.5, textAlign: 'center' }}>
+                      <Typography variant="h5" sx={{ fontWeight: 'bold', color: stat.color }}>{stat.value}</Typography>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>{stat.label}</Typography>
+                    </GradientPaper>
+                  ))}
+                </Box>
+
+                {/* Per-Professor Breakdown */}
+                <GradientPaper sx={{ p: 2, mb: 3 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#fff', mb: 2 }}>📊 Per-Professor Breakdown</Typography>
+                  <TableContainer>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          {['Topic & Professor', 'Avg Grade', 'Pass Rate', 'Fail Rate', 'Retake Rate', 'Attempted'].map(h => (
+                            <TableCell key={h} sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1), fontSize: '0.75rem' }}>{h}</TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {profStats.map(p => {
+                          const failPct = p.attempted > 0 ? (p.failed / p.attempted * 100) : 0;
+                          return (
+                            <TableRow key={p.key}>
+                              <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1), fontWeight: 'bold', fontSize: '0.8rem' }}>{p.topic} ({p.name})</TableCell>
+                              <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? p.avgGrade.toFixed(2) : '—'}</TableCell>
+                              <TableCell sx={{ color: theme.palette.success.light, borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? `${(p.passed / p.attempted * 100).toFixed(0)}%` : '—'}</TableCell>
+                              <TableCell sx={{ color: failPct > 20 ? theme.palette.error.main : alpha(theme.palette.common.white, 0.8), fontWeight: failPct > 20 ? 'bold' : 'normal', borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? `${failPct.toFixed(0)}%` : '—'}</TableCell>
+                              <TableCell sx={{ color: alpha(theme.palette.common.white, 0.8), borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? `${(p.retakes / p.attempted * 100).toFixed(0)}%` : '—'}</TableCell>
+                              <TableCell sx={{ color: alpha(theme.palette.common.white, 0.6), borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted}/{p.total}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </GradientPaper>
+
+                {/* At-Risk & Top Performers Side by Side */}
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2, mb: 2 }}>
+                  {/* At-Risk */}
+                  <GradientPaper sx={{ p: 2, border: `1px solid ${alpha(theme.palette.error.main, 0.3)}` }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: theme.palette.error.light, mb: 1 }}>⚠️ At-Risk Students</Typography>
+                    {atRisk.length > 0 ? atRisk.map(s => (
+                      <Box key={s.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5 }}>
+                        <Typography variant="body2" sx={{ color: '#fff' }}>{s.username}</Typography>
+                        <Chip label={`GWA: ${(s.story_mode_gwa ?? 0).toFixed(2)}`} size="small" sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontSize: '0.7rem' }} />
+                      </Box>
+                    )) : <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No at-risk students</Typography>}
+                    {zeroProgress.length > 0 && (
+                      <Typography variant="caption" sx={{ color: theme.palette.warning.light, display: 'block', mt: 1 }}>
+                        {zeroProgress.length} student{zeroProgress.length > 1 ? 's have' : ' has'} zero progress
+                      </Typography>
+                    )}
+                  </GradientPaper>
+
+                  {/* Top Performers */}
+                  <GradientPaper sx={{ p: 2, border: `1px solid ${alpha(theme.palette.success.main, 0.3)}` }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: theme.palette.success.light, mb: 1 }}>🏆 Top Performers</Typography>
+                    {top3.length > 0 ? top3.map(s => (
+                      <Box key={s.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5 }}>
+                        <Typography variant="body2" sx={{ color: '#fff' }}>{s.username}</Typography>
+                        <Chip label={`GWA: ${(s.story_mode_gwa ?? 0).toFixed(2)}`} size="small" sx={{ bgcolor: alpha(theme.palette.success.main, 0.2), color: theme.palette.success.light, fontSize: '0.7rem' }} />
+                      </Box>
+                    )) : <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No grades yet</Typography>}
+                  </GradientPaper>
+                </Box>
+
+                {/* Ch1 vs Ch2 Insight */}
+                {remedialStudents.length > 0 && (
+                  <GradientPaper sx={{ p: 2, mb: 2 }}>
+                    <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8) }}>
+                      💡 <strong>{remedialBelowAvg}</strong> of <strong>{remedialStudents.length}</strong> students who needed Ch1 remedial are currently below the class average GWA.
+                    </Typography>
+                  </GradientPaper>
+                )}
+              </Box>
+            </Fade>
+          );
+        })()}
+
         {/* Classroom Detail View */}
         <Fade in timeout={500}>
           <GradientPaper sx={{ p: 3 }}>
@@ -215,7 +350,7 @@ const ClassroomStudents: React.FC = () => {
               <Box>
                 <TextField
                   fullWidth
-                  placeholder="Search by username or email..."
+                  placeholder="Search by name, username, or email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   InputProps={{
@@ -244,7 +379,15 @@ const ClassroomStudents: React.FC = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {selectedClassroom.students.filter(s => s.username.toLowerCase().includes(searchQuery.toLowerCase()) || s.email.toLowerCase().includes(searchQuery.toLowerCase())).map((student) => (
+                      {selectedClassroom.students.filter(s => {
+                        const sq = searchQuery.toLowerCase();
+                        return (
+                          s.username.toLowerCase().includes(sq) ||
+                          s.email.toLowerCase().includes(sq) ||
+                          (s.first_name?.toLowerCase() || '').includes(sq) ||
+                          (s.last_name?.toLowerCase() || '').includes(sq)
+                        );
+                      }).map((student) => (
                         <TableRow key={student.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) } }}>
                           <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.username}</TableCell>
                           <TableCell sx={{ borderColor: alpha(theme.palette.common.white, 0.1), minWidth: 150 }}>

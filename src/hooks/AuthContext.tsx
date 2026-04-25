@@ -26,6 +26,15 @@ export interface UserAchievement {
   date_unlocked: string;
 }
 
+export interface CertificateData {
+  id: string;
+  professor: string;
+  topic: string;
+  professor_key: string;
+  completed: boolean;
+  completed_at: string | null;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -35,9 +44,12 @@ export interface User {
   is_verified: boolean;
   is_teacher: boolean;
   is_student: boolean;
+  is_staff: boolean;
+  is_superuser: boolean;
   date_joined: string;
   profile: ProfileData;
   achievements: UserAchievement[];
+  certificates?: CertificateData[];
   story_progress?: number;
   challenges_completed?: number;
   learning_modules_completed?: number;
@@ -60,8 +72,8 @@ export interface RegisterData {
   email: string;
   password: string;
   password2: string;
-  first_name?: string;
-  last_name?: string;
+  first_name: string;
+  last_name: string;
   role?: 'student' | 'teacher';
   educator_code?: string;
 }

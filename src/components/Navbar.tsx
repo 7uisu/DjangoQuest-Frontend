@@ -71,10 +71,13 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
               <Button color="inherit" component={Link} to="/tutorials">Tutorials</Button>
               {isAuthenticated && (
                 <>
+                  {user?.is_staff && (
+                    <Button color="inherit" component={Link} to="/admin-dashboard">Admin Dashboard</Button>
+                  )}
                   {user?.is_teacher ? (
                     <>
                       <Button color="inherit" component={Link} to="/teacher-dashboard">Teacher Dashboard</Button>
-                      <Button color="inherit" component={Link} to="/profile">My Profile</Button>
+                      <Button color="inherit" component={Link} to="/dashboard">My Profile</Button>
                     </>
                   ) : (
                     <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
@@ -223,12 +226,17 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
             </ListItemButton>
             {isAuthenticated && (
               <>
+                {user?.is_staff && (
+                  <ListItemButton component={Link} to="/admin-dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <ListItemText primary="Admin Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                  </ListItemButton>
+                )}
                 {user?.is_teacher ? (
                   <>
                     <ListItemButton component={Link} to="/teacher-dashboard" onClick={() => setMobileMenuOpen(false)}>
                       <ListItemText primary="Teacher Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
                     </ListItemButton>
-                    <ListItemButton component={Link} to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                    <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                       <ListItemText primary="My Profile" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
                     </ListItemButton>
                   </>

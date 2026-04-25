@@ -34,7 +34,38 @@ import {
   Class as ClassIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
+  Search as SearchIcon,
+  Campaign as CampaignIcon,
 } from '@mui/icons-material';
+import {
+  Snackbar, FormGroup, FormControlLabel, Checkbox,
+} from '@mui/material';
+import axios from 'axios';
+
+// Announcements API helper
+const announcementsApi = axios.create({ baseURL: '/api/announcements', headers: { 'Content-Type': 'application/json' } });
+announcementsApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) config.headers['Authorization'] = `Bearer ${token}`;
+  return config;
+});
+
+// Feedback API helper
+const feedbackApi = axios.create({ baseURL: '/api/feedback', headers: { 'Content-Type': 'application/json' } });
+feedbackApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) config.headers['Authorization'] = `Bearer ${token}`;
+  return config;
+});
+
+interface AnnouncementItem {
+  id: number;
+  title: string;
+  body: string;
+  announcement_type: string;
+  target_classrooms: { id: number; name: string }[];
+  created_at: string;
+}
 import { useAuth } from '../hooks/useAuth';
 import {
   getClassrooms,
@@ -78,9 +109,27 @@ const TeacherDashboard: React.FC = () => {
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Fetch classrooms
+  // Search
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Announcements state
+  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
+  const [annDialogOpen, setAnnDialogOpen] = useState(false);
+  const [annEditId, setAnnEditId] = useState<number | null>(null);
+  const [annTitle, setAnnTitle] = useState('');
+  const [annBody, setAnnBody] = useState('');
+  const [annSelectedClassrooms, setAnnSelectedClassrooms] = useState<number[]>([]);
+  const [annSubmitting, setAnnSubmitting] = useState(false);
+  const [annDeleteId, setAnnDeleteId] = useState<number | null>(null);
+  const [snackbar, setSnackbar] = useState<string | null>(null);
+  const [showAllTeacherAnn, setShowAllTeacherAnn] = useState(false);
+  const [feedbackCount, setFeedbackCount] = useState<number>(0);
+
+  // Fetch classrooms + announcements
   useEffect(() => {
     fetchClassrooms();
+    fetchAnnouncements();
+    feedbackApi.get('/mine/').then(res => setFeedbackCount(res.data.count)).catch(() => {});
   }, []);
 
   const fetchClassrooms = async () => {
@@ -94,6 +143,53 @@ const TeacherDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await announcementsApi.get('/');
+      setAnnouncements(res.data.filter((a: AnnouncementItem) => a.announcement_type === 'classroom'));
+    } catch { /* silent */ }
+  };
+
+  const handleAnnSubmit = async () => {
+    if (!annTitle.trim() || !annBody.trim() || annSelectedClassrooms.length === 0) return;
+    setAnnSubmitting(true);
+    try {
+      if (annEditId) {
+        await announcementsApi.patch(`/${annEditId}/`, {
+          title: annTitle.trim(), body: annBody.trim(),
+          announcement_type: 'classroom', target_classrooms: annSelectedClassrooms,
+        });
+        setSnackbar('Announcement updated!');
+      } else {
+        await announcementsApi.post('/', {
+          announcement_type: 'classroom', title: annTitle.trim(),
+          body: annBody.trim(), target_classrooms: annSelectedClassrooms,
+        });
+        setSnackbar('Announcement published!');
+      }
+      setAnnDialogOpen(false); setAnnTitle(''); setAnnBody(''); setAnnSelectedClassrooms([]); setAnnEditId(null);
+      fetchAnnouncements();
+    } catch (err: any) {
+      setError(err.response?.data?.detail || JSON.stringify(err.response?.data) || 'Failed to save announcement.');
+    } finally { setAnnSubmitting(false); }
+  };
+
+  const handleAnnDelete = async () => {
+    if (!annDeleteId) return;
+    try {
+      await announcementsApi.delete(`/${annDeleteId}/`);
+      setSnackbar('Announcement deleted.');
+      setAnnDeleteId(null);
+      fetchAnnouncements();
+    } catch { setError('Failed to delete announcement.'); }
+  };
+
+  const openAnnEdit = (a: AnnouncementItem) => {
+    setAnnEditId(a.id); setAnnTitle(a.title); setAnnBody(a.body);
+    setAnnSelectedClassrooms(a.target_classrooms.map(c => c.id));
+    setAnnDialogOpen(true);
   };
 
   const handleCreateClassroom = async () => {
@@ -209,6 +305,48 @@ const TeacherDashboard: React.FC = () => {
         {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }} onClose={() => setError('')}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }} onClose={() => setSuccess('')}>{success}</Alert>}
 
+        {/* Stats Banner */}
+        {classrooms.length > 0 && (
+          <Fade in timeout={600}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: '1fr 1fr 1fr 1fr' }, gap: 2, mb: 4 }}>
+              {[
+                { label: 'Total Classrooms', value: classrooms.length, color: theme.palette.primary.main },
+                { label: 'Total Students', value: classrooms.reduce((sum, c) => sum + c.student_count, 0), color: theme.palette.success.main },
+                { label: 'Avg Class Size', value: (classrooms.reduce((sum, c) => sum + c.student_count, 0) / classrooms.length).toFixed(1), color: theme.palette.info.main },
+                { label: 'Empty Classrooms', value: classrooms.filter(c => c.student_count === 0).length, color: theme.palette.warning.main },
+              ].map((stat) => (
+                <GradientPaper key={stat.label} sx={{ p: 2, textAlign: 'center' }}>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: stat.color }}>{stat.value}</Typography>
+                  <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>{stat.label}</Typography>
+                </GradientPaper>
+              ))}
+            </Box>
+          </Fade>
+        )}
+
+        {/* Search Bar */}
+        <Fade in timeout={700}>
+          <Box sx={{ mb: 4 }}>
+            <TextField
+              fullWidth
+              placeholder="Search classrooms by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              InputProps={{
+                startAdornment: <SearchIcon sx={{ color: alpha(theme.palette.common.white, 0.5), mr: 1 }} />,
+                sx: { 
+                  bgcolor: alpha(theme.palette.common.white, 0.05),
+                  color: '#fff',
+                  borderRadius: 3,
+                  '& fieldset': { borderColor: alpha(theme.palette.common.white, 0.2) },
+                  '&:hover fieldset': { borderColor: theme.palette.primary.main },
+                  '&.Mui-focused fieldset': { borderColor: theme.palette.primary.light },
+                }
+              }}
+            />
+          </Box>
+        </Fade>
+
         {/* Classroom List View */}
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' }, gap: 3 }}>
             {classrooms.length === 0 ? (
@@ -216,12 +354,12 @@ const TeacherDashboard: React.FC = () => {
                 <GradientPaper sx={{ p: 4, gridColumn: '1 / -1', textAlign: 'center' }}>
                   <ClassIcon sx={{ fontSize: 60, color: alpha(theme.palette.common.white, 0.3), mb: 2 }} />
                   <Typography variant="h6" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
-                    No classrooms yet. Create your first one!
+                    No classrooms found.
                   </Typography>
                 </GradientPaper>
               </Grow>
             ) : (
-              classrooms.map((classroom, idx) => (
+              classrooms.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((classroom, idx) => (
                 <Grow in timeout={600 + idx * 150} key={classroom.id}>
                   <Card sx={{
                     borderRadius: 3,
@@ -284,6 +422,74 @@ const TeacherDashboard: React.FC = () => {
               ))
             )}
           </Box>
+        </Container>
+
+        {/* ── Announcements Section ── */}
+        <Container maxWidth="lg" sx={{ mt: 5 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <CampaignIcon sx={{ color: '#a78bfa', fontSize: 28 }} />
+              <Typography variant="h5" sx={{ color: '#fff', fontWeight: 'bold' }}>Announcements</Typography>
+              {announcements.length > 0 && (
+                <Chip label={`${announcements.length} active`} size="small" sx={{ bgcolor: alpha('#a78bfa', 0.2), color: '#a78bfa', fontWeight: 600, fontSize: '0.7rem' }} />
+              )}
+            </Box>
+            <Button
+              variant="contained" startIcon={<AddIcon />}
+              onClick={() => { setAnnEditId(null); setAnnTitle(''); setAnnBody(''); setAnnSelectedClassrooms([]); setAnnDialogOpen(true); }}
+              disabled={classrooms.length === 0}
+              sx={{ borderRadius: 3, textTransform: 'none', fontWeight: 600, background: `linear-gradient(90deg, #818cf8, #a78bfa)`, '&:hover': { transform: 'translateY(-2px)' }, transition: 'all 0.2s' }}
+            >
+              New Announcement
+            </Button>
+          </Box>
+
+          {announcements.length === 0 ? (
+            <Paper sx={{ p: 4, textAlign: 'center', bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }}>
+              <CampaignIcon sx={{ fontSize: 48, color: alpha(theme.palette.common.white, 0.2), mb: 1 }} />
+              <Typography sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No announcements yet. Create one to notify your students.</Typography>
+            </Paper>
+          ) : (
+            <>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {(showAllTeacherAnn ? announcements : announcements.slice(0, 5)).map((a) => (
+                <Grow in key={a.id} timeout={600}>
+                  <Paper sx={{ p: 2.5, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, '&:hover': { borderColor: alpha('#a78bfa', 0.4) }, transition: 'all 0.2s' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <Box sx={{ flex: 1 }}>
+                        <Box sx={{ display: 'flex', gap: 1, mb: 0.5, flexWrap: 'wrap', alignItems: 'center' }}>
+                          {a.target_classrooms.map(c => (
+                            <Chip key={c.id} label={c.name} size="small" sx={{ bgcolor: alpha('#2dd4bf', 0.15), color: '#2dd4bf', fontWeight: 600, fontSize: '0.7rem' }} />
+                          ))}
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4) }}>
+                            {new Date(a.created_at).toLocaleDateString()}
+                          </Typography>
+                        </Box>
+                        <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 600 }}>{a.title}</Typography>
+                        <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mt: 0.5 }}>{a.body}</Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        <IconButton size="small" onClick={() => openAnnEdit(a)} sx={{ color: alpha(theme.palette.common.white, 0.5), '&:hover': { color: '#818cf8' } }}>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton size="small" onClick={() => setAnnDeleteId(a.id)} sx={{ color: alpha(theme.palette.common.white, 0.5), '&:hover': { color: '#ef4444' } }}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Paper>
+                </Grow>
+              ))}
+            </Box>
+            {announcements.length > 5 && (
+              <Box sx={{ textAlign: 'center', mt: 2 }}>
+                <Button onClick={() => setShowAllTeacherAnn(!showAllTeacherAnn)} sx={{ color: '#a78bfa', textTransform: 'none' }}>
+                  {showAllTeacherAnn ? 'Show less' : `View all ${announcements.length} announcements`}
+                </Button>
+              </Box>
+            )}
+            </>
+          )}
         </Container>
 
         {/* Create Classroom Dialog */}
@@ -350,6 +556,90 @@ const TeacherDashboard: React.FC = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
+        {/* Announcement Create/Edit Dialog */}
+        <Dialog open={annDialogOpen} onClose={() => setAnnDialogOpen(false)} maxWidth="sm" fullWidth
+          PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}
+        >
+          <DialogTitle>{annEditId ? 'Edit Announcement' : 'New Announcement'}</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus fullWidth label="Title" value={annTitle} onChange={(e) => setAnnTitle(e.target.value)}
+              sx={{ mt: 1, mb: 2, '& .MuiInputBase-root': { color: '#fff', bgcolor: theme.palette.grey[700] }, '& label': { color: alpha(theme.palette.common.white, 0.7) } }}
+            />
+            <TextField
+              fullWidth multiline rows={3} label="Body" value={annBody} onChange={(e) => setAnnBody(e.target.value)}
+              sx={{ mb: 2, '& .MuiInputBase-root': { color: '#fff', bgcolor: theme.palette.grey[700] }, '& label': { color: alpha(theme.palette.common.white, 0.7) } }}
+            />
+            <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1 }}>Target Classrooms</Typography>
+            <FormGroup>
+              {classrooms.map((c) => (
+                <FormControlLabel
+                  key={c.id}
+                  control={
+                    <Checkbox
+                      checked={annSelectedClassrooms.includes(c.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) setAnnSelectedClassrooms((prev) => [...prev, c.id]);
+                        else setAnnSelectedClassrooms((prev) => prev.filter((id) => id !== c.id));
+                      }}
+                      sx={{ color: '#64748b', '&.Mui-checked': { color: '#818cf8' } }}
+                    />
+                  }
+                  label={c.name}
+                  sx={{ color: '#fff' }}
+                />
+              ))}
+            </FormGroup>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setAnnDialogOpen(false)} sx={{ color: '#fff' }}>Cancel</Button>
+            <Button onClick={handleAnnSubmit} variant="contained" disabled={annSubmitting || !annTitle.trim() || !annBody.trim() || annSelectedClassrooms.length === 0}
+              sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}
+            >
+              {annSubmitting ? <CircularProgress size={24} /> : annEditId ? 'Save' : 'Publish'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Announcement Delete Dialog */}
+        <Dialog open={!!annDeleteId} onClose={() => setAnnDeleteId(null)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+          <DialogTitle>Delete Announcement</DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.7) }}>Delete this announcement? Students will no longer see it.</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setAnnDeleteId(null)} sx={{ color: '#fff' }}>Cancel</Button>
+            <Button onClick={handleAnnDelete} variant="contained" color="error">Delete</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Give Feedback CTA */}
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Button
+            variant="outlined"
+            href="/feedback"
+            startIcon={<span role="img" aria-label="feedback">💬</span>}
+            sx={{
+              color: alpha(theme.palette.common.white, 0.7),
+              borderColor: alpha(theme.palette.common.white, 0.2),
+              borderRadius: 3,
+              textTransform: 'none',
+              px: 3,
+              '&:hover': {
+                borderColor: alpha(theme.palette.common.white, 0.4),
+                bgcolor: alpha(theme.palette.common.white, 0.05),
+              },
+            }}
+          >
+            Give Feedback
+            {feedbackCount > 0 && (
+              <Chip label={feedbackCount} size="small" sx={{ ml: 1, bgcolor: alpha(theme.palette.common.white, 0.15), color: '#fff', fontWeight: 600, fontSize: '0.7rem', height: 22 }} />
+            )}
+          </Button>
+        </Box>
+
+        <Snackbar open={!!snackbar} autoHideDuration={3000} onClose={() => setSnackbar(null)} message={snackbar} />
       </Box>
   );
 };

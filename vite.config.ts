@@ -29,6 +29,24 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      // Proxy /api/admin to backend
+      '/api/admin': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      // Proxy /api/feedback to backend
+      '/api/feedback': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      // Proxy /api/announcements to backend
+      '/api/announcements': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

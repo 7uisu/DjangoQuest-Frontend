@@ -46,7 +46,7 @@ const Login: React.FC = () => {
   };
 
   if (isAuthenticated) {
-    return <Navigate to={user?.is_teacher ? '/teacher-dashboard' : '/dashboard'} />;
+    return <Navigate to={user?.is_staff ? '/admin-dashboard' : user?.is_teacher ? '/teacher-dashboard' : '/dashboard'} />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

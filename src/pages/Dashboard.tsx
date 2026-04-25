@@ -13,6 +13,7 @@ import {
   ListItemAvatar,
   CircularProgress,
   Grid,
+  Grid2,
   Button,
   useTheme,
   alpha,
@@ -30,6 +31,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Tabs,
+  Tab,
+  Badge,
 } from '@mui/material';
 import {
   Person as PersonIcon,
@@ -43,11 +47,36 @@ import {
   Save as SaveIcon,
   Cancel as CancelIcon,
   Refresh as RefreshIcon,
+  WorkspacePremium as CertIcon,
+  EmojiEvents as TrophyIcon,
+  Lock as LockIcon,
+  Download as DownloadIcon,
+  Campaign as CampaignIcon,
+  ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
-import { updateUserProfile } from '../api/user';
+import { updateUserProfile, downloadCertificate, CertificateData } from '../api/user';
 import { tutorialApi } from '../api/axios';
 import { unenrollClassroom, enrollClassroom } from '../api/game';
+import axios from 'axios';
+
+// Announcements API
+const announcementsApi = axios.create({ baseURL: '/api/announcements', headers: { 'Content-Type': 'application/json' } });
+announcementsApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) config.headers['Authorization'] = `Bearer ${token}`;
+  return config;
+});
+
+interface AnnouncementItem {
+  id: number;
+  author_name: string;
+  announcement_type: string;
+  title: string;
+  body: string;
+  target_classrooms: { id: number; name: string }[];
+  created_at: string;
+}
 
 // Styled components (unchanged)
 const GradientPaper = styled(Paper)(({ theme }) => ({
@@ -119,6 +148,17 @@ const Dashboard: React.FC = () => {
   const [enrollCode, setEnrollCode] = useState('');
   const [enrolling, setEnrolling] = useState(false);
   const [enrollError, setEnrollError] = useState('');
+  const [downloading, setDownloading] = useState<string | null>(null);
+
+  // Announcements
+  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
+  const [readIds, setReadIds] = useState<number[]>(() => {
+    try { return JSON.parse(localStorage.getItem('dq_read_announcements') || '[]'); } catch { return []; }
+  });
+  const [expandedAnnId, setExpandedAnnId] = useState<number | null>(null);
+  const [showAllAnn, setShowAllAnn] = useState(false);
+  const [annDialog, setAnnDialog] = useState(false);
+  const [annTab, setAnnTab] = useState(0);
 
   const theme = useTheme();
 
@@ -127,11 +167,14 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     if (user) {
       setFormData({
-        first_name: user.first_name,
-        last_name: user.last_name,
-        bio: user.profile.bio,
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        bio: user.profile?.bio || '',
       });
-      const avatar = user.profile.avatar;
+      // Fetch announcements
+      announcementsApi.get('/').then(res => setAnnouncements(res.data)).catch(() => {});
+
+      const avatar = user.profile?.avatar;
       let avatarPath: string | null = avatar || null;
       if (avatarPath) {
         const parts = avatarPath.split('/');
@@ -209,9 +252,9 @@ const Dashboard: React.FC = () => {
       setFormData({
         first_name: user.first_name,
         last_name: user.last_name,
-        bio: user.profile.bio,
+        bio: user.profile?.bio,
       });
-      const avatar = user.profile.avatar;
+      const avatar = user.profile?.avatar;
       let avatarPath: string | null = avatar || null;
       if (avatarPath) {
         const parts = avatarPath.split('/');
@@ -316,7 +359,7 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  const currentXP = user.profile.total_xp;
+  const currentXP = user.profile?.total_xp ?? 0;
   const xpPerLevel = 100;
   const currentLevel = Math.floor(currentXP / xpPerLevel);
   const nextLevelXP = (currentLevel + 1) * xpPerLevel;
@@ -331,6 +374,25 @@ const Dashboard: React.FC = () => {
             <Typography variant="h6" sx={{ color: alpha(theme.palette.common.white, 0.8), textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>Check out your latest achievements and track your progress.</Typography>
           </Box>
         </Fade>
+
+        {/* ── Announcements Button ── */}
+        {announcements.length > 0 && (
+          <Box sx={{ mb: 4 }}>
+            <Badge badgeContent={announcements.filter(a => !readIds.includes(a.id)).length} color="error" overlap="circular">
+              <Button
+                variant="outlined"
+                onClick={() => setAnnDialog(true)}
+                startIcon={<CampaignIcon />}
+                sx={{
+                  color: '#fff', borderColor: alpha('#fff', 0.3), textTransform: 'none', borderRadius: 8, px: 3,
+                  '&:hover': { borderColor: '#fff', bgcolor: alpha('#fff', 0.1) }
+                }}
+              >
+                View Announcements
+              </Button>
+            </Badge>
+          </Box>
+        )}
 
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
@@ -367,11 +429,11 @@ const Dashboard: React.FC = () => {
                       <Typography variant="body1" gutterBottom sx={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Member since:</span><span>{new Date(user.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span></Typography>
                       <Typography variant="body1" gutterBottom sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Level:</span><span>Level {currentLevel}</span></Typography>
 
-                      {user.profile.classroom_name ? (
+                      {user.profile?.classroom_name ? (
                         <Box sx={{ mt: 2, mb: 3, p: 2, bgcolor: alpha(theme.palette.primary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}` }}>
                           <Typography variant="body2" sx={{ fontWeight: 'bold', color: theme.palette.primary.light }}>Enrolled Classroom</Typography>
-                          <Typography variant="h6" sx={{ color: '#ffffff', mt: 0.5 }}>{user.profile.classroom_name}</Typography>
-                          <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1.5 }}>Teacher: {user.profile.teacher_name}</Typography>
+                          <Typography variant="h6" sx={{ color: '#ffffff', mt: 0.5 }}>{user.profile?.classroom_name}</Typography>
+                          <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1.5 }}>Teacher: {user.profile?.teacher_name}</Typography>
                           <Button size="small" variant="outlined" color="error" onClick={() => setUnenrollDialogOpen(true)} sx={{ borderRadius: 4, textTransform: 'none' }}>Unenroll</Button>
                         </Box>
                       ) : (
@@ -555,6 +617,128 @@ const Dashboard: React.FC = () => {
               </GradientPaper>
             </Grow>
 
+            <Grow in={true} timeout={1150}>
+              <GradientPaper sx={{ p: 3, mb: 4 }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1, color: '#ffffff', display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CertIcon /> ECertificates
+                </Typography>
+                <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.6), mb: 3 }}>
+                  Earn certificates by completing each topic's coursework.
+                </Typography>
+
+                {/* Name missing warning */}
+                {(!user.first_name || !user.last_name) && (
+                  <Alert severity="warning" sx={{ mb: 3, bgcolor: alpha(theme.palette.warning.main, 0.15) }}>
+                    Please update your name in your profile to enable ECertificates with your full name.
+                  </Alert>
+                )}
+
+                <Grid2 container spacing={2}>
+                  {(user.certificates ?? []).map((cert: CertificateData) => {
+                    const isGrand = cert.professor_key === 'grand';
+                    const goldBorder = isGrand ? '#b8860b' : theme.palette.primary.main;
+
+                    return (
+                      <Grid2 size={{ xs: 12, sm: 6, md: isGrand ? 12 : 6 }} key={cert.id}>
+                        <Card
+                          sx={{
+                            height: '100%',
+                            borderRadius: 3,
+                            position: 'relative',
+                            overflow: 'hidden',
+                            bgcolor: cert.completed
+                              ? alpha(isGrand ? '#b8860b' : theme.palette.primary.main, 0.12)
+                              : alpha(theme.palette.grey[700], 0.3),
+                            border: cert.completed
+                              ? `2px solid ${alpha(goldBorder, 0.5)}`
+                              : `1px solid ${alpha(theme.palette.grey[600], 0.3)}`,
+                            opacity: cert.completed ? 1 : 0.6,
+                            transition: 'all 0.2s',
+                            '&:hover': cert.completed ? { transform: 'translateY(-2px)', boxShadow: `0 6px 20px ${alpha(goldBorder, 0.3)}` } : {},
+                          }}
+                        >
+                          {/* Top accent bar */}
+                          <Box sx={{ height: 4, background: cert.completed ? `linear-gradient(90deg, ${goldBorder}, ${alpha(goldBorder, 0.5)})` : alpha(theme.palette.grey[600], 0.3) }} />
+
+                          <CardContent sx={{ p: isGrand ? 3 : 2, textAlign: isGrand ? 'center' : 'left' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, justifyContent: isGrand ? 'center' : 'flex-start' }}>
+                              {cert.completed ? (
+                                <TrophyIcon sx={{ color: isGrand ? '#ffd700' : theme.palette.primary.light, fontSize: isGrand ? 32 : 24 }} />
+                              ) : (
+                                <LockIcon sx={{ color: alpha(theme.palette.common.white, 0.3), fontSize: 24 }} />
+                              )}
+                              <Typography variant={isGrand ? 'h6' : 'subtitle1'} sx={{ fontWeight: 'bold', color: cert.completed ? '#fff' : alpha(theme.palette.common.white, 0.4) }}>
+                                {cert.topic}
+                              </Typography>
+                            </Box>
+
+                            {!isGrand && (
+                              <Typography variant="caption" sx={{ color: cert.completed ? alpha(theme.palette.common.white, 0.5) : alpha(theme.palette.common.white, 0.25), display: 'block', mb: 1 }}>
+                                {cert.professor}
+                              </Typography>
+                            )}
+
+                            {cert.completed && cert.completed_at && (
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block', mb: 1.5 }}>
+                                Completed: {new Date(cert.completed_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                              </Typography>
+                            )}
+
+                            {cert.completed ? (
+                              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: isGrand ? 'center' : 'flex-start' }}>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<TrophyIcon />}
+                                  onClick={async () => {
+                                    try {
+                                      const { viewCertificate } = await import('../api/user');
+                                      await viewCertificate(cert.professor_key);
+                                    } catch (e) { console.error('View failed:', e); }
+                                  }}
+                                  sx={{
+                                    textTransform: 'none', borderRadius: 2, fontSize: '0.75rem',
+                                    borderColor: isGrand ? '#b8860b' : theme.palette.primary.main,
+                                    color: isGrand ? '#ffd700' : theme.palette.primary.light,
+                                    '&:hover': { borderColor: isGrand ? '#ffd700' : theme.palette.primary.light, bgcolor: alpha(isGrand ? '#b8860b' : theme.palette.primary.main, 0.1) },
+                                  }}
+                                >
+                                  View
+                                </Button>
+                                <Button
+                                  size="small"
+                                  variant="contained"
+                                  startIcon={downloading === cert.professor_key ? <CircularProgress size={16} color="inherit" /> : <DownloadIcon />}
+                                  disabled={downloading === cert.professor_key}
+                                  onClick={async () => {
+                                    setDownloading(cert.professor_key);
+                                    try { await downloadCertificate(cert.professor_key); }
+                                    catch (e) { console.error('Download failed:', e); }
+                                    finally { setDownloading(null); }
+                                  }}
+                                  sx={{
+                                    textTransform: 'none', borderRadius: 2, fontSize: '0.75rem',
+                                    bgcolor: isGrand ? '#b8860b' : theme.palette.primary.main,
+                                    '&:hover': { bgcolor: isGrand ? '#8b6914' : theme.palette.primary.dark },
+                                  }}
+                                >
+                                  Download PDF
+                                </Button>
+                              </Box>
+                            ) : (
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.3), fontStyle: 'italic' }}>
+                                {isGrand ? 'Complete all 7 topics to unlock' : `Complete ${cert.topic} to unlock`}
+                              </Typography>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </Grid2>
+                    );
+                  })}
+                </Grid2>
+              </GradientPaper>
+            </Grow>
+
             <Grow in={true} timeout={1200}>
               <GradientPaper sx={{ p: 3 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3, color: '#ffffff' }}>Recent Achievements</Typography>
@@ -618,7 +802,7 @@ const Dashboard: React.FC = () => {
           <DialogTitle>Unenroll Classroom</DialogTitle>
           <DialogContent>
             <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.8) }}>
-              Are you sure you want to unenroll from <strong>{user.profile.classroom_name}</strong>? You will lose access to the teacher's dashboard, but you will keep your game progress.
+              Are you sure you want to unenroll from <strong>{user.profile?.classroom_name}</strong>? You will lose access to the teacher's dashboard, but you will keep your game progress.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -729,6 +913,100 @@ const Dashboard: React.FC = () => {
             <Button onClick={() => setDetailsOpen(false)} sx={{ color: '#fff' }}>Close Menu</Button>
           </DialogActions>
         </Dialog>
+
+        {/* ── Announcements Dialog ── */}
+        <Dialog open={annDialog} onClose={() => setAnnDialog(false)} maxWidth="sm" fullWidth
+          PaperProps={{ sx: { bgcolor: theme.palette.grey[900], color: '#fff', borderRadius: 3, border: `1px solid ${alpha('#818cf8', 0.3)}` } }}>
+          <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <CampaignIcon sx={{ color: '#a78bfa' }} /> Announcements
+          </DialogTitle>
+          <Box sx={{ borderBottom: 1, borderColor: alpha('#fff', 0.1), px: 3 }}>
+            <Tabs value={annTab} onChange={(e, v) => setAnnTab(v)} sx={{ '& .MuiTab-root': { color: alpha('#fff', 0.6), textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#818cf8 !important' }, '& .MuiTabs-indicator': { bgcolor: '#818cf8' } }}>
+              <Tab label="Platform" />
+              <Tab label="Classroom" />
+            </Tabs>
+          </Box>
+          <DialogContent sx={{ minHeight: 300, display: 'flex', flexDirection: 'column', gap: 1.5, p: 3 }}>
+            {announcements.filter(a => annTab === 0 ? a.announcement_type === 'platform' : a.announcement_type === 'classroom').length === 0 ? (
+              <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography sx={{ color: alpha('#fff', 0.5) }}>No announcements in this category.</Typography>
+              </Box>
+            ) : (
+              announcements.filter(a => annTab === 0 ? a.announcement_type === 'platform' : a.announcement_type === 'classroom').map((a) => {
+                const isRead = readIds.includes(a.id);
+                const isExpanded = expandedAnnId === a.id;
+                return (
+                  <Grow in key={a.id} timeout={400}>
+                    <Paper
+                      sx={{
+                        p: 2, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 2,
+                        border: `1px solid ${isRead ? alpha(theme.palette.common.white, 0.05) : '#818cf8'}`,
+                        cursor: 'pointer', transition: 'all 0.2s',
+                        '&:hover': { borderColor: alpha('#818cf8', 0.5) },
+                      }}
+                      onClick={() => {
+                        setExpandedAnnId(isExpanded ? null : a.id);
+                        if (!isRead) {
+                          const updated = [...readIds, a.id];
+                          setReadIds(updated);
+                          localStorage.setItem('dq_read_announcements', JSON.stringify(updated));
+                        }
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {!isRead && <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#818cf8', flexShrink: 0 }} />}
+                          <Typography variant="subtitle2" sx={{ color: '#fff', fontWeight: isRead ? 400 : 700 }}>{a.title}</Typography>
+                          {a.announcement_type === 'classroom' && a.target_classrooms[0] && (
+                            <Chip label={a.target_classrooms[0].name} size="small" sx={{ bgcolor: alpha('#2dd4bf', 0.2), color: '#2dd4bf', fontWeight: 600, fontSize: '0.65rem' }} />
+                          )}
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography variant="caption" sx={{ color: alpha('#fff', 0.4) }}>
+                            {new Date(a.created_at).toLocaleDateString()}
+                          </Typography>
+                          <ExpandMoreIcon sx={{ color: '#64748b', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', fontSize: 18 }} />
+                        </Box>
+                      </Box>
+                      {isExpanded && (
+                        <Box sx={{ mt: 1.5, pl: 2, borderLeft: '2px solid', borderColor: alpha('#818cf8', 0.3) }}>
+                          <Typography variant="body2" sx={{ color: alpha('#fff', 0.8) }}>{a.body}</Typography>
+                          <Typography variant="caption" sx={{ color: alpha('#fff', 0.4), mt: 1, display: 'block' }}>by {a.author_name}</Typography>
+                        </Box>
+                      )}
+                    </Paper>
+                  </Grow>
+                );
+              })
+            )}
+          </DialogContent>
+          <DialogActions sx={{ borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, p: 2 }}>
+            <Button onClick={() => setAnnDialog(false)} sx={{ color: '#fff' }}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+
+        {/* Give Feedback CTA */}
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Button
+            variant="outlined"
+            href="/feedback"
+            startIcon={<span role="img" aria-label="feedback">💬</span>}
+            sx={{
+              color: alpha(theme.palette.common.white, 0.7),
+              borderColor: alpha(theme.palette.common.white, 0.2),
+              borderRadius: 3,
+              textTransform: 'none',
+              px: 3,
+              '&:hover': {
+                borderColor: alpha(theme.palette.common.white, 0.4),
+                bgcolor: alpha(theme.palette.common.white, 0.05),
+              },
+            }}
+          >
+            Give Feedback
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
