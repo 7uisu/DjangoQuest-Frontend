@@ -127,7 +127,7 @@ const AdminTutorialsPage: React.FC = () => {
     try {
       await adminApi.delete(`${apiBase}/${deleteTargetId}/`);
       showSnackbar('Tutorial deleted successfully', 'success');
-      setTutorials(prev => prev.filter(t => t.id !== deleteTargetId));
+      setTutorials(prev => prev.filter(t => String(t.id) !== String(deleteTargetId)));
       setDeleteTargetId(null);
     } catch (error) {
       console.error('Error deleting tutorial:', error);
@@ -181,8 +181,8 @@ const AdminTutorialsPage: React.FC = () => {
                     </Box>
                   )}
                   <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
-                      <Typography variant="h6" sx={{ color: '#e2e8f0', fontWeight: 600, fontSize: '1.1rem', lineHeight: 1.2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
+                      <Typography variant="h6" sx={{ color: '#e2e8f0', fontWeight: 600, fontSize: '1.1rem', lineHeight: 1.2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {tutorial.title}
                       </Typography>
                       <Chip label={tutorial.is_active ? 'Active' : 'Draft'} color={tutorial.is_active ? 'success' : 'default'} size="small" sx={{ height: 20, fontSize: '0.7rem' }} />

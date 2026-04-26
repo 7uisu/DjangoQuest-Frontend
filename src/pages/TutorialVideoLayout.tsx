@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { tutorialApi } from '../api/axios';
 import { Box, Typography, Button, Container, Paper, CircularProgress, Alert } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, Code as CodeIcon } from '@mui/icons-material';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface Step {
   id: number;
@@ -112,7 +115,42 @@ const TutorialVideoLayout: React.FC = () => {
               Step {index + 1}: {step.title}
             </Typography>
 
-            <Box sx={{ color: '#d4d4d4', mb: 3, typography: 'body1', '& code': { bgcolor: '#2d2d2d', px: 1, py: 0.5, borderRadius: 1, color: '#e06c75', fontFamily: 'monospace' } }} dangerouslySetInnerHTML={{ __html: step.content }} />
+            <Box sx={{ 
+              color: '#d4d4d4', mb: 3, typography: 'body1', 
+              '& h1, & h2, & h3, & h4': { color: '#fff', mt: 3, mb: 1.5, fontWeight: 600 },
+              '& p': { mb: 1.5, lineHeight: 1.6 },
+              '& ul, & ol': { mb: 2, pl: 3 },
+              '& li': { mb: 1 },
+              '& pre': { bgcolor: '#0d0d0d', p: 2, borderRadius: 2, overflowX: 'auto', mb: 2, border: '1px solid #333' },
+              '& code': { bgcolor: '#2d2d2d', px: 0.8, py: 0.3, borderRadius: 1, color: '#e06c75', fontFamily: 'monospace', fontSize: '0.9em' },
+              '& pre code': { bgcolor: 'transparent', p: 0, color: '#98c379' },
+              '& a': { color: '#4fc3f7', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }
+            }}>
+              <ReactMarkdown
+                components={{
+                  code(props) {
+                    const { children, className, node, ref, ...rest } = props as any;
+                    const match = /language-(\w+)/.exec(className || '');
+                    return match ? (
+                      <SyntaxHighlighter
+                        {...rest}
+                        PreTag="div"
+                        children={String(children).replace(/\n$/, '')}
+                        language={match[1]}
+                        style={vscDarkPlus as any}
+                        customStyle={{ margin: 0, borderRadius: '8px', border: '1px solid #333' }}
+                      />
+                    ) : (
+                      <code {...rest} className={className}>
+                        {children}
+                      </code>
+                    );
+                  }
+                }}
+              >
+                {step.content}
+              </ReactMarkdown>
+            </Box>
 
             {step.solutionCode && (
               <Box sx={{ mt: 3 }}>

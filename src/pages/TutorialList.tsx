@@ -151,8 +151,8 @@ const TutorialList: React.FC = () => {
           <CardHeader
             avatar={<Avatar sx={{ bgcolor: isVideo ? '#d32f2f' : tutorialColor, width: 44, height: 44 }}>{isVideo ? <VideoIcon /> : <CodeIcon />}</Avatar>}
             title={
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#e0e0e0', fontSize: '1.1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tutorial.title}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minWidth: 0 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: '#e0e0e0', fontSize: '1.1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>{tutorial.title}</Typography>
                 {!isVideo && isCompleted && <CheckCircleIcon fontSize="small" color="success" />}
               </Box>
             }

@@ -98,20 +98,23 @@ const AdminTutorialStepsPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (addAnother: boolean = false) => {
     if (!formData.title) return showSnackbar('Title is required', 'error');
-
-
 
     try {
       if (editingId) {
         await adminApi.put(`${apiBase}/steps/${editingId}/`, formData);
         showSnackbar('Step updated successfully', 'success');
+        setOpenModal(false);
       } else {
         await adminApi.post(`${apiBase}/${id}/steps/`, formData);
         showSnackbar('Step created successfully', 'success');
+        if (addAnother) {
+           setFormData({ title: '', content: '', order: (formData.order || steps.length) + 1 });
+        } else {
+           setOpenModal(false);
+        }
       }
-      setOpenModal(false);
       fetchData();
     } catch (error: any) {
       showSnackbar(error.response?.data?.error || 'Failed to save step', 'error');
@@ -127,7 +130,7 @@ const AdminTutorialStepsPage: React.FC = () => {
     try {
       await adminApi.delete(`${apiBase}/steps/${deleteTargetId}/`);
       showSnackbar('Step deleted', 'success');
-      setSteps(prev => prev.filter(s => s.id !== deleteTargetId));
+      setSteps(prev => prev.filter(s => String(s.id) !== String(deleteTargetId)));
       setDeleteTargetId(null);
     } catch (e) {
       showSnackbar('Failed to delete step', 'error');
@@ -208,7 +211,12 @@ const AdminTutorialStepsPage: React.FC = () => {
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setOpenModal(false)} sx={{ color: '#94a3b8' }}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}>
+          {!editingId && (
+            <Button onClick={() => handleSubmit(true)} variant="outlined" sx={{ color: '#818cf8', borderColor: '#818cf8', '&:hover': { bgcolor: 'rgba(129, 140, 248, 0.1)' } }}>
+              Save & Add Another
+            </Button>
+          )}
+          <Button onClick={() => handleSubmit(false)} variant="contained" sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}>
             {editingId ? 'Save Step' : 'Create Step'}
           </Button>
         </DialogActions>
