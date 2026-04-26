@@ -156,7 +156,7 @@ const Dashboard: React.FC = () => {
     try { return JSON.parse(localStorage.getItem('dq_read_announcements') || '[]'); } catch { return []; }
   });
   const [expandedAnnId, setExpandedAnnId] = useState<number | null>(null);
-  const [showAllAnn, setShowAllAnn] = useState(false);
+
   const [annDialog, setAnnDialog] = useState(false);
   const [annTab, setAnnTab] = useState(0);
 
@@ -921,7 +921,7 @@ const Dashboard: React.FC = () => {
             <CampaignIcon sx={{ color: '#a78bfa' }} /> Announcements
           </DialogTitle>
           <Box sx={{ borderBottom: 1, borderColor: alpha('#fff', 0.1), px: 3 }}>
-            <Tabs value={annTab} onChange={(e, v) => setAnnTab(v)} sx={{ '& .MuiTab-root': { color: alpha('#fff', 0.6), textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#818cf8 !important' }, '& .MuiTabs-indicator': { bgcolor: '#818cf8' } }}>
+            <Tabs value={annTab} onChange={(_, v) => setAnnTab(v)} sx={{ '& .MuiTab-root': { color: alpha('#fff', 0.6), textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#818cf8 !important' }, '& .MuiTabs-indicator': { bgcolor: '#818cf8' } }}>
               <Tab label="Platform" />
               <Tab label="Classroom" />
             </Tabs>

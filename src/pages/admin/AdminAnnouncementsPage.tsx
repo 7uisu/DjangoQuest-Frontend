@@ -152,7 +152,7 @@ const AdminAnnouncementsPage: React.FC = () => {
       )}
 
       <Box sx={{ borderBottom: 1, borderColor: '#334155', mb: 3 }}>
-        <Tabs value={tabIndex} onChange={(e, v) => setTabIndex(v)} sx={{ '& .MuiTab-root': { color: '#94a3b8', textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#818cf8 !important' }, '& .MuiTabs-indicator': { bgcolor: '#818cf8' } }}>
+        <Tabs value={tabIndex} onChange={(_, v) => setTabIndex(v)} sx={{ '& .MuiTab-root': { color: '#94a3b8', textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#818cf8 !important' }, '& .MuiTabs-indicator': { bgcolor: '#818cf8' } }}>
           <Tab label={`Platform Announcements (${announcements.filter(a => a.announcement_type === 'platform').length})`} />
           <Tab label={`Classroom Announcements (${announcements.filter(a => a.announcement_type === 'classroom').length})`} />
         </Tabs>

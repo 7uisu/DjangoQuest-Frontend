@@ -48,6 +48,8 @@ export interface UserData {
   is_verified: boolean;
   is_teacher: boolean;
   is_student: boolean;
+  is_staff: boolean;
+  is_superuser: boolean;
   date_joined: string;
   profile: ProfileData;
   achievements: UserAchievementData[];

@@ -151,7 +151,7 @@ const Feedback: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="sm" sx={{ pt: { xs: '100px', md: '120px' }, pb: 4, minHeight: '100vh' }}>
       <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, borderRadius: 3, border: '1px solid #e2e8f0' }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
           Share Your Feedback

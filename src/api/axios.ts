@@ -87,3 +87,4 @@ export const userApi = createApiInstance('/api/users'); // For auth and user end
 export const tutorialApi = createApiInstance('/api/tutorials'); // For tutorial endpoints
 export const dashboardApi = createApiInstance('/api/dashboard'); // For teacher dashboard endpoints
 export const gameApi = createApiInstance('/api/game'); // For game client-oriented endpoints
+export const adminApi = createApiInstance('/api/admin'); // For superadmin endpoints

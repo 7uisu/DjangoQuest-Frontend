@@ -8,7 +8,7 @@ import Feedback from '../pages/Feedback';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Profile from '../pages/Profile';
-import TutorialLayout from '../pages/TutorialLayout'; // Add this
+import TutorialList from '../pages/TutorialList';
 import PrivateRoutes from './PrivateRoutes';
 
 const AppRoutes: React.FC = () => {
@@ -18,7 +18,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/download" element={<DownloadPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/tutorials" element={<TutorialLayout />} /> {/* Add this */}
+      <Route path="/tutorials" element={<TutorialList />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />

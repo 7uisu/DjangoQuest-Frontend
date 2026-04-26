@@ -15,7 +15,7 @@ import PasswordReset from "./pages/PasswordReset";
 import PasswordResetConfirm from "./pages/PasswordResetConfirm";
 import Feedback from "./pages/Feedback";
 import TutorialList from "./pages/TutorialList";
-import TutorialLayout from "./pages/TutorialLayout";
+import TutorialVideoLayout from "./pages/TutorialVideoLayout";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminOverviewPage from "./pages/admin/AdminOverviewPage";
@@ -26,6 +26,8 @@ import AdminClassroomsPage from "./pages/admin/AdminClassroomsPage";
 import AdminClassroomDetailPage from "./pages/admin/AdminClassroomDetailPage";
 import AdminAuditLogPage from "./pages/admin/AdminAuditLogPage";
 import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
+import AdminTutorialsPage from "./pages/admin/AdminTutorialsPage";
+import AdminTutorialStepsPage from "./pages/admin/AdminTutorialStepsPage";
 import { Box } from '@mui/material';
 
 const App = () => {
@@ -50,6 +52,8 @@ const App = () => {
             <Route path="announcements" element={<AdminAnnouncementsPage />} />
             <Route path="classrooms" element={<AdminClassroomsPage />} />
             <Route path="classrooms/:id" element={<AdminClassroomDetailPage />} />
+            <Route path="video-tutorials" element={<AdminTutorialsPage />} />
+            <Route path="video-tutorials/:id" element={<AdminTutorialStepsPage />} />
             <Route path="activity-log" element={<AdminAuditLogPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
@@ -69,7 +73,7 @@ const App = () => {
                     <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/tutorials" element={<TutorialList />} />
-                    <Route path="/tutorials/:id" element={<TutorialLayout />} />
+                    <Route path="/tutorials/:id/video" element={<TutorialVideoLayout />} />
                     <Route element={<PrivateRoutes />}>
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/teacher-dashboard" element={<TeacherDashboard />} />

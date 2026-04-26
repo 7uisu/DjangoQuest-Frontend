@@ -19,6 +19,7 @@ import {
   Home as HomeIcon,
   History as HistoryIcon,
   Settings as SettingsIcon,
+  VideoLibrary as VideoIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 
@@ -34,6 +35,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Overview', icon: <DashboardIcon />, path: '/admin-dashboard' },
+
+  { label: 'Video Tutorials', icon: <VideoIcon />, path: '/admin-dashboard/video-tutorials' },
   { label: 'Users', icon: <PeopleIcon />, path: '/admin-dashboard/users' },
   { label: 'Feedback', icon: <FeedbackIcon />, path: '/admin-dashboard/feedback' },
   { label: 'Announcements', icon: <CampaignIcon />, path: '/admin-dashboard/announcements' },

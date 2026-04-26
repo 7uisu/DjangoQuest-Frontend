@@ -147,7 +147,7 @@ const TeacherDashboard: React.FC = () => {
 
   const fetchAnnouncements = async () => {
     try {
-      const res = await announcementsApi.get('/');
+      const res = await announcementsApi.get('/?scope=teacher');
       setAnnouncements(res.data.filter((a: AnnouncementItem) => a.announcement_type === 'classroom'));
     } catch { /* silent */ }
   };
