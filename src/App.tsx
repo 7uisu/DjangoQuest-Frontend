@@ -1,5 +1,46 @@
-import { useState } from 'react';
+import { useState, Component, ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// ─── Global Error Boundary ────────────────────────────────────────────────────
+// Catches any render-time crash in a child component tree and displays a
+// graceful fallback instead of a permanent White Screen of Death.
+interface ErrorBoundaryState { hasError: boolean; }
+class GlobalErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    // In production you'd send this to Sentry / your logging service
+    console.error('[GlobalErrorBoundary]', error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
+                      justifyContent: 'center', minHeight: '100vh', fontFamily: 'sans-serif',
+                      gap: '1rem', padding: '2rem', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '2rem' }}>⚠️ Something went wrong</h1>
+          <p style={{ color: '#555', maxWidth: 480 }}>
+            A dashboard module failed to load. This is usually caused by unexpected data
+            from the server. Please refresh the page — if the problem persists, contact support.
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false })}
+            style={{ padding: '0.6rem 1.4rem', fontSize: '1rem', cursor: 'pointer',
+                     borderRadius: 6, border: '1px solid #ccc', background: '#f5f5f5' }}
+          >
+            Try Again
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { AuthProvider } from './hooks/AuthProvider';
 import PrivateRoutes from "./routes/PrivateRoutes";
 import Navbar from "./components/Navbar";
@@ -10,7 +51,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import ClassroomStudents from "./pages/ClassroomStudents";
-import Profile from "./pages/Profile";
+import Leaderboard from "./pages/Leaderboard";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetConfirm from "./pages/PasswordResetConfirm";
 import Feedback from "./pages/Feedback";
@@ -36,6 +77,7 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
+        <GlobalErrorBoundary>
         <Routes>
           {/* Admin dashboard — completely separate layout (no Navbar/Footer) */}
           <Route
@@ -78,7 +120,7 @@ const App = () => {
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                       <Route path="/teacher-dashboard/class/:id" element={<ClassroomStudents />} />
-                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/leaderboard" element={<Leaderboard />} />
                     </Route>
                   </Routes>
                 </Box>
@@ -87,6 +129,7 @@ const App = () => {
             }
           />
         </Routes>
+        </GlobalErrorBoundary>
       </AuthProvider>
     </Router>
   );

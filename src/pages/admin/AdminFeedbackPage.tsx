@@ -81,7 +81,7 @@ const AdminFeedbackPage: React.FC = () => {
         if (dateFrom) params.date_from = dateFrom;
         if (dateTo) params.date_to = dateTo;
         const res = await adminApi.get('/feedback/', { params });
-        setFeedback(res.data);
+        setFeedback(res.data.results ?? res.data);
       } catch (err: any) {
         setError(err.response?.data?.detail || 'Failed to load feedback.');
       } finally {

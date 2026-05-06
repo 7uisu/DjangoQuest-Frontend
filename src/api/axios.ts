@@ -60,8 +60,10 @@ const createApiInstance = (baseURL: string) => {
           }
           const baseURL = import.meta.env?.VITE_API_URL || '/api/users';
           const response = await axios.post(`${baseURL}/token/refresh/`, { refresh: refreshToken });
-          const { access } = response.data;
+          const { access, refresh: newRefresh } = response.data;
           localStorage.setItem('access_token', access);
+          // Store rotated refresh token (server invalidates old one)
+          if (newRefresh) localStorage.setItem('refresh_token', newRefresh);
           originalRequest.headers['Authorization'] = `Bearer ${access}`;
           processQueue(null, access);
           isRefreshing = false;

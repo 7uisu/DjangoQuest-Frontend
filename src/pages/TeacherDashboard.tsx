@@ -24,6 +24,7 @@ import {
   useTheme,
   alpha,
   styled,
+  LinearProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -74,6 +75,16 @@ import {
   deleteClassroom,
   ClassroomData,
 } from '../api/dashboard';
+import { dashboardApi } from '../api/axios';
+
+interface ClassroomRankingEntry {
+  id: number;
+  name: string;
+  student_count: number;
+  avg_xp: number;
+  avg_progress: number;
+  total_achievements: number;
+}
 
 const GradientPaper = styled(Paper)(({ theme }) => ({
   background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.primary.dark, 0.2)} 100%)`,
@@ -125,11 +136,15 @@ const TeacherDashboard: React.FC = () => {
   const [showAllTeacherAnn, setShowAllTeacherAnn] = useState(false);
   const [feedbackCount, setFeedbackCount] = useState<number>(0);
 
+  // Classroom rankings
+  const [classroomRankings, setClassroomRankings] = useState<ClassroomRankingEntry[]>([]);
+
   // Fetch classrooms + announcements
   useEffect(() => {
     fetchClassrooms();
     fetchAnnouncements();
     feedbackApi.get('/mine/').then(res => setFeedbackCount(res.data.count)).catch(() => {});
+    dashboardApi.get('/classroom-rankings/').then(res => setClassroomRankings(res.data.rankings || [])).catch(() => {});
   }, []);
 
   const fetchClassrooms = async () => {
@@ -148,7 +163,8 @@ const TeacherDashboard: React.FC = () => {
   const fetchAnnouncements = async () => {
     try {
       const res = await announcementsApi.get('/?scope=teacher');
-      setAnnouncements(res.data.filter((a: AnnouncementItem) => a.announcement_type === 'classroom'));
+      const data = res.data.results ?? res.data;
+      setAnnouncements(data.filter((a: AnnouncementItem) => a.announcement_type === 'classroom'));
     } catch { /* silent */ }
   };
 
@@ -321,6 +337,86 @@ const TeacherDashboard: React.FC = () => {
                 </GradientPaper>
               ))}
             </Box>
+          </Fade>
+        )}
+
+        {/* ─── Classroom Rankings ─── */}
+        {classroomRankings.length > 0 && (
+          <Fade in timeout={650}>
+            <GradientPaper sx={{ p: 3, mb: 4 }}>
+              <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                🏆 Classroom Rankings
+                <Chip label="by avg XP" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.08), color: alpha(theme.palette.common.white, 0.6), fontSize: '0.7rem' }} />
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {classroomRankings.map((cr, idx) => {
+                  const medals = ['🥇', '🥈', '🥉'];
+                  const medal = idx < 3 ? medals[idx] : null;
+                  return (
+                    <Box
+                      key={cr.id}
+                      onClick={() => navigate(`/teacher-dashboard/class/${cr.id}`)}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        px: 2,
+                        py: 1.5,
+                        borderRadius: 2,
+                        cursor: 'pointer',
+                        bgcolor: alpha(theme.palette.common.white, 0.03),
+                        border: `1px solid ${alpha(theme.palette.common.white, 0.06)}`,
+                        '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.08), borderColor: alpha(theme.palette.primary.main, 0.2) },
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
+                        {medal || `#${idx + 1}`}
+                      </Typography>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography sx={{ fontWeight: 600, color: '#fff', fontSize: '0.95rem' }}>
+                          {cr.name}
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 2, mt: 0.5 }}>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                            {cr.student_count} students
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                            {cr.total_achievements} total badges
+                          </Typography>
+                        </Box>
+                        <LinearProgress
+                          variant="determinate"
+                          value={cr.avg_progress}
+                          sx={{
+                            mt: 0.5,
+                            height: 4,
+                            borderRadius: 2,
+                            bgcolor: alpha(theme.palette.common.white, 0.06),
+                            '& .MuiLinearProgress-bar': {
+                              background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
+                            },
+                          }}
+                        />
+                        <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }}>
+                          Avg progress: {cr.avg_progress.toFixed(0)}%
+                        </Typography>
+                      </Box>
+                      <Chip
+                        label={`${cr.avg_xp} avg XP`}
+                        size="small"
+                        sx={{
+                          fontWeight: 'bold',
+                          bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
+                          color: idx === 0 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
+                          border: idx === 0 ? '1px solid rgba(255,215,0,0.3)' : 'none',
+                        }}
+                      />
+                    </Box>
+                  );
+                })}
+              </Box>
+            </GradientPaper>
           </Fade>
         )}
 

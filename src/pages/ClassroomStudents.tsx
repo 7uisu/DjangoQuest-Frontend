@@ -323,6 +323,62 @@ const ClassroomStudents: React.FC = () => {
           );
         })()}
 
+        {/* ─── Classroom Leaderboard ─── */}
+        {selectedClassroom.students.length > 0 && (
+          <Fade in timeout={400}>
+            <GradientPaper sx={{ p: 3, mb: 3 }}>
+              <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                🏆 Classroom Leaderboard
+              </Typography>
+              <Box sx={{ maxHeight: 260, overflowY: 'auto' }}>
+                {[...selectedClassroom.students]
+                  .sort((a, b) => (b.total_xp ?? 0) - (a.total_xp ?? 0))
+                  .map((student, idx) => {
+                    const medals = ['🥇', '🥈', '🥉'];
+                    const medal = idx < 3 ? medals[idx] : null;
+                    return (
+                      <Box
+                        key={student.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          px: 2,
+                          py: 1,
+                          borderRadius: 2,
+                          mb: 0.5,
+                          '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.04) },
+                        }}
+                      >
+                        <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
+                          {medal || `#${idx + 1}`}
+                        </Typography>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography sx={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>
+                            {student.username}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                            {(student.story_progress ?? 0).toFixed(0)}% progress · {student.achievements_count ?? 0} badges
+                          </Typography>
+                        </Box>
+                        <Chip
+                          label={`${student.total_xp ?? 0} XP`}
+                          size="small"
+                          sx={{
+                            fontWeight: 'bold',
+                            bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
+                            color: idx === 0 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
+                            border: idx === 0 ? '1px solid rgba(255,215,0,0.3)' : 'none',
+                          }}
+                        />
+                      </Box>
+                    );
+                  })}
+              </Box>
+            </GradientPaper>
+          </Fade>
+        )}
+
         {/* Classroom Detail View */}
         <Fade in timeout={500}>
           <GradientPaper sx={{ p: 3 }}>
@@ -453,6 +509,22 @@ const ClassroomStudents: React.FC = () => {
                               ) : (
                                 <Chip label="Sandbox: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
                               )}
+                              {(student.thesis_gwa ?? 0) > 0 ? (
+                                <Chip
+                                  label={`Thesis: ${student.thesis_gwa?.toFixed(2)}`}
+                                  size="small"
+                                  sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontWeight: 'bold', fontSize: '0.65rem' }}
+                                />
+                              ) : (
+                                <Chip label="Thesis: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
+                              )}
+                              {(student.complete_gwa ?? 0) > 0 && (
+                                <Chip
+                                  label={`Overall: ${student.complete_gwa?.toFixed(2)}`}
+                                  size="small"
+                                  sx={{ bgcolor: alpha(theme.palette.success.main, 0.25), color: theme.palette.success.light, fontWeight: 'bold', fontSize: '0.65rem', border: `1px solid ${alpha(theme.palette.success.main, 0.4)}` }}
+                                />
+                              )}
                             </Box>
                           </TableCell>
                           <TableCell sx={{ color: alpha(theme.palette.common.white, 0.8), borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.email}</TableCell>
@@ -541,9 +613,24 @@ const ClassroomStudents: React.FC = () => {
             </IconButton>
           </Box>
           {detailsTarget?.detailed_grades && detailsTarget.detailed_grades.length > 0 && (
-            <Box sx={{ p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Cumulative Grade Weighted Average</Typography>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(detailsTarget?.story_mode_gwa ?? 0).toFixed(2)}</Typography>
+            <Box sx={{ p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}`, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Cumulative Grade Averages</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Story GWA</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(detailsTarget?.story_mode_gwa ?? 0) > 0 ? (detailsTarget?.story_mode_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Thesis GWA</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light }}>{(detailsTarget?.thesis_gwa ?? 0) > 0 ? (detailsTarget?.thesis_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Overall GWA</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.success.light }}>{(detailsTarget?.complete_gwa ?? 0) > 0 ? (detailsTarget?.complete_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                </Box>
+              </Box>
             </Box>
           )}
         </DialogTitle>
@@ -622,6 +709,35 @@ const ClassroomStudents: React.FC = () => {
             </Box>
           ) : (
             <Typography sx={{ color: alpha(theme.palette.common.white, 0.7) }}>No learning mode grades yet.</Typography>
+          )}
+
+          {/* ── Thesis Status + Student Help Progress ── */}
+          <Divider sx={{ my: 3, borderColor: alpha(theme.palette.common.white, 0.1) }} />
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.error.main, 0.3)}`, pb: 1 }}>
+            🎓 Thesis Defense Status
+          </Typography>
+          {detailsTarget?.thesis_status ? (
+            <Box sx={{ mb: 3 }}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+                <Chip
+                  label={`Progress: ${detailsTarget.thesis_status.progress}/3 Panelists`}
+                  sx={{ bgcolor: alpha(theme.palette.error.main, 0.15), color: theme.palette.error.light, fontWeight: 'bold' }}
+                />
+                <Chip
+                  label={detailsTarget.thesis_status.completed ? '✅ Thesis Defended' : '❌ Not Yet Defended'}
+                  sx={{ bgcolor: detailsTarget.thesis_status.completed ? alpha(theme.palette.success.main, 0.15) : alpha(theme.palette.common.white, 0.05), color: detailsTarget.thesis_status.completed ? theme.palette.success.light : alpha(theme.palette.common.white, 0.5), fontWeight: 'bold' }}
+                />
+                {detailsTarget.thesis_status.completed_at && (
+                  <Chip
+                    label={`Defended: ${new Date(detailsTarget.thesis_status.completed_at).toLocaleDateString()}`}
+                    size="small"
+                    sx={{ bgcolor: alpha(theme.palette.common.white, 0.05), color: alpha(theme.palette.common.white, 0.6) }}
+                  />
+                )}
+              </Box>
+            </Box>
+          ) : (
+            <Typography sx={{ color: alpha(theme.palette.common.white, 0.5), mb: 3 }}>No thesis data yet.</Typography>
           )}
         </DialogContent>
       </Dialog>

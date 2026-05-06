@@ -73,7 +73,7 @@ export const getAdminStats = async (): Promise<AdminStats> => {
 export const getAdminUsers = async (search?: string): Promise<AdminUser[]> => {
   const params = search ? { search } : {};
   const res = await adminApi.get('/users/', { params });
-  return res.data;
+  return res.data.results !== undefined ? res.data.results : res.data;
 };
 
 export const createAdminUser = async (data: {
@@ -105,7 +105,7 @@ export const resetAdminUserPassword = async (id: number, new_password: string): 
 // ─── Classrooms ─────────────────────────────────────────────────
 export const getAdminClassrooms = async (): Promise<AdminClassroom[]> => {
   const res = await adminApi.get('/classrooms/');
-  return res.data;
+  return res.data.results !== undefined ? res.data.results : res.data;
 };
 
 export const getAdminClassroomDetail = async (id: number): Promise<any> => {

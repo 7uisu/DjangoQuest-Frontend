@@ -74,14 +74,10 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                   {user?.is_staff && (
                     <Button color="inherit" component={Link} to="/admin-dashboard">Admin Dashboard</Button>
                   )}
-                  {user?.is_teacher ? (
-                    <>
-                      <Button color="inherit" component={Link} to="/teacher-dashboard">Teacher Dashboard</Button>
-                      <Button color="inherit" component={Link} to="/dashboard">My Profile</Button>
-                    </>
-                  ) : (
-                    <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
+                  {user?.is_teacher && (
+                    <Button color="inherit" component={Link} to="/teacher-dashboard">Teacher Dashboard</Button>
                   )}
+                  <Button color="inherit" component={Link} to="/dashboard">My Profile</Button>
                 </>
               )}
             </Box>
@@ -231,20 +227,14 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                     <ListItemText primary="Admin Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
                   </ListItemButton>
                 )}
-                {user?.is_teacher ? (
-                  <>
-                    <ListItemButton component={Link} to="/teacher-dashboard" onClick={() => setMobileMenuOpen(false)}>
-                      <ListItemText primary="Teacher Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                    </ListItemButton>
-                    <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                      <ListItemText primary="My Profile" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                    </ListItemButton>
-                  </>
-                ) : (
-                  <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                    <ListItemText primary="Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                {user?.is_teacher && (
+                  <ListItemButton component={Link} to="/teacher-dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <ListItemText primary="Teacher Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
                   </ListItemButton>
                 )}
+                <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                  <ListItemText primary="My Profile" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                </ListItemButton>
               </>
             )}
           </List>

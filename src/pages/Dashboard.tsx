@@ -53,11 +53,13 @@ import {
   Download as DownloadIcon,
   Campaign as CampaignIcon,
   ExpandMore as ExpandMoreIcon,
+  Leaderboard as LeaderboardIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
-import { updateUserProfile, downloadCertificate, CertificateData } from '../api/user';
+import { updateUserProfile, downloadCertificate, CertificateData, getUserAchievements, getAchievements, AchievementData, UserAchievementData } from '../api/user';
 import { tutorialApi } from '../api/axios';
 import { unenrollClassroom, enrollClassroom } from '../api/game';
+import { getLeaderboard, LeaderboardEntry } from '../api/leaderboard';
 import axios from 'axios';
 
 // Announcements API
@@ -137,9 +139,6 @@ const Dashboard: React.FC = () => {
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [resetDialogOpen, setResetDialogOpen] = useState(false);
-  const [resetting, setResetting] = useState(false);
-  const [resetError, setResetError] = useState('');
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const [unenrollDialogOpen, setUnenrollDialogOpen] = useState(false);
@@ -160,6 +159,11 @@ const Dashboard: React.FC = () => {
   const [annDialog, setAnnDialog] = useState(false);
   const [annTab, setAnnTab] = useState(0);
 
+  // Leaderboard
+  const [leaderboardEntries, setLeaderboardEntries] = useState<LeaderboardEntry[]>([]);
+  const [leaderboardScope, setLeaderboardScope] = useState<'classroom' | 'global'>('classroom');
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false);
+
   const theme = useTheme();
 
   const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -172,7 +176,10 @@ const Dashboard: React.FC = () => {
         bio: user.profile?.bio || '',
       });
       // Fetch announcements
-      announcementsApi.get('/').then(res => setAnnouncements(res.data)).catch(() => {});
+      announcementsApi.get('/').then(res => setAnnouncements(res.data.results ?? res.data)).catch(() => {});
+      // Fetch leaderboard
+      setLeaderboardLoading(true);
+      getLeaderboard('classroom').then(r => setLeaderboardEntries(r.entries)).catch(() => {}).finally(() => setLeaderboardLoading(false));
 
       const avatar = user.profile?.avatar;
       let avatarPath: string | null = avatar || null;
@@ -186,13 +193,22 @@ const Dashboard: React.FC = () => {
       setIsAchievementsLoading(true);
       const fetchAchievements = async () => {
         try {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          const mockAchievements = user.achievements || [
-            { id: 1, user: user.id, achievement: { id: 1, name: "First Login", description: "Logged in for the first time", xp_reward: 10, icon: null, created_at: new Date().toISOString() }, date_unlocked: new Date().toISOString() },
-            { id: 2, user: user.id, achievement: { id: 2, name: "Profile Completed", description: "Filled out all profile info", xp_reward: 25, icon: null, created_at: new Date().toISOString() }, date_unlocked: new Date(Date.now() - 86400000).toISOString() },
-            { id: 3, user: user.id, achievement: { id: 3, name: "Week Streak", description: "Logged in for 7 days", xp_reward: 50, icon: null, created_at: new Date().toISOString() }, date_unlocked: new Date(Date.now() - 172800000).toISOString() },
-          ];
-          setAchievements(mockAchievements);
+          const [allAchvs, userAchvs] = await Promise.all([
+            getAchievements(),
+            getUserAchievements()
+          ]);
+          
+          // Map unlocked logic
+          const merged = allAchvs.map((ach) => {
+            const unlockedData = userAchvs.find((ua) => ua.achievement.id === ach.id);
+            return {
+              ...ach,
+              unlocked: !!unlockedData,
+              date_unlocked: unlockedData ? unlockedData.date_unlocked : null,
+            };
+          });
+          
+          setAchievements(merged);
         } catch (error) {
           console.error("Failed to fetch achievements:", error);
         } finally {
@@ -265,35 +281,6 @@ const Dashboard: React.FC = () => {
     }
     setAvatarFile(null);
     setEditMode(false);
-  };
-
-  const handleResetProgress = async () => {
-    // Null check for user
-    if (!user) {
-      setResetError('No user authenticated.');
-      return;
-    }
-
-    setResetting(true);
-    setResetError('');
-    try {
-      await tutorialApi.post('/user/reset-progress/');
-      // Type assertion to bypass strict type checking
-      const updatedUser = {
-        ...user,
-        profile: {
-          ...user.profile,
-          total_xp: 0,
-        },
-      } as const; // 'as const' ensures TypeScript treats it as a literal type
-      setUser(updatedUser);
-      setResetDialogOpen(false);
-    } catch (err: any) {
-      console.error('Failed to reset progress:', err);
-      setResetError(err.response?.data?.detail || 'Failed to reset progress. Please try again.');
-    } finally {
-      setResetting(false);
-    }
   };
 
   const handleUnenroll = async () => {
@@ -501,16 +488,6 @@ const Dashboard: React.FC = () => {
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                       <Chip label={`Total XP: ${currentXP}`} color="primary" sx={{ borderRadius: 4, fontWeight: 'bold', background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})` }} />
-                      <Button
-                        startIcon={<RefreshIcon />}
-                        variant="outlined"
-                        color="error"
-                        size="small"
-                        onClick={() => setResetDialogOpen(true)}
-                        sx={{ borderRadius: 8, textTransform: 'none', color: '#ff4444', borderColor: '#ff4444', '&:hover': { borderColor: '#ff6666', bgcolor: alpha('#ff4444', 0.1) } }}
-                      >
-                        Reset Progress
-                      </Button>
                     </Box>
                   </Box>
                 </Box>
@@ -534,7 +511,7 @@ const Dashboard: React.FC = () => {
                           <AchievementIcon color="secondary" sx={{ fontSize: 30, mr: 1 }} />
                           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Achievements</Typography>
                         </Box>
-                        <Typography variant="h4">{achievements.length}</Typography>
+                        <Typography variant="h4">{achievements.filter(a => a.unlocked).length}</Typography>
                         <Typography variant="body2" color="textSecondary">Achievements unlocked so far.</Typography>
                       </CardContent>
                     </StatsCard>
@@ -597,7 +574,11 @@ const Dashboard: React.FC = () => {
                       <Chip label={`Python History Quiz: ${user.ch1_quiz_score ?? 0} / 5`} sx={{ bgcolor: alpha(theme.palette.primary.main, 0.2), color: theme.palette.primary.light }} />
                       <Chip label={`Story Challenges: ${user.challenges_completed ?? 0}`} sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light }} />
                       <Chip label={`College Professors Conquered: ${user.learning_modules_completed ?? 0} / 7`} sx={{ bgcolor: alpha(theme.palette.warning.main, 0.2), color: theme.palette.warning.light }} />
-                      <Chip label={`Overall GWA: ${(user.story_mode_gwa ?? 0).toFixed(2)}`} sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.2), color: theme.palette.secondary.light, fontWeight: 'bold' }} />
+                      <Chip label={`Story GWA: ${(user.story_mode_gwa ?? 0) > 0 ? (user.story_mode_gwa ?? 0).toFixed(2) : 'N/A'}`} sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.2), color: theme.palette.secondary.light, fontWeight: 'bold' }} />
+                      <Chip label={`Thesis GWA: ${(user.thesis_gwa ?? 0) > 0 ? (user.thesis_gwa ?? 0).toFixed(2) : 'N/A'}`} sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontWeight: 'bold' }} />
+                      {(user.complete_gwa ?? 0) > 0 && (
+                        <Chip label={`Overall GWA: ${(user.complete_gwa ?? 0).toFixed(2)}`} sx={{ bgcolor: alpha(theme.palette.success.main, 0.25), color: theme.palette.success.light, fontWeight: 'bold', border: `1px solid ${alpha(theme.palette.success.main, 0.4)}` }} />
+                      )}
                       {user.ch1_did_remedial && (
                         <Chip label={`Python History Remedial: ${user.ch1_remedial_score ?? 0} / 5`} sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light }} />
                       )}
@@ -614,6 +595,140 @@ const Dashboard: React.FC = () => {
                     </Button>
                   </Grid>
                 </Grid>
+              </GradientPaper>
+            </Grow>
+
+            {/* ─── Leaderboard ─── */}
+            <Grow in={true} timeout={1075}>
+              <GradientPaper sx={{ p: 3, mb: 4 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#ffffff', display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <LeaderboardIcon /> Leaderboard
+                  </Typography>
+                  <Tabs
+                    value={leaderboardScope}
+                    onChange={(_, v) => {
+                      setLeaderboardScope(v);
+                      setLeaderboardLoading(true);
+                      getLeaderboard(v).then(r => setLeaderboardEntries(r.entries)).catch(() => {}).finally(() => setLeaderboardLoading(false));
+                    }}
+                    sx={{ minHeight: 32, '& .MuiTab-root': { minHeight: 32, py: 0, color: alpha(theme.palette.common.white, 0.6), fontSize: '0.8rem' }, '& .Mui-selected': { color: '#fff !important' }, '& .MuiTabs-indicator': { bgcolor: theme.palette.primary.main } }}
+                  >
+                    <Tab label="My Classroom" value="classroom" />
+                    <Tab label="Global" value="global" />
+                  </Tabs>
+                </Box>
+
+                {leaderboardLoading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress size={32} /></Box>
+                ) : leaderboardEntries.length === 0 ? (
+                  <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.5), textAlign: 'center', py: 3 }}>
+                    {leaderboardScope === 'classroom' ? 'Enroll in a classroom to see rankings.' : 'No data yet.'}
+                  </Typography>
+                ) : (
+                  <Box sx={{ maxHeight: 340, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+                    {leaderboardEntries.slice(0, 3).map((entry) => {
+                      const medals = ['🥇', '🥈', '🥉'];
+                      const medal = entry.rank <= 3 ? medals[entry.rank - 1] : null;
+                      return (
+                        <Box
+                          key={entry.rank}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            px: 2,
+                            py: 1.2,
+                            borderRadius: 2,
+                            mb: 0.5,
+                            bgcolor: entry.is_self ? alpha(theme.palette.primary.main, 0.15) : 'transparent',
+                            border: entry.is_self ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}` : '1px solid transparent',
+                            '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.04) },
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
+                            {medal || `#${entry.rank}`}
+                          </Typography>
+                          <Box sx={{ flex: 1 }}>
+                            <Typography sx={{ fontWeight: entry.is_self ? 700 : 500, color: '#fff', fontSize: '0.9rem' }}>
+                              {entry.username} {entry.is_self && <Chip label="You" size="small" sx={{ ml: 1, height: 20, fontSize: '0.7rem', bgcolor: alpha(theme.palette.primary.main, 0.3), color: theme.palette.primary.light }} />}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                              {entry.story_progress.toFixed(0)}% progress · {entry.achievements_count} badges
+                            </Typography>
+                          </Box>
+                          <Chip
+                            label={`${entry.total_xp} XP`}
+                            size="small"
+                            sx={{
+                              fontWeight: 'bold',
+                              bgcolor: entry.rank === 1 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
+                              color: entry.rank === 1 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
+                              border: entry.rank === 1 ? '1px solid rgba(255,215,0,0.3)' : 'none',
+                            }}
+                          />
+                        </Box>
+                      );
+                    })}
+                    
+                    {leaderboardEntries.find(e => e.is_self && e.rank > 3) && (
+                      <>
+                        <Typography sx={{ color: alpha(theme.palette.common.white, 0.3), textAlign: 'center', my: 0.5 }}>• • •</Typography>
+                        {(() => {
+                          const entry = leaderboardEntries.find(e => e.is_self && e.rank > 3)!;
+                          return (
+                            <Box
+                              key={entry.rank}
+                              sx={{
+                                display: 'flex', alignItems: 'center', gap: 2, px: 2, py: 1.2, borderRadius: 2, mb: 0.5,
+                                bgcolor: alpha(theme.palette.primary.main, 0.15),
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                                '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) },
+                              }}
+                            >
+                              <Typography sx={{ fontWeight: 'bold', fontSize: '0.9rem', minWidth: 36, textAlign: 'center', color: alpha(theme.palette.common.white, 0.7) }}>
+                                #{entry.rank}
+                              </Typography>
+                              <Box sx={{ flex: 1 }}>
+                                <Typography sx={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem' }}>
+                                  {entry.username} <Chip label="You" size="small" sx={{ ml: 1, height: 20, fontSize: '0.7rem', bgcolor: alpha(theme.palette.primary.main, 0.3), color: theme.palette.primary.light }} />
+                                </Typography>
+                                <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                                  {entry.story_progress.toFixed(0)}% progress · {entry.achievements_count} badges
+                                </Typography>
+                              </Box>
+                              <Chip
+                                label={`${entry.total_xp} XP`}
+                                size="small"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  bgcolor: alpha(theme.palette.common.white, 0.08),
+                                  color: alpha(theme.palette.common.white, 0.7),
+                                }}
+                              />
+                            </Box>
+                          );
+                        })()}
+                      </>
+                    )}
+
+                    <Button 
+                      href="/leaderboard"
+                      variant="outlined" 
+                      fullWidth 
+                      sx={{ 
+                        mt: 2, 
+                        color: theme.palette.primary.light, 
+                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                        '&:hover': { borderColor: theme.palette.primary.main, bgcolor: alpha(theme.palette.primary.main, 0.05) },
+                        textTransform: 'none',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      View Full Leaderboard ➔
+                    </Button>
+                  </Box>
+                )}
               </GradientPaper>
             </Grow>
 
@@ -745,57 +860,73 @@ const Dashboard: React.FC = () => {
                 {isAchievementsLoading ? (
                   <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}><CircularProgress /></Box>
                 ) : achievements.length > 0 ? (
-                  <List>
-                    {achievements.map((item) => (
-                      <StyledListItem key={item.id} alignItems="flex-start">
-                        <ListItemAvatar><Avatar><AchievementIcon /></Avatar></ListItemAvatar>
-                        <ListItemText
-                          primary={item.achievement.name}
-                          secondary={
-                            <>
-                              <Typography component="span" variant="body2" color="textPrimary">{item.achievement.description}</Typography>
-                              <Typography component="span" variant="body2" display="block">Unlocked: {new Date(item.date_unlocked).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</Typography>
-                              <Typography component="span" variant="body2" display="block">XP Reward: {item.achievement.xp_reward}</Typography>
-                            </>
-                          }
-                        />
-                      </StyledListItem>
+                  <Grid container spacing={2}>
+                    {achievements.map((ach) => (
+                      <Grid item xs={12} sm={6} md={4} key={ach.id}>
+                        <Card 
+                          variant="outlined" 
+                          sx={{ 
+                            height: '100%', 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            bgcolor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.1) : alpha(theme.palette.common.white, 0.02),
+                            borderColor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.3) : alpha(theme.palette.common.white, 0.1),
+                            transition: 'all 0.3s',
+                            opacity: ach.unlocked ? 1 : 0.6,
+                            '&:hover': {
+                              opacity: 1,
+                              transform: ach.unlocked ? 'translateY(-2px)' : 'none'
+                            }
+                          }}
+                        >
+                          <CardContent sx={{ flexGrow: 1, display: 'flex', alignItems: 'flex-start', gap: 2, p: 2 }}>
+                            <Avatar 
+                              sx={{ 
+                                bgcolor: ach.unlocked ? theme.palette.secondary.main : alpha(theme.palette.common.white, 0.1),
+                                color: ach.unlocked ? '#fff' : alpha(theme.palette.common.white, 0.4),
+                                width: 48, 
+                                height: 48 
+                              }}
+                            >
+                              {ach.unlocked ? <AchievementIcon /> : <LockIcon />}
+                            </Avatar>
+                            <Box sx={{ flexGrow: 1 }}>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: ach.unlocked ? '#fff' : alpha(theme.palette.common.white, 0.5), lineHeight: 1.2, mb: 0.5 }}>
+                                {ach.name}
+                              </Typography>
+                              <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1, fontSize: '0.8rem' }}>
+                                {ach.unlocked ? ach.description : "Keep playing to discover this achievement!"}
+                              </Typography>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
+                                <Chip 
+                                  label={`+${ach.xp_reward} XP`} 
+                                  size="small" 
+                                  sx={{ 
+                                    height: 20, 
+                                    fontSize: '0.7rem',
+                                    bgcolor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.2) : alpha(theme.palette.common.white, 0.1),
+                                    color: ach.unlocked ? theme.palette.secondary.light : alpha(theme.palette.common.white, 0.4)
+                                  }} 
+                                />
+                                {ach.unlocked && ach.date_unlocked && (
+                                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), fontSize: '0.7rem' }}>
+                                    {new Date(ach.date_unlocked).toLocaleDateString()}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      </Grid>
                     ))}
-                  </List>
+                  </Grid>
                 ) : (
-                  <Typography variant="body1" sx={{ color: alpha(theme.palette.common.white, 0.8), p: 2 }}>You haven't earned any achievements yet.</Typography>
+                  <Typography variant="body1" sx={{ color: alpha(theme.palette.common.white, 0.8), p: 2 }}>No achievements found on the server.</Typography>
                 )}
               </GradientPaper>
             </Grow>
           </Grid>
         </Grid>
-
-        <Dialog
-          open={resetDialogOpen}
-          onClose={() => setResetDialogOpen(false)}
-          aria-labelledby="reset-progress-dialog-title"
-          PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff' } }}
-        >
-          <DialogTitle id="reset-progress-dialog-title">Reset Tutorial Progress</DialogTitle>
-          <DialogContent>
-            <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.8) }}>
-              Are you sure you want to reset your tutorial progress? This will clear all completed tutorials, steps, and associated XP. This action cannot be undone.
-            </DialogContentText>
-            {resetError && <Alert severity="error" sx={{ mt: 2 }}>{resetError}</Alert>}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setResetDialogOpen(false)} sx={{ color: '#fff' }} disabled={resetting}>Cancel</Button>
-            <Button
-              onClick={handleResetProgress}
-              variant="contained"
-              color="error"
-              startIcon={<RefreshIcon />}
-              disabled={resetting}
-            >
-              {resetting ? <CircularProgress size={24} /> : 'Reset'}
-            </Button>
-          </DialogActions>
-        </Dialog>
 
         {/* Unenroll Dialog */}
         <Dialog open={unenrollDialogOpen} onClose={() => setUnenrollDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff' } }}>
@@ -828,9 +959,24 @@ const Dashboard: React.FC = () => {
               Detailed Module Diagnostics for @{user.username}
             </Typography>
             {user.detailed_grades && user.detailed_grades.length > 0 && (
-              <Box sx={{ p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Cumulative Grade Weighted Average</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(user.story_mode_gwa ?? 0).toFixed(2)}</Typography>
+              <Box sx={{ p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}`, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+                <Box>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Cumulative Grade Averages</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Story GWA</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(user.story_mode_gwa ?? 0) > 0 ? (user.story_mode_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                  </Box>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Thesis GWA</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light }}>{(user.thesis_gwa ?? 0) > 0 ? (user.thesis_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                  </Box>
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Overall GWA</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.success.light }}>{(user.complete_gwa ?? 0) > 0 ? (user.complete_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                  </Box>
+                </Box>
               </Box>
             )}
           </DialogTitle>
@@ -907,6 +1053,35 @@ const Dashboard: React.FC = () => {
                   </Box>
                 ))}
               </Box>
+            )}
+
+            {/* ── Thesis Defense Status ── */}
+            <Divider sx={{ my: 3, borderColor: alpha(theme.palette.common.white, 0.1) }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.error.main, 0.3)}`, pb: 1 }}>
+              🎓 Thesis Defense Status
+            </Typography>
+            {user.thesis_status ? (
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+                  <Chip
+                    label={`Progress: ${user.thesis_status.progress}/3 Panelists`}
+                    sx={{ bgcolor: alpha(theme.palette.error.main, 0.15), color: theme.palette.error.light, fontWeight: 'bold' }}
+                  />
+                  <Chip
+                    label={user.thesis_status.completed ? '✅ Thesis Defended' : '❌ Not Yet Defended'}
+                    sx={{ bgcolor: user.thesis_status.completed ? alpha(theme.palette.success.main, 0.15) : alpha(theme.palette.common.white, 0.05), color: user.thesis_status.completed ? theme.palette.success.light : alpha(theme.palette.common.white, 0.5), fontWeight: 'bold' }}
+                  />
+                  {user.thesis_status.completed_at && (
+                    <Chip
+                      label={`Defended: ${new Date(user.thesis_status.completed_at).toLocaleDateString()}`}
+                      size="small"
+                      sx={{ bgcolor: alpha(theme.palette.common.white, 0.05), color: alpha(theme.palette.common.white, 0.6) }}
+                    />
+                  )}
+                </Box>
+              </Box>
+            ) : (
+              <Typography sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No thesis data yet.</Typography>
             )}
           </DialogContent>
           <DialogActions sx={{ borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, p: 2 }}>

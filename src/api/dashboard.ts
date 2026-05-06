@@ -26,6 +26,11 @@ export interface StudentData {
   story_mode_gwa?: number;
   learning_mode_gwa?: number;
   learning_mode_detailed_grades?: { professor: string; grade: number; label?: string }[];
+  thesis_gwa?: number;
+  complete_gwa?: number;
+  thesis_status?: { progress: number; completed: boolean; completed_at: string };
+  total_xp?: number;
+  achievements_count?: number;
 }
 
 export interface ClassroomDetailData extends ClassroomData {
@@ -39,8 +44,8 @@ export interface PasswordResetResponse {
 
 // List teacher's classrooms
 export const getClassrooms = async (): Promise<ClassroomData[]> => {
-  const response = await dashboardApi.get<ClassroomData[]>('/classrooms/');
-  return response.data;
+  const response = await dashboardApi.get<any>('/classrooms/');
+  return response.data.results ?? response.data;
 };
 
 // Create a new classroom
