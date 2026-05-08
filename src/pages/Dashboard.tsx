@@ -58,6 +58,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { updateUserProfile, downloadCertificate, CertificateData, getUserAchievements, getAchievements, AchievementData, UserAchievementData } from '../api/user';
 import { tutorialApi } from '../api/axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { unenrollClassroom, enrollClassroom } from '../api/game';
 import { getLeaderboard, LeaderboardEntry } from '../api/leaderboard';
 import axios from 'axios';
@@ -332,7 +333,7 @@ const Dashboard: React.FC = () => {
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
-        <CircularProgress size={60} thickness={4} sx={{ color: theme.palette.primary.main }} />
+        <LoadingSpinner size={90} message="Syncing Character Data..." />
       </Box>
     );
   }

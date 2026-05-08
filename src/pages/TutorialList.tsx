@@ -53,6 +53,10 @@ const TutorialList: React.FC = () => {
 
   useEffect(() => {
     const fetchTutorialsAndProgress = async () => {
+      if (!isAuthenticated) {
+        setLoading(false);
+        return;
+      }
       try {
         setLoading(true);
         const apiPath = '/video/';
@@ -61,7 +65,7 @@ const TutorialList: React.FC = () => {
         const tutorialResponse = await tutorialApi.get<Tutorial[]>(apiPath);
         setTutorials(tutorialResponse.data);
 
-        if (isAuthenticated && user) {
+        if (user) {
           const progressResponse = await tutorialApi.get<{ [key: number]: ProgressData }>(progressPath);
           setProgress(progressResponse.data);
         }
@@ -80,6 +84,22 @@ const TutorialList: React.FC = () => {
     overflow: 'auto', boxSizing: 'border-box' as const, backgroundColor: '#121212', color: '#e0e0e0',
     paddingTop: '32px'
   };
+
+  if (!isAuthenticated && !loading) {
+    return (
+      <Box sx={rootContainerStyle}>
+        <Container maxWidth="sm" sx={{ py: 8, pt: '100px', flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Alert 
+            severity="info" 
+            sx={{ width: '100%' }}
+            action={<Button color="inherit" size="small" onClick={() => navigate('/login')}>Login</Button>}
+          >
+            You need to login first to view the Video Tutorials.
+          </Alert>
+        </Container>
+      </Box>
+    );
+  }
 
   if (loading) {
     return (

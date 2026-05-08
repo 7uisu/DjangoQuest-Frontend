@@ -65,10 +65,15 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
           {!isMobile && (
             <Box className="navbar-links">
               <Button color="inherit" onClick={() => handleNavigation("home")}>Home</Button>
-              <Button color="inherit" onClick={() => handleNavigation("about")}>About</Button>
-              <Button color="inherit" onClick={() => handleNavigation("gallery")}>Gallery</Button>
-              <Button color="inherit" onClick={() => handleNavigation("download")}>Download</Button>
+              {location.pathname === "/" && (
+                <>
+                  <Button color="inherit" onClick={() => handleNavigation("about")}>About</Button>
+                  <Button color="inherit" onClick={() => handleNavigation("gallery")}>Gallery</Button>
+                  <Button color="inherit" onClick={() => handleNavigation("download")}>Download</Button>
+                </>
+              )}
               <Button color="inherit" component={Link} to="/tutorials">Video Tutorials</Button>
+              <Button color="inherit" component={Link} to="/patch-notes">Patch Notes</Button>
               {isAuthenticated && (
                 <>
                   {user?.is_staff && (
@@ -208,15 +213,19 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
             <ListItemButton onClick={() => handleNavigation("home")}>
               <ListItemText primary="Home" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
             </ListItemButton>
-            <ListItemButton onClick={() => handleNavigation("about")}>
-              <ListItemText primary="About" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-            </ListItemButton>
-            <ListItemButton onClick={() => handleNavigation("gallery")}>
-              <ListItemText primary="Gallery" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-            </ListItemButton>
-            <ListItemButton onClick={() => handleNavigation("download")}>
-              <ListItemText primary="Download" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-            </ListItemButton>
+            {location.pathname === "/" && (
+              <>
+                <ListItemButton onClick={() => handleNavigation("about")}>
+                  <ListItemText primary="About" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                </ListItemButton>
+                <ListItemButton onClick={() => handleNavigation("gallery")}>
+                  <ListItemText primary="Gallery" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                </ListItemButton>
+                <ListItemButton onClick={() => handleNavigation("download")}>
+                  <ListItemText primary="Download" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                </ListItemButton>
+              </>
+            )}
             <ListItemButton component={Link} to="/tutorials" onClick={() => setMobileMenuOpen(false)}>
               <ListItemText primary="Video Tutorials" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
             </ListItemButton>

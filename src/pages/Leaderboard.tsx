@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { EmojiEvents as TrophyIcon } from '@mui/icons-material';
 import { getLeaderboard, LeaderboardEntry } from '../api/leaderboard';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const PodiumStep = ({ 
   entry, 
@@ -134,7 +135,7 @@ export default function Leaderboard() {
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
-          <CircularProgress />
+          <LoadingSpinner message="Calculating Rankings..." />
         </Box>
       ) : entries.length === 0 ? (
         <Typography sx={{ color: alpha(theme.palette.common.white, 0.5), textAlign: 'center', mt: 10 }}>

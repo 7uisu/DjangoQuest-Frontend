@@ -20,6 +20,7 @@ import {
   History as HistoryIcon,
   Settings as SettingsIcon,
   VideoLibrary as VideoIcon,
+  NewReleases as ReleaseIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 
@@ -41,6 +42,7 @@ const navItems: NavItem[] = [
   { label: 'Feedback', icon: <FeedbackIcon />, path: '/admin-dashboard/feedback' },
   { label: 'Announcements', icon: <CampaignIcon />, path: '/admin-dashboard/announcements' },
   { label: 'Classrooms', icon: <SchoolIcon />, path: '/admin-dashboard/classrooms' },
+  { label: 'Patch Notes', icon: <ReleaseIcon />, path: '/admin-dashboard/patch-notes' },
   { label: 'Activity Log', icon: <HistoryIcon />, path: '/admin-dashboard/activity-log' },
   { label: 'Settings', icon: <SettingsIcon />, path: '/admin-dashboard/settings' },
 ];

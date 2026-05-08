@@ -4,6 +4,7 @@ import { tutorialApi } from '../api/axios';
 import { Box, Typography, Button, Container, Paper, CircularProgress, Alert } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, Code as CodeIcon } from '@mui/icons-material';
 import ReactMarkdown from 'react-markdown';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -59,7 +60,7 @@ const TutorialVideoLayout: React.FC = () => {
   if (loading) {
     return (
       <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#121212' }}>
-        <CircularProgress />
+        <LoadingSpinner size={80} message="Loading Video Guide..." />
       </Box>
     );
   }

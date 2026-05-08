@@ -76,6 +76,7 @@ import {
   ClassroomData,
 } from '../api/dashboard';
 import { dashboardApi } from '../api/axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 interface ClassroomRankingEntry {
   id: number;
@@ -275,7 +276,7 @@ const TeacherDashboard: React.FC = () => {
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
-        <CircularProgress size={60} thickness={4} sx={{ color: theme.palette.primary.main }} />
+        <LoadingSpinner size={90} message="Checking Classrooms..." />
       </Box>
     );
   }

@@ -46,6 +46,7 @@ import {
   removeStudent,
   ClassroomDetailData,
 } from '../api/dashboard';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const GradientPaper = styled(Paper)(({ theme }) => ({
   background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.primary.dark, 0.2)} 100%)`,
@@ -143,7 +144,7 @@ const ClassroomStudents: React.FC = () => {
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
-        <CircularProgress size={60} thickness={4} sx={{ color: theme.palette.primary.main }} />
+        <LoadingSpinner size={90} message="Loading Student Data..." />
       </Box>
     );
   }

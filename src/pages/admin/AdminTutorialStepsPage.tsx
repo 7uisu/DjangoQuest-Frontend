@@ -12,6 +12,7 @@ import {
   Delete as DeleteIcon,
   ArrowBack as BackIcon
 } from '@mui/icons-material';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 interface TutorialStep {
   id: number;
@@ -141,7 +142,7 @@ const AdminTutorialStepsPage: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
+  if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><LoadingSpinner size={50} message="Loading Steps..." /></Box>;
 
   return (
     <Box>

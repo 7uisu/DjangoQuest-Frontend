@@ -12,7 +12,10 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   ListAlt as ListIcon
-} from '@mui/icons-material';interface Tutorial {
+} from '@mui/icons-material';
+import LoadingSpinner from '../../components/LoadingSpinner';
+
+interface Tutorial {
   id: number;
   title: string;
   description: string;
@@ -136,7 +139,7 @@ const AdminTutorialsPage: React.FC = () => {
   };
 
   if (loading) {
-    return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
+    return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><LoadingSpinner size={50} message="Loading Tutorials..." /></Box>;
   }
 
   const getYoutubeThumbnail = (url?: string) => {
