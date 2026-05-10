@@ -1,50 +1,32 @@
-# React + TypeScript + Vite
+# DjangoQuest Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend portal for DjangoQuest, built with React, Vite, and Material-UI (MUI). It features interactive dashboards for Students, Teachers, and Admins.
 
-Currently, two official plugins are available:
+## Prerequisites
+- Node.js (v18+ recommended)
+- The [DjangoQuest Backend](../DjangoQuest-Backend) must be running locally on port `8000` for API requests to work.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## Expanding the ESLint configuration
+1. **Clone the repository**
+   ```bash
+   git clone <repository_url>
+   cd DjangoQuest-Frontend
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+   *Note: If you are using `yarn` or `pnpm`, run their respective install commands.*
 
-- Configure the top-level `parserOptions` property like this:
+3. **Configuration**
+   The application is configured using `vite.config.ts` to automatically proxy all API calls (e.g., `/api/users/`, `/api/admin/`) to `http://localhost:8000`. As long as the Django backend server is running, no extra `.env` configuration is required for basic local connection.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+4. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+5. **Open in Browser**
+   Open your browser and navigate to the local URL provided by Vite (usually `http://localhost:5173/`).
