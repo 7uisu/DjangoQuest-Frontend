@@ -5,7 +5,7 @@ const getApiOrigin = () => {
   return rawOrigin.replace(/\/api\/?$/, '').replace(/\/$/, '');
 };
 
-const resolveBaseUrl = (baseURL: string) => {
+export const resolveBaseUrl = (baseURL: string) => {
   if (baseURL.startsWith('http')) return baseURL;
   const apiOrigin = getApiOrigin();
   return apiOrigin ? `${apiOrigin}${baseURL}` : baseURL;

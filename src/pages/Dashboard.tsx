@@ -52,13 +52,14 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { updateUserProfile, downloadCertificate, CertificateData, getUserAchievements, getAchievements } from '../api/user';
+import { resolveBaseUrl } from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { unenrollClassroom, enrollClassroom } from '../api/game';
 import { getLeaderboard, LeaderboardEntry } from '../api/leaderboard';
 import axios from 'axios';
 
 // Announcements API
-const announcementsApi = axios.create({ baseURL: '/api/announcements', headers: { 'Content-Type': 'application/json' } });
+const announcementsApi = axios.create({ baseURL: resolveBaseUrl('/api/announcements'), headers: { 'Content-Type': 'application/json' } });
 announcementsApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
@@ -152,7 +153,7 @@ const Dashboard: React.FC = () => {
 
   const theme = useTheme();
 
-  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const BASE_URL = resolveBaseUrl('');
 
   useEffect(() => {
     if (user) {
