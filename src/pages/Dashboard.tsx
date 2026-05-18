@@ -7,10 +7,6 @@ import {
   CardContent,
   Avatar,
   Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   CircularProgress,
   Grid,
   Grid2,
@@ -46,7 +42,6 @@ import {
   PhotoCamera as PhotoCameraIcon,
   Save as SaveIcon,
   Cancel as CancelIcon,
-  Refresh as RefreshIcon,
   WorkspacePremium as CertIcon,
   EmojiEvents as TrophyIcon,
   Lock as LockIcon,
@@ -56,8 +51,7 @@ import {
   Leaderboard as LeaderboardIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
-import { updateUserProfile, downloadCertificate, CertificateData, getUserAchievements, getAchievements, AchievementData, UserAchievementData } from '../api/user';
-import { tutorialApi } from '../api/axios';
+import { updateUserProfile, downloadCertificate, CertificateData, getUserAchievements, getAchievements } from '../api/user';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { unenrollClassroom, enrollClassroom } from '../api/game';
 import { getLeaderboard, LeaderboardEntry } from '../api/leaderboard';
@@ -115,15 +109,6 @@ const ProfileAvatar = styled(Avatar)(({ theme }) => ({
   boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.4)}`,
   border: `4px solid ${theme.palette.background.paper}`,
   margin: theme.spacing(2),
-}));
-
-const StyledListItem = styled(ListItem)(({ theme }) => ({
-  borderRadius: theme.shape.borderRadius,
-  marginBottom: theme.spacing(1),
-  transition: 'background-color 0.2s',
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.05),
-  },
 }));
 
 const Dashboard: React.FC = () => {

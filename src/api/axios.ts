@@ -1,10 +1,23 @@
 import axios from 'axios';
 
+const getApiOrigin = () => {
+  const rawOrigin = import.meta.env?.VITE_API_ORIGIN || import.meta.env?.VITE_API_URL || '';
+  return rawOrigin.replace(/\/api\/?$/, '').replace(/\/$/, '');
+};
+
+const resolveBaseUrl = (baseURL: string) => {
+  if (baseURL.startsWith('http')) return baseURL;
+  const apiOrigin = getApiOrigin();
+  return apiOrigin ? `${apiOrigin}${baseURL}` : baseURL;
+};
+
 // Factory function to create Axios instances with shared config and interceptors
 const createApiInstance = (baseURL: string) => {
+  const resolvedBaseURL = resolveBaseUrl(baseURL);
+
   // Create instance with base URL and default headers
   const instance = axios.create({
-    baseURL: import.meta.env?.VITE_API_URL || baseURL, // Use env var or fallback
+    baseURL: resolvedBaseURL,
     headers: { 'Content-Type': 'application/json' },
     timeout: 30000, // 30-second timeout
   });
@@ -58,8 +71,7 @@ const createApiInstance = (baseURL: string) => {
             window.location.href = '/login';
             return Promise.reject(error);
           }
-          const baseURL = import.meta.env?.VITE_API_URL || '/api/users';
-          const response = await axios.post(`${baseURL}/token/refresh/`, { refresh: refreshToken });
+          const response = await axios.post(`${resolveBaseUrl('/api/users')}/token/refresh/`, { refresh: refreshToken });
           const { access, refresh: newRefresh } = response.data;
           localStorage.setItem('access_token', access);
           // Store rotated refresh token (server invalidates old one)

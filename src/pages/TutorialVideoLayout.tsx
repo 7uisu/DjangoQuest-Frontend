@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { tutorialApi } from '../api/axios';
-import { Box, Typography, Button, Container, Paper, CircularProgress, Alert } from '@mui/material';
+import { Box, Typography, Button, Container, Paper, Alert } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, Code as CodeIcon } from '@mui/icons-material';
 import ReactMarkdown from 'react-markdown';
 import LoadingSpinner from '../components/LoadingSpinner';

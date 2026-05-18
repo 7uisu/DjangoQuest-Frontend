@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { adminApi } from '../../api/axios';
 import {
   Box, Typography, Paper, Button, IconButton, Dialog, DialogTitle,
-  DialogContent, DialogActions, TextField, Snackbar, Alert, CircularProgress,
+  DialogContent, DialogActions, TextField, Snackbar, Alert,
   List, ListItem, ListItemText, ListItemSecondaryAction, Divider
 } from '@mui/material';
 import {

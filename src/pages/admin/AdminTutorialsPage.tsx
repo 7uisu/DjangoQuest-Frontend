@@ -4,7 +4,7 @@ import { adminApi } from '../../api/axios';
 import {
   Box, Typography, Paper, Button, IconButton, Dialog, DialogTitle,
   DialogContent, DialogActions, TextField, Switch, FormControlLabel,
-  Snackbar, Alert, CircularProgress, Chip,
+  Snackbar, Alert, Chip,
   Grid, Card, CardMedia, CardContent, CardActions
 } from '@mui/material';
 import {

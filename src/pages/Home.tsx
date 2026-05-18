@@ -16,7 +16,7 @@ interface HomeProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const Home = ({ currentSection, setCurrentSection }: HomeProps) => {
+const Home = ({ currentSection, setCurrentSection: _setCurrentSection }: HomeProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);

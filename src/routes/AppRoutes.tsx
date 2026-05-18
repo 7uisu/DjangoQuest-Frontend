@@ -7,7 +7,6 @@ import Dashboard from '../pages/Dashboard';
 import Feedback from '../pages/Feedback';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import Profile from '../pages/Profile';
 import TutorialList from '../pages/TutorialList';
 import PrivateRoutes from './PrivateRoutes';
 
@@ -21,7 +20,6 @@ const AppRoutes: React.FC = () => {
       <Route path="/tutorials" element={<TutorialList />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/feedback" element={<Feedback />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
