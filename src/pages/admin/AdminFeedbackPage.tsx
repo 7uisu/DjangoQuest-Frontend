@@ -12,6 +12,7 @@ import {
   Download as DownloadIcon,
 } from '@mui/icons-material';
 import { deleteAdminFeedback, downloadExport } from '../../api/admin';
+import { resolveBaseUrl } from '../../api/axios';
 
 interface FeedbackItem {
   id: number;
@@ -30,7 +31,7 @@ interface FeedbackItem {
 // Admin feedback API
 import axios from 'axios';
 const adminApi = axios.create({
-  baseURL: '/api/admin',
+  baseURL: resolveBaseUrl('/api/admin'),
   headers: { 'Content-Type': 'application/json' },
 });
 adminApi.interceptors.request.use((config) => {

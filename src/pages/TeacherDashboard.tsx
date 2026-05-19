@@ -42,9 +42,10 @@ import {
   Snackbar, FormGroup, FormControlLabel, Checkbox,
 } from '@mui/material';
 import axios from 'axios';
+import { resolveBaseUrl } from '../api/axios';
 
 // Announcements API helper
-const announcementsApi = axios.create({ baseURL: '/api/announcements', headers: { 'Content-Type': 'application/json' } });
+const announcementsApi = axios.create({ baseURL: resolveBaseUrl('/api/announcements'), headers: { 'Content-Type': 'application/json' } });
 announcementsApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
@@ -52,7 +53,7 @@ announcementsApi.interceptors.request.use((config) => {
 });
 
 // Feedback API helper
-const feedbackApi = axios.create({ baseURL: '/api/feedback', headers: { 'Content-Type': 'application/json' } });
+const feedbackApi = axios.create({ baseURL: resolveBaseUrl('/api/feedback'), headers: { 'Content-Type': 'application/json' } });
 feedbackApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   if (token) config.headers['Authorization'] = `Bearer ${token}`;

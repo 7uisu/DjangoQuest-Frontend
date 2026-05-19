@@ -1,5 +1,6 @@
 // src/api/admin.ts
 import axios from 'axios';
+import { resolveBaseUrl } from './axios';
 
 export interface AdminStats {
   total_students: number;
@@ -51,7 +52,7 @@ export interface AuditLogEntry {
 
 // Create a dedicated admin API instance
 const adminApi = axios.create({
-  baseURL: import.meta.env?.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api/users', '/api/admin') : '/api/admin',
+  baseURL: resolveBaseUrl('/api/admin'),
   headers: { 'Content-Type': 'application/json' },
   timeout: 30000,
 });
@@ -152,7 +153,7 @@ export const getAuditLog = async (): Promise<AuditLogEntry[]> => {
 // ─── Export helper ──────────────────────────────────────────────
 export const downloadExport = (type: 'users' | 'classrooms' | 'feedback') => {
   const token = localStorage.getItem('access_token');
-  const url = `/api/admin/${type}/export/`;
+  const url = resolveBaseUrl(`/api/admin/${type}/export/`);
   // Use fetch for blob download
   fetch(url, { headers: { Authorization: `Bearer ${token}` } })
     .then(res => res.blob())

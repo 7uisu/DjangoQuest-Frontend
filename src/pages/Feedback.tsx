@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { userApi } from '../api/axios';
 import axios from 'axios';
+import { resolveBaseUrl } from '../api/axios';
 
 const STEPS = ['Category', 'Rating', 'Details'];
 
@@ -117,7 +118,7 @@ const Feedback: React.FC = () => {
 
       // Create feedback API instance
       const feedbackApi = axios.create({
-        baseURL: '/api/feedback',
+        baseURL: resolveBaseUrl('/api/feedback'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,

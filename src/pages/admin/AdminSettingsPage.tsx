@@ -12,8 +12,9 @@ import {
   ContentCopy as CopyIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
+import { resolveBaseUrl } from '../../api/axios';
 
-const api = axios.create({ baseURL: '/api/admin', headers: { 'Content-Type': 'application/json' } });
+const api = axios.create({ baseURL: resolveBaseUrl('/api/admin'), headers: { 'Content-Type': 'application/json' } });
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
