@@ -201,8 +201,8 @@ const ClassroomStudents: React.FC = () => {
             { key: 'y1s2', name: 'Prof. Syntax', topic: 'Python Data Types' },
             { key: 'y2s1', name: 'Prof. View', topic: 'Django Views & URL Routing' },
             { key: 'y2s2', name: 'Prof. Query', topic: 'Django ORM & Relationships' },
-            { key: 'y3s1', name: 'Prof. Auth', topic: 'Authentication & CRUD' },
-            { key: 'y3s2', name: 'Prof. Token', topic: 'Forms & Security' },
+            { key: 'y3s1', name: 'Prof. Token', topic: 'Forms & Security' },
+            { key: 'y3s2', name: 'Prof. Auth', topic: 'Authentication & CRUD' },
             { key: 'y3mid', name: 'Prof. REST', topic: 'RESTful API Design' },
           ];
           // Per-professor stats from detailed_grades
