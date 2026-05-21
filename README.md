@@ -2,11 +2,13 @@
 
 This is the frontend portal for DjangoQuest, built with React, Vite, and Material-UI (MUI). It features interactive dashboards for Students, Teachers, and Admins.
 
+In production, this portal is hosted on Vercel and communicates with the Render-hosted DjangoQuest backend API, which stores data in Render PostgreSQL. Judge0 is deprecated and is not part of the active frontend/backend/game workflow.
+
 ## How the Projects Connect
 This platform has three main parts that work together:
 1. **Frontend Web Portal (This Repository)**: The website dashboard where you log in.
-2. **[Backend API Server](https://github.com/7uisu/DjangoQuest-Backend.git)**: The core database. The website needs this running so it can fetch data.
-3. **[Godot Game Client](https://github.com/7uisu/djangoquest_capstone_godot_project_revision.git)**: The 3D game itself.
+2. **[Backend API Server](https://github.com/7uisu/DjangoQuest-Backend.git)**: The core API and database bridge. The website needs this running so it can fetch data.
+3. **[Godot Game Client](https://github.com/7uisu/djangoquest_capstone_godot_project_revision.git)**: The 2D top-down RPG game itself.
 
 ## Prerequisites
 - Node.js (v18+ recommended)

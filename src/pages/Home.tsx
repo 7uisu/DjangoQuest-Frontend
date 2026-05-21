@@ -314,7 +314,7 @@ const Home = ({ currentSection, setCurrentSection: _setCurrentSection }: HomePro
               </div>
               <div className="about-text">
                 <h2>The Interactive Journey</h2>
-                <p style={{marginBottom: "0.5rem", color: "#44b78b"}}>🎮 Story Mode RPG | ⚡ Multi-Tab Sandbox | 🤖 AI Hints</p>
+                <p style={{marginBottom: "0.5rem", color: "#44b78b"}}>🎮 Story Mode RPG | ⚡ Learning Mode | 🤖 AI Hints</p>
                 <p>Play through an interactive story where you learn coding visually! Solve code puzzles, help characters in the Post-Lecture Loop, and face your Final Defense.</p>
                 <button className="cta-button" onClick={() => navigateTo("gallery")}>
                   View Screenshots

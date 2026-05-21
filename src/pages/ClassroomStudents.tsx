@@ -503,12 +503,12 @@ const ClassroomStudents: React.FC = () => {
                               )}
                               {(student.learning_mode_gwa ?? 0) > 0 ? (
                                 <Chip
-                                  label={`Sandbox: ${student.learning_mode_gwa?.toFixed(2)}`}
+                                  label={`Learning: ${student.learning_mode_gwa?.toFixed(2)}`}
                                   size="small"
                                   sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light, fontWeight: 'bold', fontSize: '0.65rem' }}
                                 />
                               ) : (
-                                <Chip label="Sandbox: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
+                                <Chip label="Learning: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
                               )}
                               {(student.thesis_gwa ?? 0) > 0 ? (
                                 <Chip
@@ -697,7 +697,7 @@ const ClassroomStudents: React.FC = () => {
 
           {/* ── Learning Mode Grades Section ── */}
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.info.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.info.main, 0.3)}`, pb: 1 }}>
-            📚 Learning Mode Grades (Sandbox)
+            📚 Learning Mode Grades
           </Typography>
           {detailsTarget?.learning_mode_detailed_grades && detailsTarget.learning_mode_detailed_grades.length > 0 ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>

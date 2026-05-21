@@ -64,6 +64,13 @@ export interface UserData {
   story_mode_gwa?: number;
   learning_mode_gwa?: number;
   learning_mode_detailed_grades?: { professor: string; grade: number; label?: string }[];
+  thesis_gwa?: number;
+  complete_gwa?: number;
+  thesis_status?: {
+    progress: number;
+    completed: boolean;
+    completed_at?: string;
+  };
 }
 
 // Data for updating profile

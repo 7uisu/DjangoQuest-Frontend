@@ -547,7 +547,7 @@ const Dashboard: React.FC = () => {
                   <Grid item xs={12} sm={6} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     <Box>
                       <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8), mb: 0.5 }}>
-                        Learning Mode Sandbox
+                        Learning Mode
                       </Typography>
                       <Chip
                         label={user.learning_mode_gwa && user.learning_mode_gwa > 0 ? `Current GWA: ${user.learning_mode_gwa.toFixed(2)}` : 'Not Started'}
@@ -1027,7 +1027,7 @@ const Dashboard: React.FC = () => {
 
             {/* ── Learning Mode Grades Section ── */}
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.info.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.info.main, 0.3)}`, pb: 1 }}>
-              📚 Learning Mode Grades (Sandbox)
+              📚 Learning Mode Grades
             </Typography>
             {!user.learning_mode_detailed_grades || user.learning_mode_detailed_grades.length === 0 ? (
               <Typography sx={{ color: alpha(theme.palette.common.white, 0.6) }}>No learning mode grades yet. Play professors in Learning Mode to see grades here.</Typography>
