@@ -17,7 +17,8 @@ export interface LeaderboardResponse {
   entries: LeaderboardEntry[];
 }
 
-export const getLeaderboard = async (scope: 'classroom' | 'global' = 'classroom'): Promise<LeaderboardResponse> => {
-  const response = await dashboardApi.get<LeaderboardResponse>(`/leaderboard/?scope=${scope}`);
+export const getLeaderboard = async (scope: 'classroom' | 'global' = 'classroom', classroomId?: number): Promise<LeaderboardResponse> => {
+  const query = classroomId ? `?scope=${scope}&classroom_id=${classroomId}` : `?scope=${scope}`;
+  const response = await dashboardApi.get<LeaderboardResponse>(`/leaderboard/${query}`);
   return response.data;
 };

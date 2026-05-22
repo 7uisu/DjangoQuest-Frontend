@@ -37,6 +37,30 @@ export interface ClassroomDetailData extends ClassroomData {
   students: StudentData[];
 }
 
+export interface StudentClassmateData {
+  id: number;
+  username: string;
+  is_self: boolean;
+  total_xp: number;
+}
+
+export interface StudentCurrentClassroomData {
+  id: number;
+  name: string;
+  teacher: string;
+  teacher_name: string;
+  student_count: number;
+  classmates: StudentClassmateData[];
+}
+
+export interface StudentClassroomSummaryData {
+  id: number;
+  name: string;
+  teacher: string;
+  teacher_name: string;
+  student_count: number;
+}
+
 export interface PasswordResetResponse {
   detail: string;
   new_password: string;
@@ -57,6 +81,22 @@ export const createClassroom = async (name: string): Promise<ClassroomData> => {
 // Get classroom detail with students
 export const getClassroomDetail = async (id: number): Promise<ClassroomDetailData> => {
   const response = await dashboardApi.get<ClassroomDetailData>(`/classrooms/${id}/`);
+  return response.data;
+};
+
+// Student read-only view of their enrolled classroom
+export const getMyClassroom = async (): Promise<StudentCurrentClassroomData> => {
+  const response = await dashboardApi.get<StudentCurrentClassroomData>('/my-classroom/');
+  return response.data;
+};
+
+export const getMyClassrooms = async (): Promise<StudentClassroomSummaryData[]> => {
+  const response = await dashboardApi.get<StudentClassroomSummaryData[]>('/my-classrooms/');
+  return response.data;
+};
+
+export const getMyClassroomDetail = async (id: number): Promise<StudentCurrentClassroomData> => {
+  const response = await dashboardApi.get<StudentCurrentClassroomData>(`/my-classroom/${id}/`);
   return response.data;
 };
 

@@ -8,6 +8,7 @@ export interface ProfileData {
   total_xp: number;
   classroom_name: string | null;
   teacher_name: string | null;
+  classrooms?: { id: number; name: string; teacher: string }[];
 }
 
 // Achievement structure
@@ -69,7 +70,7 @@ export interface UserData {
   thesis_status?: {
     progress: number;
     completed: boolean;
-    completed_at?: string;
+    completed_at: string;
   };
 }
 

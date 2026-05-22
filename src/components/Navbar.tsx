@@ -82,6 +82,9 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                   {user?.is_teacher && (
                     <Button color="inherit" component={Link} to="/teacher-dashboard">Teacher Dashboard</Button>
                   )}
+                  {user?.is_student && (
+                    <Button color="inherit" component={Link} to="/my-classrooms">My Classrooms</Button>
+                  )}
                   <Button color="inherit" component={Link} to="/dashboard">My Profile</Button>
                 </>
               )}
@@ -239,6 +242,11 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                 {user?.is_teacher && (
                   <ListItemButton component={Link} to="/teacher-dashboard" onClick={() => setMobileMenuOpen(false)}>
                     <ListItemText primary="Teacher Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
+                  </ListItemButton>
+                )}
+                {user?.is_student && (
+                  <ListItemButton component={Link} to="/my-classrooms" onClick={() => setMobileMenuOpen(false)}>
+                    <ListItemText primary="My Classrooms" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
                   </ListItemButton>
                 )}
                 <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>

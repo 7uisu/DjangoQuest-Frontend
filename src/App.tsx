@@ -49,6 +49,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import MyClassroom from "./pages/MyClassroom";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import ClassroomStudents from "./pages/ClassroomStudents";
 import Leaderboard from "./pages/Leaderboard";
@@ -124,6 +125,9 @@ const App = () => {
                     <Route path="/tutorials/:id/video" element={<TutorialVideoLayout />} />
                     <Route element={<PrivateRoutes />}>
                       <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/my-classroom" element={<MyClassroom />} />
+                      <Route path="/my-classrooms" element={<MyClassroom />} />
+                      <Route path="/my-classrooms/:id" element={<MyClassroom />} />
                       <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                       <Route path="/teacher-dashboard/class/:id" element={<ClassroomStudents />} />
                       <Route path="/leaderboard" element={<Leaderboard />} />

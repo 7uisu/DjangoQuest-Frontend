@@ -342,86 +342,6 @@ const TeacherDashboard: React.FC = () => {
           </Fade>
         )}
 
-        {/* ─── Classroom Rankings ─── */}
-        {classroomRankings.length > 0 && (
-          <Fade in timeout={650}>
-            <GradientPaper sx={{ p: 3, mb: 4 }}>
-              <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                🏆 Classroom Rankings
-                <Chip label="by avg XP" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.08), color: alpha(theme.palette.common.white, 0.6), fontSize: '0.7rem' }} />
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {classroomRankings.map((cr, idx) => {
-                  const medals = ['🥇', '🥈', '🥉'];
-                  const medal = idx < 3 ? medals[idx] : null;
-                  return (
-                    <Box
-                      key={cr.id}
-                      onClick={() => navigate(`/teacher-dashboard/class/${cr.id}`)}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        px: 2,
-                        py: 1.5,
-                        borderRadius: 2,
-                        cursor: 'pointer',
-                        bgcolor: alpha(theme.palette.common.white, 0.03),
-                        border: `1px solid ${alpha(theme.palette.common.white, 0.06)}`,
-                        '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.08), borderColor: alpha(theme.palette.primary.main, 0.2) },
-                        transition: 'all 0.2s',
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
-                        {medal || `#${idx + 1}`}
-                      </Typography>
-                      <Box sx={{ flex: 1 }}>
-                        <Typography sx={{ fontWeight: 600, color: '#fff', fontSize: '0.95rem' }}>
-                          {cr.name}
-                        </Typography>
-                        <Box sx={{ display: 'flex', gap: 2, mt: 0.5 }}>
-                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
-                            {cr.student_count} students
-                          </Typography>
-                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
-                            {cr.total_achievements} total badges
-                          </Typography>
-                        </Box>
-                        <LinearProgress
-                          variant="determinate"
-                          value={cr.avg_progress}
-                          sx={{
-                            mt: 0.5,
-                            height: 4,
-                            borderRadius: 2,
-                            bgcolor: alpha(theme.palette.common.white, 0.06),
-                            '& .MuiLinearProgress-bar': {
-                              background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
-                            },
-                          }}
-                        />
-                        <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }}>
-                          Avg progress: {cr.avg_progress.toFixed(0)}%
-                        </Typography>
-                      </Box>
-                      <Chip
-                        label={`${cr.avg_xp} avg XP`}
-                        size="small"
-                        sx={{
-                          fontWeight: 'bold',
-                          bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
-                          color: idx === 0 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
-                          border: idx === 0 ? '1px solid rgba(255,215,0,0.3)' : 'none',
-                        }}
-                      />
-                    </Box>
-                  );
-                })}
-              </Box>
-            </GradientPaper>
-          </Fade>
-        )}
-
         {/* Search Bar */}
         <Fade in timeout={700}>
           <Box sx={{ mb: 4 }}>
@@ -589,6 +509,88 @@ const TeacherDashboard: React.FC = () => {
             </>
           )}
         </Container>
+
+        {/* ─── Classroom Rankings ─── */}
+        {classroomRankings.length > 0 && (
+          <Container maxWidth="lg" sx={{ mt: 5 }}>
+            <Fade in timeout={650}>
+              <GradientPaper sx={{ p: 3 }}>
+                <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  🏆 Classroom Rankings
+                  <Chip label="by avg XP" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.08), color: alpha(theme.palette.common.white, 0.6), fontSize: '0.7rem' }} />
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  {classroomRankings.map((cr, idx) => {
+                    const medals = ['🥇', '🥈', '🥉'];
+                    const medal = idx < 3 ? medals[idx] : null;
+                    return (
+                      <Box
+                        key={cr.id}
+                        onClick={() => navigate(`/teacher-dashboard/class/${cr.id}`)}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          px: 2,
+                          py: 1.5,
+                          borderRadius: 2,
+                          cursor: 'pointer',
+                          bgcolor: alpha(theme.palette.common.white, 0.03),
+                          border: `1px solid ${alpha(theme.palette.common.white, 0.06)}`,
+                          '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.08), borderColor: alpha(theme.palette.primary.main, 0.2) },
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
+                          {medal || `#${idx + 1}`}
+                        </Typography>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography sx={{ fontWeight: 600, color: '#fff', fontSize: '0.95rem' }}>
+                            {cr.name}
+                          </Typography>
+                          <Box sx={{ display: 'flex', gap: 2, mt: 0.5 }}>
+                            <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                              {cr.student_count} students
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                              {cr.total_achievements} total badges
+                            </Typography>
+                          </Box>
+                          <LinearProgress
+                            variant="determinate"
+                            value={cr.avg_progress}
+                            sx={{
+                              mt: 0.5,
+                              height: 4,
+                              borderRadius: 2,
+                              bgcolor: alpha(theme.palette.common.white, 0.06),
+                              '& .MuiLinearProgress-bar': {
+                                background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
+                              },
+                            }}
+                          />
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }}>
+                            Avg progress: {cr.avg_progress.toFixed(0)}%
+                          </Typography>
+                        </Box>
+                        <Chip
+                          label={`${cr.avg_xp} avg XP`}
+                          size="small"
+                          sx={{
+                            fontWeight: 'bold',
+                            bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
+                            color: idx === 0 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
+                            border: idx === 0 ? '1px solid rgba(255,215,0,0.3)' : 'none',
+                          }}
+                        />
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </GradientPaper>
+            </Fade>
+          </Container>
+        )}
 
         {/* Create Classroom Dialog */}
         <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
