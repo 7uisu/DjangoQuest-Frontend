@@ -12,7 +12,6 @@ import {
   Fade,
   Grid,
   Grow,
-  LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
@@ -30,7 +29,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PersonIcon from '@mui/icons-material/Person';
 import ClassIcon from '@mui/icons-material/Class';
-import StarIcon from '@mui/icons-material/Star';
 import { Link, useParams } from 'react-router-dom';
 import { resolveBaseUrl } from '../api/axios';
 import { getMyClassroomDetail, getMyClassrooms, StudentClassroomSummaryData, StudentCurrentClassroomData } from '../api/dashboard';
@@ -95,7 +93,6 @@ const ClassroomCard = styled(Card)(({ theme }) => ({
 }));
 
 const medals = ['🥇', '🥈', '🥉'];
-const podiumColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
 
 const MyClassroom: React.FC = () => {
   const theme = useTheme();
@@ -131,6 +128,7 @@ const MyClassroom: React.FC = () => {
           const items = data.results ?? data ?? [];
           setAnnouncements(classroomId ? items.filter((a: AnnouncementItem) => a.target_classrooms?.some((c) => c.id === classroomId)) : items);
         }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err.response?.data?.detail || 'You are not enrolled in a classroom yet.');
       } finally {
@@ -386,7 +384,7 @@ const MyClassroom: React.FC = () => {
                 <Divider sx={{ borderColor: alpha(theme.palette.common.white, 0.06), mb: 1 }} />
 
                 <List sx={{ maxHeight: 400, overflowY: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-thumb': { bgcolor: alpha(theme.palette.common.white, 0.15), borderRadius: 3 } }}>
-                  {classroom.classmates.map((mate, idx) => (
+                  {classroom.classmates.map((mate) => (
                     <ListItem
                       key={mate.id}
                       sx={{
