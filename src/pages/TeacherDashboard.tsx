@@ -517,7 +517,7 @@ const TeacherDashboard: React.FC = () => {
               <GradientPaper sx={{ p: 3 }}>
                 <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                   🏆 Classroom Rankings
-                  <Chip label="by avg XP" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.08), color: alpha(theme.palette.common.white, 0.6), fontSize: '0.7rem' }} />
+                  <Chip label="by avg progress" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.08), color: alpha(theme.palette.common.white, 0.6), fontSize: '0.7rem' }} />
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   {classroomRankings.map((cr, idx) => {

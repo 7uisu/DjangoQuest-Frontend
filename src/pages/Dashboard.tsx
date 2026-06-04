@@ -155,6 +155,14 @@ const Dashboard: React.FC = () => {
 
   const BASE_URL = resolveBaseUrl('');
 
+  const resolveAvatarUrl = (avatar?: string | null): string | null => {
+    if (!avatar) return null;
+    if (avatar.startsWith('data:') || avatar.startsWith('blob:')) return avatar;
+    if (avatar.startsWith('http://') || avatar.startsWith('https://')) return avatar;
+    const normalizedPath = avatar.startsWith('/') ? avatar : `/${avatar}`;
+    return `${BASE_URL}${normalizedPath}`;
+  };
+
   useEffect(() => {
     if (user) {
       setFormData({
@@ -168,14 +176,7 @@ const Dashboard: React.FC = () => {
       setLeaderboardLoading(true);
       getLeaderboard('classroom').then(r => setLeaderboardEntries(r.entries)).catch(() => {}).finally(() => setLeaderboardLoading(false));
 
-      const avatar = user.profile?.avatar;
-      let avatarPath: string | null = avatar || null;
-      if (avatarPath) {
-        const parts = avatarPath.split('/');
-        const filename = parts[parts.length - 1];
-        avatarPath = `/avatars/${filename}`;
-      }
-      setAvatarPreview(avatarPath ? `${BASE_URL}${avatarPath}` : null);
+      setAvatarPreview(resolveAvatarUrl(user.profile?.avatar));
 
       setIsAchievementsLoading(true);
       const fetchAchievements = async () => {
@@ -232,14 +233,7 @@ const Dashboard: React.FC = () => {
       };
       const updatedUser = await updateUserProfile(updateData);
       setUser(updatedUser);
-      const avatar = updatedUser.profile.avatar;
-      let avatarPath: string | null = avatar || null;
-      if (avatarPath) {
-        const parts = avatarPath.split('/');
-        const filename = parts[parts.length - 1];
-        avatarPath = `/avatars/${filename}`;
-      }
-      setAvatarPreview(avatarPath ? `${BASE_URL}${avatarPath}` : null);
+      setAvatarPreview(resolveAvatarUrl(updatedUser.profile.avatar));
       setEditMode(false);
       setAvatarFile(null);
     } catch (err: any) {
@@ -257,14 +251,7 @@ const Dashboard: React.FC = () => {
         last_name: user.last_name,
         bio: user.profile?.bio,
       });
-      const avatar = user.profile?.avatar;
-      let avatarPath: string | null = avatar || null;
-      if (avatarPath) {
-        const parts = avatarPath.split('/');
-        const filename = parts[parts.length - 1];
-        avatarPath = `/avatars/${filename}`;
-      }
-      setAvatarPreview(avatarPath ? `${BASE_URL}${avatarPath}` : null);
+      setAvatarPreview(resolveAvatarUrl(user.profile?.avatar));
     }
     setAvatarFile(null);
     setEditMode(false);
