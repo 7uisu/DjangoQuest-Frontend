@@ -24,6 +24,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import DownloadIcon from "@mui/icons-material/Download";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { useThemeMode } from "../styles/ThemeModeProvider";
@@ -76,14 +77,6 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
           </Button>
         </>
       )}
-      <Button 
-        color="inherit" 
-        component={Link} 
-        to="/download"
-        sx={{ fontWeight: location.pathname === '/download' ? 800 : 400, color: location.pathname === '/download' ? 'primary.main' : 'inherit' }}
-      >
-        Download
-      </Button>
       <Button 
         color="inherit" 
         component={Link} 
@@ -232,6 +225,9 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                 </Button>
               )}
 
+              <Button component={Link} to="/download" startIcon={<DownloadIcon />} variant="contained" color="secondary" size="small" sx={{ fontWeight: 'bold' }}>
+                Download Game
+              </Button>
               <Button component={Link} to="/feedback" variant="contained" size="small">
                 Feedback
               </Button>
