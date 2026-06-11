@@ -27,50 +27,37 @@ export const LANDING_COMPLETE_KEY = "djangoquest-landing-complete";
 const features = [
   {
     icon: <SchoolIcon />,
-    title: "Interactive Django Lessons",
-    description: "Lessons combine tutorial content, coding practice, and guided feedback.",
+    title: "Interactive Lessons",
+    description: "Tutorial content paired with hands-on coding practice.",
   },
   {
     icon: <MissionIcon />,
-    title: "Quests And Missions",
-    description: "Students progress through story tasks connected to programming concepts.",
+    title: "Story-Driven Quests",
+    description: "Programming concepts taught through narrative tasks.",
   },
   {
     icon: <SparkIcon />,
-    title: "XP Progression",
-    description: "XP, profile stats, and completion records help students see growth.",
+    title: "XP & Progress Tracking",
+    description: "Visible stats that reflect actual completion.",
   },
   {
     icon: <BadgeIcon />,
-    title: "Achievements And Badges",
-    description: "Milestones reward completion, persistence, and challenge performance.",
+    title: "Badges & Achievements",
+    description: "Milestone rewards for completion and challenges.",
   },
   {
     icon: <LeaderboardIcon />,
-    title: "Classroom Leaderboards",
-    description: "Students can compare rankings by classroom or platform-wide XP.",
+    title: "Leaderboards",
+    description: "Classroom and platform-wide rankings.",
   },
   {
     icon: <TrophyIcon />,
     title: "Gamified Assessments",
-    description: "Quizzes and code challenges connect grades to actual gameplay activity.",
+    description: "Quizzes and code challenges tied to gameplay.",
   },
 ];
 
-const testimonials = [
-  {
-    quote: "The game format made Django easier to follow because the tasks felt connected.",
-    name: "BSIT Student",
-  },
-  {
-    quote: "The dashboard gives a quicker view of student progress than manual checking.",
-    name: "Programming Instructor",
-  },
-  {
-    quote: "The quests helped me remember what each concept was used for.",
-    name: "Computer Science Student",
-  },
-];
+
 
 const screenshots = [
   "/gallery/GalleryPic1.png",
@@ -119,14 +106,13 @@ const MarketingLanding = () => {
 
         <section className="marketing-hero">
           <Box className="hero-content">
-            <Chip label="Gamified Django Learning Platform" color="primary" variant="outlined" />
+            <Chip label="Capstone Project" color="primary" variant="outlined" />
             <Typography component="h1">
-              Learn Django through quests, code challenges, and measurable progress.
+              Learn Django through quests and code challenges.
             </Typography>
             <Typography className="hero-subcopy">
-              DjangoQuest helps IT and Computer Science students practice programming through
-              an interactive game client while teachers monitor learning progress from a
-              formal web portal.
+              A gamified learning platform where students practice Django through a Godot
+              game client and teachers track progress from a web portal.
             </Typography>
             <Box className="hero-actions">
               <Button
@@ -152,9 +138,9 @@ const MarketingLanding = () => {
               <span />
             </Box>
             <Box className="panel-body">
-              <Typography variant="overline">Student Progress</Typography>
+              <Typography variant="overline">Quest Progress</Typography>
               <Typography variant="h3">86%</Typography>
-              <Typography color="text.secondary">Story completion synced to classroom dashboard</Typography>
+              <Typography color="text.secondary">Synced to teacher dashboard</Typography>
               <Box className="panel-progress">
                 <span style={{ width: "86%" }} />
               </Box>
@@ -171,8 +157,8 @@ const MarketingLanding = () => {
 
         <section className="marketing-section">
           <Box className="section-heading">
-            <Typography variant="overline">Core Features</Typography>
-            <Typography variant="h2">A learning platform with game momentum.</Typography>
+            <Typography variant="overline">Features</Typography>
+            <Typography variant="h2">What's inside the platform.</Typography>
           </Box>
           <Grid container spacing={2.5}>
             {features.map((feature) => (
@@ -189,8 +175,8 @@ const MarketingLanding = () => {
 
         <section className="marketing-section">
           <Box className="section-heading">
-            <Typography variant="overline">Platform Preview</Typography>
-            <Typography variant="h2">From marketing page to actual learning workspace.</Typography>
+            <Typography variant="overline">Preview</Typography>
+            <Typography variant="h2">Screenshots from the actual platform.</Typography>
           </Box>
           <div className="screenshot-strip">
             {screenshots.map((src, index) => (
@@ -199,27 +185,12 @@ const MarketingLanding = () => {
           </div>
         </section>
 
-        <section className="marketing-section">
-          <Box className="section-heading">
-            <Typography variant="overline">Feedback</Typography>
-            <Typography variant="h2">Built around students and instructors.</Typography>
-          </Box>
-          <Grid container spacing={2.5}>
-            {testimonials.map((item) => (
-              <Grid item xs={12} md={4} key={item.name}>
-                <Paper elevation={0} className="testimonial-card">
-                  <Typography>"{item.quote}"</Typography>
-                  <Typography variant="subtitle2">{item.name}</Typography>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </section>
+
 
         <section className="marketing-cta">
-          <Typography variant="h2">Ready to start learning?</Typography>
+          <Typography variant="h2">Ready to start?</Typography>
           <Typography color="text.secondary">
-            Continue into the DjangoQuest application and begin tracking your progress.
+            Enter the app and begin your quest.
           </Typography>
           <Button variant="contained" size="large" onClick={() => beginJourney(dashboardTarget)}>
             Start Learning

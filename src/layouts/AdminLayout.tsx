@@ -257,11 +257,11 @@ const AdminLayout: React.FC = () => {
             <Button
               variant="outlined"
               size="small"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/dashboard')}
               startIcon={<HomeIcon />}
               sx={{ color: 'text.secondary', borderColor: 'divider', textTransform: 'none', '&:hover': { borderColor: 'primary.main', color: 'primary.main', bgcolor: alpha(theme.palette.primary.main, 0.08) } }}
             >
-              Return to Site
+              My Profile
             </Button>
           </Toolbar>
         </AppBar>
