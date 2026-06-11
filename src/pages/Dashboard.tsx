@@ -52,6 +52,7 @@ import {
   AutoAwesome as JourneyIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { updateUserProfile, downloadCertificate, CertificateData, getUserAchievements, getAchievements } from '../api/user';
 import { resolveBaseUrl } from '../api/axios';
