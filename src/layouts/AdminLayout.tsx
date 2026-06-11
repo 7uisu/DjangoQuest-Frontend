@@ -33,22 +33,24 @@ interface NavItem {
   label: string;
   icon: React.ReactNode;
   path: string;
+  group: 'Overview' | 'People' | 'Content' | 'System';
   disabled?: boolean;
   phase?: string;
 }
 
 const navItems: NavItem[] = [
-  { label: 'Overview', icon: <DashboardIcon />, path: '/admin-dashboard' },
-
-  { label: 'Video Tutorials', icon: <VideoIcon />, path: '/admin-dashboard/video-tutorials' },
-  { label: 'Users', icon: <PeopleIcon />, path: '/admin-dashboard/users' },
-  { label: 'Feedback', icon: <FeedbackIcon />, path: '/admin-dashboard/feedback' },
-  { label: 'Announcements', icon: <CampaignIcon />, path: '/admin-dashboard/announcements' },
-  { label: 'Classrooms', icon: <SchoolIcon />, path: '/admin-dashboard/classrooms' },
-  { label: 'Patch Notes', icon: <ReleaseIcon />, path: '/admin-dashboard/patch-notes' },
-  { label: 'Activity Log', icon: <HistoryIcon />, path: '/admin-dashboard/activity-log' },
-  { label: 'Settings', icon: <SettingsIcon />, path: '/admin-dashboard/settings' },
+  { label: 'Overview', icon: <DashboardIcon />, path: '/admin-dashboard', group: 'Overview' },
+  { label: 'Users', icon: <PeopleIcon />, path: '/admin-dashboard/users', group: 'People' },
+  { label: 'Classrooms', icon: <SchoolIcon />, path: '/admin-dashboard/classrooms', group: 'People' },
+  { label: 'Announcements', icon: <CampaignIcon />, path: '/admin-dashboard/announcements', group: 'Content' },
+  { label: 'Video Tutorials', icon: <VideoIcon />, path: '/admin-dashboard/video-tutorials', group: 'Content' },
+  { label: 'Patch Notes', icon: <ReleaseIcon />, path: '/admin-dashboard/patch-notes', group: 'Content' },
+  { label: 'Feedback', icon: <FeedbackIcon />, path: '/admin-dashboard/feedback', group: 'System' },
+  { label: 'Activity Log', icon: <HistoryIcon />, path: '/admin-dashboard/activity-log', group: 'System' },
+  { label: 'Settings', icon: <SettingsIcon />, path: '/admin-dashboard/settings', group: 'System' },
 ];
+
+const navGroups: NavItem['group'][] = ['Overview', 'People', 'Content', 'System'];
 
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -95,53 +97,71 @@ const AdminLayout: React.FC = () => {
 
       {/* Navigation */}
       <List sx={{ flex: 1, px: 1.5, py: 2 }}>
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <ListItemButton
-              key={item.path}
-              disabled={item.disabled}
-              onClick={() => {
-                navigate(item.path);
-                if (isMobile) setMobileOpen(false);
-              }}
+        {navGroups.map((group) => (
+          <Box key={group} sx={{ mb: 1.5 }}>
+            <Typography
+              variant="caption"
               sx={{
-                borderRadius: 1.5,
-                mb: 0.5,
-                py: 1.2,
+                display: 'block',
                 px: 2,
-                bgcolor: isActive ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
-                color: isActive ? 'primary.main' : item.disabled ? 'text.disabled' : 'text.secondary',
-                '&:hover': {
-                  bgcolor: isActive ? alpha(theme.palette.primary.main, 0.14) : alpha(theme.palette.primary.main, 0.06),
-                },
-                transition: 'all 0.2s ease',
+                py: 0.75,
+                color: 'text.secondary',
+                fontWeight: 800,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
               }}
             >
-              <ListItemIcon sx={{ minWidth: 38, color: 'inherit' }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: isActive ? 600 : 400 }}
-              />
-              {item.phase && (
-                <Chip
-                  label={item.phase}
-                  size="small"
-                  sx={{
-                    height: 20,
-                    fontSize: '0.65rem',
-                    bgcolor: alpha(theme.palette.text.secondary, 0.12),
-                    color: 'text.secondary',
-                    border: '1px solid',
-                    borderColor: 'divider',
+              {group}
+            </Typography>
+            {navItems.filter((item) => item.group === group).map((item) => {
+              const isActive = location.pathname === item.path || (item.path !== '/admin-dashboard' && location.pathname.startsWith(item.path));
+              return (
+                <ListItemButton
+                  key={item.path}
+                  disabled={item.disabled}
+                  onClick={() => {
+                    navigate(item.path);
+                    if (isMobile) setMobileOpen(false);
                   }}
-                />
-              )}
-            </ListItemButton>
-          );
-        })}
+                  sx={{
+                    borderRadius: 1.5,
+                    mb: 0.5,
+                    py: 1.2,
+                    px: 2,
+                    bgcolor: isActive ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
+                    color: isActive ? 'primary.main' : item.disabled ? 'text.disabled' : 'text.secondary',
+                    '&:hover': {
+                      bgcolor: isActive ? alpha(theme.palette.primary.main, 0.14) : alpha(theme.palette.primary.main, 0.06),
+                    },
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 38, color: 'inherit' }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: isActive ? 600 : 400 }}
+                  />
+                  {item.phase && (
+                    <Chip
+                      label={item.phase}
+                      size="small"
+                      sx={{
+                        height: 20,
+                        fontSize: '0.65rem',
+                        bgcolor: alpha(theme.palette.text.secondary, 0.12),
+                        color: 'text.secondary',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                      }}
+                    />
+                  )}
+                </ListItemButton>
+              );
+            })}
+          </Box>
+        ))}
       </List>
 
       <Divider sx={{ mx: 2 }} />

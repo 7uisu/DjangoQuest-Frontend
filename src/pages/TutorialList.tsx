@@ -4,12 +4,12 @@ import { tutorialApi } from '../api/axios';
 import {
   Box, Typography, Button, Grid, Card, CardContent, CardActions, Chip,
   Container, LinearProgress, Paper, Avatar, useTheme, CardHeader, Skeleton, Alert, CardMedia,
-  Divider
+  Divider, TextField, InputAdornment, ToggleButton, ToggleButtonGroup
 } from '@mui/material';
 import {
   Code as CodeIcon, CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon, Bookmarks as BookmarksIcon,
-  PlayCircleFilled as VideoIcon
+  PlayCircleFilled as VideoIcon, Search as SearchIcon
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 
@@ -36,6 +36,8 @@ const TutorialList: React.FC = () => {
   const [progress, setProgress] = useState<{ [key: number]: ProgressData }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'in_progress' | 'not_started'>('all');
 
   const isVideo = true;
 
@@ -131,7 +133,24 @@ const TutorialList: React.FC = () => {
     );
   }
 
-  const categoryTutorials = tutorials;
+  const getTutorialStatus = (tutorial: Tutorial) => {
+    const userProgress = progress[tutorial.id];
+    if (userProgress?.isCompleted) return 'completed';
+    if (userProgress?.currentStep !== null && userProgress?.currentStep !== undefined) return 'in_progress';
+    return 'not_started';
+  };
+
+  const categoryTutorials = tutorials.filter((tutorial) => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const searchableText = [
+      tutorial.title,
+      tutorial.description,
+      ...tutorial.steps.map((step) => step.title),
+    ].join(' ').toLowerCase();
+    const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch);
+    const matchesStatus = statusFilter === 'all' || getTutorialStatus(tutorial) === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const getYoutubeThumbnail = (url?: string) => {
     if (!url) return null;
@@ -241,14 +260,52 @@ const TutorialList: React.FC = () => {
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Chip label={`${categoryTutorials.length} Videos`} color="primary" variant="outlined" />
-              <Chip label={`${categoryTutorials.reduce((sum, tutorial) => sum + tutorial.steps.length, 0)} Topics`} variant="outlined" />
+              <Chip label={`${tutorials.length} Videos`} color="primary" variant="outlined" />
+              <Chip label={`${tutorials.reduce((sum, tutorial) => sum + tutorial.steps.length, 0)} Topics`} variant="outlined" />
             </Box>
           </Box>
         </Paper>
 
+        <Paper elevation={0} sx={{ p: { xs: 2, md: 2.5 }, mb: 3, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Search tutorials"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon color="action" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
+              <ToggleButtonGroup
+                value={statusFilter}
+                exclusive
+                size="small"
+                onChange={(_, nextValue) => nextValue && setStatusFilter(nextValue)}
+                sx={{ flexWrap: 'wrap', gap: 0.5, '& .MuiToggleButton-root': { border: '1px solid', borderColor: 'divider', borderRadius: '6px !important' } }}
+              >
+                <ToggleButton value="all">All</ToggleButton>
+                <ToggleButton value="not_started">Not Started</ToggleButton>
+                <ToggleButton value="in_progress">In Progress</ToggleButton>
+                <ToggleButton value="completed">Completed</ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+          </Grid>
+        </Paper>
+
         <Box sx={{ mb: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: 700 }}>Available Tutorials</Typography>
+          <Typography variant="body2" color="text.secondary">
+            Showing {categoryTutorials.length} of {tutorials.length} tutorials
+          </Typography>
           <Divider sx={{ mt: 1 }} />
         </Box>
 

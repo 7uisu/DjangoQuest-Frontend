@@ -45,7 +45,7 @@ import { AuthProvider } from './hooks/AuthProvider';
 import PrivateRoutes from "./routes/PrivateRoutes";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
+import LandingGate from "./pages/LandingGate";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -76,13 +76,16 @@ import PatchNotesPage from "./pages/PatchNotesPage";
 import { Box } from '@mui/material';
 
 const App = () => {
-  const [currentSection, setCurrentSection] = useState('home');
+  const [, setCurrentSection] = useState('home');
 
   return (
     <Router>
       <AuthProvider>
         <GlobalErrorBoundary>
         <Routes>
+          <Route path="/" element={<LandingGate />} />
+          <Route path="/landing" element={<LandingGate forceShow />} />
+
           {/* Admin dashboard — completely separate layout (no Navbar/Footer) */}
           <Route
             path="/admin-dashboard/*"
@@ -113,7 +116,6 @@ const App = () => {
                 <Navbar setCurrentSection={setCurrentSection} />
                 <Box component="main" sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <Routes>
-                    <Route path="/" element={<Home currentSection={currentSection} setCurrentSection={setCurrentSection} />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/password-reset" element={<PasswordReset />} />

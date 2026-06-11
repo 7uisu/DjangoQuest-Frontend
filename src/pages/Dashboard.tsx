@@ -49,6 +49,8 @@ import {
   Campaign as CampaignIcon,
   ExpandMore as ExpandMoreIcon,
   Leaderboard as LeaderboardIcon,
+  AutoAwesome as JourneyIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { updateUserProfile, downloadCertificate, CertificateData, getUserAchievements, getAchievements } from '../api/user';
@@ -56,6 +58,7 @@ import { resolveBaseUrl } from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { unenrollClassroom, enrollClassroom } from '../api/game';
 import { getLeaderboard, LeaderboardEntry } from '../api/leaderboard';
+import { LANDING_COMPLETE_KEY } from './MarketingLanding';
 import axios from 'axios';
 
 // Announcements API
@@ -150,10 +153,19 @@ const Dashboard: React.FC = () => {
   const [leaderboardEntries, setLeaderboardEntries] = useState<LeaderboardEntry[]>([]);
   const [leaderboardScope, setLeaderboardScope] = useState<'classroom' | 'global'>('classroom');
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
+  const [showJourneyBanner, setShowJourneyBanner] = useState(() => (
+    localStorage.getItem(LANDING_COMPLETE_KEY) === 'true' &&
+    localStorage.getItem('djangoquest-dashboard-banner-dismissed') !== 'true'
+  ));
 
   const theme = useTheme();
 
   const BASE_URL = resolveBaseUrl('');
+
+  const dismissJourneyBanner = () => {
+    localStorage.setItem('djangoquest-dashboard-banner-dismissed', 'true');
+    setShowJourneyBanner(false);
+  };
 
   const resolveAvatarUrl = (avatar?: string | null): string | null => {
     if (!avatar) return null;
@@ -335,6 +347,44 @@ const Dashboard: React.FC = () => {
             <Typography variant="h6" sx={{ color: alpha(theme.palette.text.primary, 0.8),  }}>Check out your latest achievements and track your progress.</Typography>
           </Box>
         </Fade>
+
+        {showJourneyBanner && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 2.5, md: 3 },
+              mb: 4,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+              bgcolor: 'background.paper',
+              display: 'flex',
+              gap: 2,
+              alignItems: { xs: 'flex-start', md: 'center' },
+              flexDirection: { xs: 'column', md: 'row' },
+            }}
+          >
+            <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <JourneyIcon />
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Your DjangoQuest journey is ready.
+              </Typography>
+              <Typography color="text.secondary">
+                Continue from the landing page into tutorials, classroom progress, achievements, and your game-linked profile.
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Button variant="contained" component="a" href="/tutorials">
+                Browse Tutorials
+              </Button>
+              <IconButton onClick={dismissJourneyBanner} aria-label="dismiss onboarding banner">
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Paper>
+        )}
 
         {/* ── Announcements Button ── */}
         {announcements.length > 0 && (
