@@ -5,6 +5,7 @@ import AppleIcon from '@mui/icons-material/Apple';
 import WindowIcon from '@mui/icons-material/Window';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../hooks/useAuth';
 
 interface DownloadLink {
   platform: string;
@@ -14,8 +15,13 @@ interface DownloadLink {
 const DownloadPage = () => {
   const [links, setLinks] = useState<DownloadLink[]>([]);
   const navigate = useNavigate();
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login');
+      return;
+    }
     document.title = 'Download — DjangoQuest';
     axios.get('/api/patchnotes/downloads/').then(res => {
       setLinks(Array.isArray(res.data) ? res.data : []);

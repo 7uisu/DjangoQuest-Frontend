@@ -212,6 +212,9 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                   >
                     Logout
                   </Button>
+                  <Button component={Link} to="/download" startIcon={<DownloadIcon />} variant="contained" color="secondary" size="small" sx={{ fontWeight: 'bold' }}>
+                    Download Game
+                  </Button>
                 </>
               ) : (
                 <Button
@@ -225,9 +228,6 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                 </Button>
               )}
 
-              <Button component={Link} to="/download" startIcon={<DownloadIcon />} variant="contained" color="secondary" size="small" sx={{ fontWeight: 'bold' }}>
-                Download Game
-              </Button>
               <Button component={Link} to="/feedback" variant="contained" size="small">
                 Feedback
               </Button>
@@ -273,7 +273,7 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                 {renderMobileLink("Screenshots", () => handleNavigation("gallery"))}
               </>
             )}
-            {renderMobileLink("Download", undefined, "/download")}
+            {isAuthenticated && renderMobileLink("Download", undefined, "/download")}
             {renderMobileLink("Video Tutorials", undefined, "/tutorials")}
             {renderMobileLink("Patch Notes", undefined, "/patch-notes")}
             {isAuthenticated && (
