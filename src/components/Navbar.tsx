@@ -74,11 +74,16 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
           <Button color="inherit" onClick={() => handleNavigation("gallery")}>
             Screenshots
           </Button>
-          <Button color="inherit" onClick={() => handleNavigation("download")}>
-            Download
-          </Button>
         </>
       )}
+      <Button 
+        color="inherit" 
+        component={Link} 
+        to="/download"
+        sx={{ fontWeight: location.pathname === '/download' ? 800 : 400, color: location.pathname === '/download' ? 'primary.main' : 'inherit' }}
+      >
+        Download
+      </Button>
       <Button 
         color="inherit" 
         component={Link} 
@@ -270,9 +275,9 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
               <>
                 {renderMobileLink("About", () => handleNavigation("about"))}
                 {renderMobileLink("Screenshots", () => handleNavigation("gallery"))}
-                {renderMobileLink("Download", () => handleNavigation("download"))}
               </>
             )}
+            {renderMobileLink("Download", undefined, "/download")}
             {renderMobileLink("Video Tutorials", undefined, "/tutorials")}
             {renderMobileLink("Patch Notes", undefined, "/patch-notes")}
             {isAuthenticated && (

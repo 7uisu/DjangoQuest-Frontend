@@ -158,6 +158,18 @@ const Dashboard: React.FC = () => {
     localStorage.getItem('djangoquest-dashboard-banner-dismissed') !== 'true'
   ));
 
+  // Onboarding Popup Logic
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  useEffect(() => {
+    if (user) {
+      const key = `dq_onboarding_${user.username}`;
+      if (!localStorage.getItem(key)) {
+        setTimeout(() => setOnboardingOpen(true), 800);
+        localStorage.setItem(key, 'true');
+      }
+    }
+  }, [user]);
+
   const theme = useTheme();
 
   const BASE_URL = resolveBaseUrl('');
@@ -385,6 +397,58 @@ const Dashboard: React.FC = () => {
             </Box>
           </Paper>
         )}
+
+        <Dialog open={onboardingOpen} onClose={() => setOnboardingOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3, bgcolor: 'background.paper', backgroundImage: 'none' } }}>
+          <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1.5, pb: 1, color: 'text.primary' }}>
+            <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main', width: 40, height: 40 }}>
+              <JourneyIcon />
+            </Avatar>
+            Welcome to DjangoQuest!
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText paragraph sx={{ color: 'text.secondary', mb: 3 }}>
+              We're excited to have you on board! If this is your first time here, here's a quick guide to start your journey:
+            </DialogContentText>
+            
+            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+              <Avatar sx={{ bgcolor: theme.palette.primary.main, width: 32, height: 32, fontSize: '1rem', fontWeight: 'bold' }}>1</Avatar>
+              <Box>
+                <Typography variant="subtitle1" fontWeight="bold" color="text.primary">Download the Game Client</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  DjangoQuest is an interactive game. Head to the Downloads page to grab the latest release for your computer.
+                </Typography>
+              </Box>
+            </Box>
+            
+            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+              <Avatar sx={{ bgcolor: theme.palette.secondary.main, width: 32, height: 32, fontSize: '1rem', fontWeight: 'bold' }}>2</Avatar>
+              <Box>
+                <Typography variant="subtitle1" fontWeight="bold" color="text.primary">Enroll in a Classroom</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Using the "User Info" panel right here on your dashboard, enter your teacher's code so your progress is tracked for your subject.
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: 2, mb: 1 }}>
+              <Avatar sx={{ bgcolor: theme.palette.success.main, width: 32, height: 32, fontSize: '1rem', fontWeight: 'bold' }}>3</Avatar>
+              <Box>
+                <Typography variant="subtitle1" fontWeight="bold" color="text.primary">Play and Learn!</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Log into the game client using this exact account. Complete quests and answer questions to see your XP and badges appear here!
+                </Typography>
+              </Box>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 3, pt: 1 }}>
+            <Button onClick={() => setOnboardingOpen(false)} sx={{ color: 'text.secondary', textTransform: 'none' }}>
+              I'll do it later
+            </Button>
+            <Button component={Link} to="/download" variant="contained" onClick={() => setOnboardingOpen(false)} sx={{ borderRadius: 2, px: 3, textTransform: 'none' }}>
+              Go to Downloads
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {/* ── Announcements Button ── */}
         {announcements.length > 0 && (
