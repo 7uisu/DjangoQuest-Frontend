@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { tutorialApi } from '../api/axios';
 import {
   Box, Typography, Button, Grid, Card, CardContent, CardActions, Chip,
-  Container, LinearProgress, Paper, Avatar, useTheme, CardHeader, Skeleton, Alert, CardMedia
+  Container, LinearProgress, Paper, Avatar, useTheme, CardHeader, Skeleton, Alert, CardMedia,
+  Divider
 } from '@mui/material';
 import {
-  School as SchoolIcon, Code as CodeIcon, CheckCircle as CheckCircleIcon,
+  Code as CodeIcon, CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon, Bookmarks as BookmarksIcon,
   PlayCircleFilled as VideoIcon
 } from '@mui/icons-material';
@@ -81,7 +82,7 @@ const TutorialList: React.FC = () => {
 
   const rootContainerStyle = {
     minHeight: '100vh', width: '100vw', display: 'flex', flexDirection: 'column',
-    overflow: 'auto', boxSizing: 'border-box' as const, backgroundColor: '#121212', color: '#e0e0e0',
+    overflow: 'auto', boxSizing: 'border-box' as const, backgroundColor: 'background.default', color: 'text.primary',
     paddingTop: '32px'
   };
 
@@ -105,11 +106,11 @@ const TutorialList: React.FC = () => {
     return (
       <Box sx={rootContainerStyle}>
         <Container maxWidth="lg" sx={{ py: 8, pt: '100px', flexGrow: 1 }}>
-          <Skeleton width="300px" height={60} sx={{ bgcolor: '#333', mb: 4 }} />
+          <Skeleton width="300px" height={60} sx={{ bgcolor: 'action.hover', mb: 4 }} />
           <Grid container spacing={4}>
             {[1, 2, 3].map((n) => (
               <Grid item xs={12} md={4} key={n}>
-                <Skeleton variant="rectangular" height={200} sx={{ bgcolor: '#333', borderRadius: 2 }} />
+                <Skeleton variant="rectangular" height={200} sx={{ bgcolor: 'action.hover', borderRadius: 2 }} />
               </Grid>
             ))}
           </Grid>
@@ -154,8 +155,8 @@ const TutorialList: React.FC = () => {
           sx={{
             height: '100%',
             display: 'flex', flexDirection: 'column', transition: 'all 0.3s ease',
-            backgroundColor: '#1e1e1e', border: '1px solid #333', borderRadius: 2,
-            '&:hover': { transform: 'translateY(-4px)', borderColor: isVideo ? '#f44336' : '#2196f3', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' },
+            backgroundColor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2,
+            '&:hover': { transform: 'translateY(-4px)', borderColor: isVideo ? 'secondary.main' : 'primary.main', boxShadow: '0 12px 28px rgba(31,41,51,0.12)' },
             overflow: 'hidden'
           }}
         >
@@ -165,24 +166,24 @@ const TutorialList: React.FC = () => {
               height="180"
               image={thumbnailUrl}
               alt={tutorial.title}
-              sx={{ borderBottom: '1px solid #333', objectFit: 'cover' }}
+              sx={{ borderBottom: '1px solid', borderColor: 'divider', objectFit: 'cover' }}
             />
           )}
           <CardHeader
-            avatar={<Avatar sx={{ bgcolor: isVideo ? '#d32f2f' : tutorialColor, width: 44, height: 44 }}>{isVideo ? <VideoIcon /> : <CodeIcon />}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: isVideo ? 'secondary.main' : tutorialColor, width: 44, height: 44 }}>{isVideo ? <VideoIcon /> : <CodeIcon />}</Avatar>}
             title={
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minWidth: 0 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, color: '#e0e0e0', fontSize: '1.1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>{tutorial.title}</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', fontSize: '1.1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>{tutorial.title}</Typography>
                 {!isVideo && isCompleted && <CheckCircleIcon fontSize="small" color="success" />}
               </Box>
             }
             sx={{ pb: 0, pt: 2.5 }}
           />
           <CardContent sx={{ pt: 1.5, flexGrow: 1 }}>
-            <Typography variant="body2" sx={{ mb: 2, color: '#aaa', minHeight: '60px', lineHeight: 1.6 }}>{tutorial.description}</Typography>
+            <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary', minHeight: '60px', lineHeight: 1.6 }}>{tutorial.description}</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <BookmarksIcon fontSize="small" sx={{ color: '#777', mr: 1 }} />
-              <Typography variant="body2" sx={{ color: '#777', fontWeight: 500 }}>{tutorial.steps.length} {isVideo ? 'Topics' : 'Challenges'}</Typography>
+              <BookmarksIcon fontSize="small" sx={{ color: 'text.secondary', mr: 1 }} />
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>{tutorial.steps.length} {isVideo ? 'Topics' : 'Challenges'}</Typography>
             </Box>
             {isAuthenticated && !isVideo && (
               <Box sx={{ mt: 1, height: 40 }}>
@@ -191,13 +192,13 @@ const TutorialList: React.FC = () => {
                 ) : userProgress ? (
                   <>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                      <Typography variant="caption" sx={{ color: '#999' }}>Progress</Typography>
-                      <Typography variant="caption" sx={{ color: '#4fc3f7' }}>{progressPercent}%</Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>Progress</Typography>
+                      <Typography variant="caption" color="primary">{progressPercent}%</Typography>
                     </Box>
                     <LinearProgress variant="determinate" value={progressPercent} sx={{ height: 6, borderRadius: 3 }} />
                   </>
                 ) : (
-                  <Chip label="Not started" size="small" variant="outlined" sx={{ color: '#888', borderColor: '#444' }} />
+                  <Chip label="Not started" size="small" variant="outlined" />
                 )}
               </Box>
             )}
@@ -205,7 +206,7 @@ const TutorialList: React.FC = () => {
           <CardActions sx={{ p: 2.5, pt: 0 }}>
             <Button
               variant={isVideo ? "outlined" : (isCompleted ? "outlined" : "contained")}
-              color={isVideo ? "error" : (isCompleted ? "success" : "primary")}
+              color={isVideo ? "secondary" : (isCompleted ? "success" : "primary")}
               fullWidth
               onClick={() => navigate(isVideo ? `/tutorials/${tutorial.id}/video` : `/tutorials/${tutorial.id}`)}
               disabled={!isAuthenticated}
@@ -223,25 +224,39 @@ const TutorialList: React.FC = () => {
   return (
     <Box sx={rootContainerStyle}>
       <Container maxWidth="lg" sx={{ py: 6, pt: { xs: '80px', md: '100px' }, flexGrow: 1 }}>
-        <Box sx={{ mb: 6 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {isVideo ? <VideoIcon sx={{ color: '#f44336', fontSize: 40, mr: 2 }} /> : <SchoolIcon sx={{ color: '#4fc3f7', fontSize: 40, mr: 2 }} />}
-            <Typography variant="h3" sx={{ fontWeight: 800, color: "text.primary", letterSpacing: '-0.5px' }}>
-              {isVideo ? 'Video Tutorials' : 'Interactive Learning'}
-            </Typography>
+        <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, mb: 5, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: { xs: 'flex-start', md: 'center' }, gap: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+            <Avatar sx={{ bgcolor: 'secondary.main', width: 56, height: 56 }}>
+              <VideoIcon />
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="overline" color="primary" sx={{ fontWeight: 800, letterSpacing: '0.08em' }}>
+                Learning Resources
+              </Typography>
+              <Typography variant="h3" sx={{ fontWeight: 800, color: "text.primary", letterSpacing: 0 }}>
+                Video Tutorials
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'text.secondary', mt: 1, maxWidth: 820 }}>
+                Watch step-by-step programming lessons, then use the written guide below each video for reference while playing the game.
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Chip label={`${categoryTutorials.length} Videos`} color="primary" variant="outlined" />
+              <Chip label={`${categoryTutorials.reduce((sum, tutorial) => sum + tutorial.steps.length, 0)} Topics`} variant="outlined" />
+            </Box>
           </Box>
-          <Typography variant="h6" sx={{ color: '#999', mt: 2, fontWeight: 400 }}>
-            {isVideo 
-              ? 'Watch step-by-step videos and follow the text guides below them locally. Best for deep-dive theory.' 
-              : 'Write raw code in your browser and get immediate validation. Best for hands-on, practical learning.'}
-          </Typography>
+        </Paper>
+
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>Available Tutorials</Typography>
+          <Divider sx={{ mt: 1 }} />
         </Box>
 
         <Grid container spacing={4}>
           {categoryTutorials.length === 0 ? (
             <Grid item xs={12}>
-              <Paper sx={{ p: 6, textAlign: 'center', bgcolor: '#1e1e1e', borderRadius: 2, border: '1px dashed #444' }}>
-                <Typography sx={{ color: '#666', fontSize: '1.1rem' }}>No tutorials available in this category yet.</Typography>
+              <Paper sx={{ p: 6, textAlign: 'center', bgcolor: 'background.paper', borderRadius: 2, border: '1px dashed', borderColor: 'divider' }}>
+                <Typography sx={{ color: 'text.secondary', fontSize: '1.1rem' }}>No tutorials available in this category yet.</Typography>
               </Paper>
             </Grid>
           ) : (
