@@ -1,4 +1,20 @@
-import { AppBar, Toolbar, Button, Box, Typography, IconButton, Drawer, List, ListItemButton, ListItemText, Divider, useMediaQuery, useTheme } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Box,
+  Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Divider,
+  useMediaQuery,
+  useTheme,
+  Tooltip,
+  Chip,
+} from "@mui/material";
 import "../styles/Navbar.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/DQUESTLOGO.svg";
@@ -6,8 +22,11 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAuth } from '../hooks/useAuth';
-import { useState } from 'react';
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { useAuth } from "../hooks/useAuth";
+import { useState } from "react";
+import { useThemeMode } from "../styles/ThemeModeProvider";
 
 interface NavbarProps {
   setCurrentSection: (section: string) => void;
@@ -18,16 +37,14 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
+  const { mode, toggleMode } = useThemeMode();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { isAuthenticated, logout, user } = useAuth();
 
   const handleNavigation = (section: string) => {
     if (location.pathname !== "/") {
       navigate("/");
-      setTimeout(() => {
-        setCurrentSection(section);
-      }, 100);
+      setTimeout(() => setCurrentSection(section), 100);
     } else {
       setCurrentSection(section);
     }
@@ -37,109 +54,125 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/');
-      setCurrentSection('home');
-      setMobileMenuOpen(false);
     } catch (error) {
-      console.error('Logout failed:', error);
-      navigate('/');
+      console.error("Logout failed:", error);
+    } finally {
+      navigate("/");
+      setCurrentSection("home");
+      setMobileMenuOpen(false);
     }
   };
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
+  const publicLinks = (
+    <>
+      <Button color="inherit" onClick={() => handleNavigation("home")}>
+        Home
+      </Button>
+      {location.pathname === "/" && (
+        <>
+          <Button color="inherit" onClick={() => handleNavigation("about")}>
+            About
+          </Button>
+          <Button color="inherit" onClick={() => handleNavigation("gallery")}>
+            Screenshots
+          </Button>
+          <Button color="inherit" onClick={() => handleNavigation("download")}>
+            Download
+          </Button>
+        </>
+      )}
+      <Button color="inherit" component={Link} to="/tutorials">
+        Video Tutorials
+      </Button>
+      <Button color="inherit" component={Link} to="/patch-notes">
+        Patch Notes
+      </Button>
+    </>
+  );
+
+  const accountLinks = (
+    <>
+      {user?.is_staff && (
+        <Button color="inherit" component={Link} to="/admin-dashboard">
+          Admin Dashboard
+        </Button>
+      )}
+      {user?.is_teacher && (
+        <Button color="inherit" component={Link} to="/teacher-dashboard">
+          Teacher Dashboard
+        </Button>
+      )}
+      {user?.is_student && (
+        <Button color="inherit" component={Link} to="/my-classrooms">
+          My Classrooms
+        </Button>
+      )}
+      <Button color="inherit" component={Link} to="/dashboard">
+        My Profile
+      </Button>
+    </>
+  );
+
+  const renderMobileLink = (
+    label: string,
+    onClick?: () => void,
+    to?: string
+  ) => (
+    <ListItemButton
+      component={to ? Link : "button"}
+      to={to}
+      onClick={onClick ?? (() => setMobileMenuOpen(false))}
+    >
+      <ListItemText primary={label} />
+    </ListItemButton>
+  );
 
   return (
     <>
-      <AppBar position="fixed" className="navbar">
-        <Toolbar>
-          {/* LEFT - Logo */}
+      <AppBar position="fixed" className="navbar" elevation={0}>
+        <Toolbar sx={{ minHeight: { xs: 64, md: 72 } }}>
           <Box className="navbar-logo">
             <Button onClick={() => handleNavigation("home")} className="logo-button">
               <img src={logo} alt="DjangoQuest Logo" />
+              <Box className="brand-text">
+                <Typography variant="subtitle1">DjangoQuest</Typography>
+                <Typography variant="caption">Learning Portal</Typography>
+              </Box>
             </Button>
           </Box>
 
-          {/* CENTER - Navigation Links (Desktop only) */}
           {!isMobile && (
             <Box className="navbar-links">
-              <Button color="inherit" onClick={() => handleNavigation("home")}>Home</Button>
-              {location.pathname === "/" && (
-                <>
-                  <Button color="inherit" onClick={() => handleNavigation("about")}>About</Button>
-                  <Button color="inherit" onClick={() => handleNavigation("gallery")}>Gallery</Button>
-                  <Button color="inherit" onClick={() => handleNavigation("download")}>Download</Button>
-                </>
-              )}
-              <Button color="inherit" component={Link} to="/tutorials">Video Tutorials</Button>
-              <Button color="inherit" component={Link} to="/patch-notes">Patch Notes</Button>
-              {isAuthenticated && (
-                <>
-                  {user?.is_staff && (
-                    <Button color="inherit" component={Link} to="/admin-dashboard">Admin Dashboard</Button>
-                  )}
-                  {user?.is_teacher && (
-                    <Button color="inherit" component={Link} to="/teacher-dashboard">Teacher Dashboard</Button>
-                  )}
-                  {user?.is_student && (
-                    <Button color="inherit" component={Link} to="/my-classrooms">My Classrooms</Button>
-                  )}
-                  <Button color="inherit" component={Link} to="/dashboard">My Profile</Button>
-                </>
-              )}
+              {publicLinks}
+              {isAuthenticated && accountLinks}
             </Box>
           )}
 
-          {/* Mobile menu button - Only shown on mobile */}
           {isMobile && (
             <IconButton
-              color="inherit"
-              aria-label="open drawer"
+              color="primary"
+              aria-label="open navigation"
               edge="start"
-              onClick={toggleMobileMenu}
-              sx={{ ml: 'auto', mr: 2, color: 'white' }}
+              onClick={() => setMobileMenuOpen(true)}
+              sx={{ ml: "auto", mr: 1 }}
             >
               <MenuIcon />
             </IconButton>
           )}
 
-          {/* RIGHT - Sign In/Out, XP, & Feedback - Only shown on desktop */}
           {!isMobile && (
             <Box className="navbar-actions">
               {isAuthenticated ? (
                 <>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      padding: "5px 15px",
-                      border: "1px solid #ccc",
-                      borderRadius: "20px",
-                      backgroundColor: "white",
-                      color: "black",
-                      fontSize: "14px",
-                      marginRight: "10px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                    }}
-                  >
+                  <Typography variant="body2" className="xp-chip">
                     XP: {user?.profile?.total_xp || 0}
                   </Typography>
                   <Button
                     onClick={handleLogout}
                     startIcon={<LogoutIcon />}
-                    sx={{
-                      padding: "5px 15px",
-                      border: "1px solid #ccc",
-                      borderRadius: "20px",
-                      backgroundColor: "white",
-                      color: "black",
-                      fontSize: "14px",
-                      "&:hover": {
-                        backgroundColor: "#f8d7da",
-                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
+                    variant="outlined"
+                    color="error"
+                    size="small"
                   >
                     Logout
                   </Button>
@@ -149,135 +182,89 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
                   component={Link}
                   to="/login"
                   startIcon={<LoginIcon />}
-                  sx={{
-                    padding: "5px 15px",
-                    border: "1px solid #ccc",
-                    borderRadius: "20px",
-                    backgroundColor: "white",
-                    color: "black",
-                    fontSize: "14px",
-                    "&:hover": {
-                      backgroundColor: "#f1f1f1",
-                      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                    },
-                  }}
+                  variant="outlined"
+                  size="small"
                 >
                   Sign In
                 </Button>
               )}
 
-              <Button 
-                component={Link} 
-                to="/feedback"
-                sx={{
-                  padding: "8px 20px",
-                  borderRadius: "20px",
-                  backgroundColor: "#7FD8D4",
-                  color: "black",
-                  fontSize: "14px",
-                  "&:hover": {
-                    backgroundColor: "#5ac8a5",
-                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
-                  }
-                }}
-              >
+              <Button component={Link} to="/feedback" variant="contained" size="small">
                 Feedback
               </Button>
+              <Tooltip title={`Switch to ${mode === "light" ? "dark" : "light"} mode`}>
+                <IconButton color="primary" onClick={toggleMode} aria-label="toggle theme mode">
+                  {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+                </IconButton>
+              </Tooltip>
             </Box>
           )}
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Navigation Drawer */}
       <Drawer
         anchor="left"
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
         className="mobile-drawer"
         sx={{
-          '& .MuiDrawer-paper': {
-            backgroundColor: '#1e1e1e', // Dark background
-            color: '#ffffff', // White text
-            width: 250,
-          }
+          "& .MuiDrawer-paper": {
+            backgroundColor: "background.paper",
+            color: "text.primary",
+            width: 280,
+          },
         }}
       >
         <Box className="mobile-drawer-content">
           <Box className="mobile-drawer-header">
             <Box className="mobile-drawer-logo">
               <img src={logo} alt="DjangoQuest Logo" />
+              <Typography variant="subtitle2">DjangoQuest</Typography>
             </Box>
-            <IconButton onClick={() => setMobileMenuOpen(false)} sx={{ color: '#ffffff' }}>
+            <IconButton onClick={() => setMobileMenuOpen(false)} color="primary">
               <CloseIcon />
             </IconButton>
           </Box>
-          
+
           <List>
-            <ListItemButton onClick={() => handleNavigation("home")}>
-              <ListItemText primary="Home" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-            </ListItemButton>
+            {renderMobileLink("Home", () => handleNavigation("home"))}
             {location.pathname === "/" && (
               <>
-                <ListItemButton onClick={() => handleNavigation("about")}>
-                  <ListItemText primary="About" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                </ListItemButton>
-                <ListItemButton onClick={() => handleNavigation("gallery")}>
-                  <ListItemText primary="Gallery" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                </ListItemButton>
-                <ListItemButton onClick={() => handleNavigation("download")}>
-                  <ListItemText primary="Download" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                </ListItemButton>
+                {renderMobileLink("About", () => handleNavigation("about"))}
+                {renderMobileLink("Screenshots", () => handleNavigation("gallery"))}
+                {renderMobileLink("Download", () => handleNavigation("download"))}
               </>
             )}
-            <ListItemButton component={Link} to="/tutorials" onClick={() => setMobileMenuOpen(false)}>
-              <ListItemText primary="Video Tutorials" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-            </ListItemButton>
+            {renderMobileLink("Video Tutorials", undefined, "/tutorials")}
+            {renderMobileLink("Patch Notes", undefined, "/patch-notes")}
             {isAuthenticated && (
               <>
-                {user?.is_staff && (
-                  <ListItemButton component={Link} to="/admin-dashboard" onClick={() => setMobileMenuOpen(false)}>
-                    <ListItemText primary="Admin Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                  </ListItemButton>
-                )}
-                {user?.is_teacher && (
-                  <ListItemButton component={Link} to="/teacher-dashboard" onClick={() => setMobileMenuOpen(false)}>
-                    <ListItemText primary="Teacher Dashboard" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                  </ListItemButton>
-                )}
-                {user?.is_student && (
-                  <ListItemButton component={Link} to="/my-classrooms" onClick={() => setMobileMenuOpen(false)}>
-                    <ListItemText primary="My Classrooms" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                  </ListItemButton>
-                )}
-                <ListItemButton component={Link} to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                  <ListItemText primary="My Profile" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                </ListItemButton>
+                {user?.is_staff && renderMobileLink("Admin Dashboard", undefined, "/admin-dashboard")}
+                {user?.is_teacher && renderMobileLink("Teacher Dashboard", undefined, "/teacher-dashboard")}
+                {user?.is_student && renderMobileLink("My Classrooms", undefined, "/my-classrooms")}
+                {renderMobileLink("My Profile", undefined, "/dashboard")}
               </>
             )}
           </List>
-          
-          <Divider sx={{ backgroundColor: '#444' }} /> {/* Darker divider */}
-          
+
+          <Divider />
+
           <List>
             {isAuthenticated ? (
               <>
-                <ListItemButton sx={{ backgroundColor: "transparent", cursor: "default" }}>
-                  <Typography variant="body2" sx={{ color: '#ffffff' }}>
-                    XP: {user?.profile?.total_xp || 0}
-                  </Typography>
+                <ListItemButton sx={{ cursor: "default" }}>
+                  <Chip size="small" label={`XP: ${user?.profile?.total_xp || 0}`} variant="outlined" />
                 </ListItemButton>
-                <ListItemButton onClick={handleLogout}>
-                  <ListItemText primary="Logout" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-                </ListItemButton>
+                {renderMobileLink(mode === "light" ? "Dark Mode" : "Light Mode", toggleMode)}
+                {renderMobileLink("Logout", handleLogout)}
               </>
             ) : (
-              <ListItemButton component={Link} to="/login" onClick={() => setMobileMenuOpen(false)}>
-                <ListItemText primary="Sign In" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-              </ListItemButton>
+              <>
+                {renderMobileLink("Sign In", undefined, "/login")}
+                {renderMobileLink(mode === "light" ? "Dark Mode" : "Light Mode", toggleMode)}
+              </>
             )}
-            <ListItemButton component={Link} to="/feedback" onClick={() => setMobileMenuOpen(false)}>
-              <ListItemText primary="Feedback" sx={{ '& .MuiListItemText-primary': { color: '#ffffff' } }} />
-            </ListItemButton>
+            {renderMobileLink("Feedback", undefined, "/feedback")}
           </List>
         </Box>
       </Drawer>

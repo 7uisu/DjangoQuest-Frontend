@@ -143,7 +143,7 @@ const ClassroomStudents: React.FC = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: "background.default" }}>
         <LoadingSpinner size={90} message="Loading Student Data..." />
       </Box>
     );
@@ -151,9 +151,9 @@ const ClassroomStudents: React.FC = () => {
 
   if (error && !selectedClassroom) {
     return (
-      <Box sx={{ p: 4, height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
+      <Box sx={{ p: 4, height: '100vh', backgroundColor: "background.default" }}>
         <Container maxWidth="lg">
-            <Button startIcon={<BackIcon />} onClick={() => navigate('/teacher-dashboard')} sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 2 }}>
+            <Button startIcon={<BackIcon />} onClick={() => navigate('/teacher-dashboard')} sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 2 }}>
               Back to Dashboard
             </Button>
             <Alert severity="error">{error}</Alert>
@@ -165,20 +165,20 @@ const ClassroomStudents: React.FC = () => {
   if (!selectedClassroom) return null;
 
   return (
-    <Box sx={{ minHeight: '100vh', width: '100vw', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, pt: 10, pb: 6 }}>
+    <Box sx={{ minHeight: '100vh', width: '100vw', backgroundColor: "background.default", pt: 10, pb: 6 }}>
       <Container maxWidth="lg">
         {/* Header */}
         <Fade in timeout={800}>
           <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
             <Box>
-              <Button startIcon={<BackIcon />} onClick={() => navigate('/teacher-dashboard')} sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1 }}>
+              <Button startIcon={<BackIcon />} onClick={() => navigate('/teacher-dashboard')} sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 1 }}>
                 Back to Classrooms
               </Button>
-              <Typography variant="h3" sx={{ color: '#fff', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              <Typography variant="h3" sx={{ color: "text.primary", fontWeight: 'bold',  }}>
                 <GroupIcon sx={{ mr: 1, fontSize: 40, verticalAlign: 'middle' }} />
                 {selectedClassroom.name}
               </Typography>
-              <Typography variant="h6" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+              <Typography variant="h6" sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
                 Enrollment Code: {selectedClassroom.enrollment_code}
               </Typography>
             </Box>
@@ -245,20 +245,20 @@ const ClassroomStudents: React.FC = () => {
                   ].map(stat => (
                     <GradientPaper key={stat.label} sx={{ p: 1.5, textAlign: 'center' }}>
                       <Typography variant="h5" sx={{ fontWeight: 'bold', color: stat.color }}>{stat.value}</Typography>
-                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>{stat.label}</Typography>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>{stat.label}</Typography>
                     </GradientPaper>
                   ))}
                 </Box>
 
                 {/* Per-Professor Breakdown */}
                 <GradientPaper sx={{ p: 2, mb: 3 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#fff', mb: 2 }}>📊 Per-Professor Breakdown</Typography>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: "text.primary", mb: 2 }}>📊 Per-Professor Breakdown</Typography>
                   <TableContainer>
                     <Table size="small">
                       <TableHead>
                         <TableRow>
                           {['Topic & Professor', 'Avg Grade', 'Pass Rate', 'Fail Rate', 'Retake Rate', 'Attempted'].map(h => (
-                            <TableCell key={h} sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1), fontSize: '0.75rem' }}>{h}</TableCell>
+                            <TableCell key={h} sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1), fontSize: '0.75rem' }}>{h}</TableCell>
                           ))}
                         </TableRow>
                       </TableHead>
@@ -267,12 +267,12 @@ const ClassroomStudents: React.FC = () => {
                           const failPct = p.attempted > 0 ? (p.failed / p.attempted * 100) : 0;
                           return (
                             <TableRow key={p.key}>
-                              <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1), fontWeight: 'bold', fontSize: '0.8rem' }}>{p.topic} ({p.name})</TableCell>
-                              <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? p.avgGrade.toFixed(2) : '—'}</TableCell>
-                              <TableCell sx={{ color: theme.palette.success.light, borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? `${(p.passed / p.attempted * 100).toFixed(0)}%` : '—'}</TableCell>
-                              <TableCell sx={{ color: failPct > 20 ? theme.palette.error.main : alpha(theme.palette.common.white, 0.8), fontWeight: failPct > 20 ? 'bold' : 'normal', borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? `${failPct.toFixed(0)}%` : '—'}</TableCell>
-                              <TableCell sx={{ color: alpha(theme.palette.common.white, 0.8), borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted > 0 ? `${(p.retakes / p.attempted * 100).toFixed(0)}%` : '—'}</TableCell>
-                              <TableCell sx={{ color: alpha(theme.palette.common.white, 0.6), borderColor: alpha(theme.palette.common.white, 0.1) }}>{p.attempted}/{p.total}</TableCell>
+                              <TableCell sx={{ color: "text.primary", borderColor: alpha(theme.palette.text.primary, 0.1), fontWeight: 'bold', fontSize: '0.8rem' }}>{p.topic} ({p.name})</TableCell>
+                              <TableCell sx={{ color: "text.primary", borderColor: alpha(theme.palette.text.primary, 0.1) }}>{p.attempted > 0 ? p.avgGrade.toFixed(2) : '—'}</TableCell>
+                              <TableCell sx={{ color: theme.palette.success.light, borderColor: alpha(theme.palette.text.primary, 0.1) }}>{p.attempted > 0 ? `${(p.passed / p.attempted * 100).toFixed(0)}%` : '—'}</TableCell>
+                              <TableCell sx={{ color: failPct > 20 ? theme.palette.error.main : alpha(theme.palette.text.primary, 0.8), fontWeight: failPct > 20 ? 'bold' : 'normal', borderColor: alpha(theme.palette.text.primary, 0.1) }}>{p.attempted > 0 ? `${failPct.toFixed(0)}%` : '—'}</TableCell>
+                              <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.8), borderColor: alpha(theme.palette.text.primary, 0.1) }}>{p.attempted > 0 ? `${(p.retakes / p.attempted * 100).toFixed(0)}%` : '—'}</TableCell>
+                              <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.6), borderColor: alpha(theme.palette.text.primary, 0.1) }}>{p.attempted}/{p.total}</TableCell>
                             </TableRow>
                           );
                         })}
@@ -288,10 +288,10 @@ const ClassroomStudents: React.FC = () => {
                     <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: theme.palette.error.light, mb: 1 }}>⚠️ At-Risk Students</Typography>
                     {atRisk.length > 0 ? atRisk.map(s => (
                       <Box key={s.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5 }}>
-                        <Typography variant="body2" sx={{ color: '#fff' }}>{s.username}</Typography>
+                        <Typography variant="body2" sx={{ color: "text.primary" }}>{s.username}</Typography>
                         <Chip label={`GWA: ${(s.story_mode_gwa ?? 0).toFixed(2)}`} size="small" sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontSize: '0.7rem' }} />
                       </Box>
-                    )) : <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No at-risk students</Typography>}
+                    )) : <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>No at-risk students</Typography>}
                     {zeroProgress.length > 0 && (
                       <Typography variant="caption" sx={{ color: theme.palette.warning.light, display: 'block', mt: 1 }}>
                         {zeroProgress.length} student{zeroProgress.length > 1 ? 's have' : ' has'} zero progress
@@ -304,17 +304,17 @@ const ClassroomStudents: React.FC = () => {
                     <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: theme.palette.success.light, mb: 1 }}>🏆 Top Performers</Typography>
                     {top3.length > 0 ? top3.map(s => (
                       <Box key={s.id} sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5 }}>
-                        <Typography variant="body2" sx={{ color: '#fff' }}>{s.username}</Typography>
+                        <Typography variant="body2" sx={{ color: "text.primary" }}>{s.username}</Typography>
                         <Chip label={`GWA: ${(s.story_mode_gwa ?? 0).toFixed(2)}`} size="small" sx={{ bgcolor: alpha(theme.palette.success.main, 0.2), color: theme.palette.success.light, fontSize: '0.7rem' }} />
                       </Box>
-                    )) : <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No grades yet</Typography>}
+                    )) : <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>No grades yet</Typography>}
                   </GradientPaper>
                 </Box>
 
                 {/* Ch1 vs Ch2 Insight */}
                 {remedialStudents.length > 0 && (
                   <GradientPaper sx={{ p: 2, mb: 2 }}>
-                    <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8) }}>
+                    <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.8) }}>
                       💡 <strong>{remedialBelowAvg}</strong> of <strong>{remedialStudents.length}</strong> students who needed Ch1 remedial are currently below the class average GWA.
                     </Typography>
                   </GradientPaper>
@@ -328,7 +328,7 @@ const ClassroomStudents: React.FC = () => {
         {selectedClassroom.students.length > 0 && (
           <Fade in timeout={400}>
             <GradientPaper sx={{ p: 3, mb: 3 }}>
-              <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="h6" sx={{ color: "text.primary", fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                 🏆 Classroom Leaderboard
               </Typography>
               <Box sx={{ maxHeight: 260, overflowY: 'auto' }}>
@@ -348,17 +348,17 @@ const ClassroomStudents: React.FC = () => {
                           py: 1,
                           borderRadius: 2,
                           mb: 0.5,
-                          '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.04) },
+                          '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.04) },
                         }}
                       >
-                        <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? "text.primary" : alpha(theme.palette.text.primary, 0.5) }}>
                           {medal || `#${idx + 1}`}
                         </Typography>
                         <Box sx={{ flex: 1 }}>
-                          <Typography sx={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>
+                          <Typography sx={{ fontWeight: 600, color: "text.primary", fontSize: '0.9rem' }}>
                             {student.username}
                           </Typography>
-                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>
                             {(student.story_progress ?? 0).toFixed(0)}% progress · {student.achievements_count ?? 0} badges
                           </Typography>
                         </Box>
@@ -367,8 +367,8 @@ const ClassroomStudents: React.FC = () => {
                           size="small"
                           sx={{
                             fontWeight: 'bold',
-                            bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
-                            color: idx === 0 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
+                            bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.text.primary, 0.08),
+                            color: idx === 0 ? '#FFD700' : alpha(theme.palette.text.primary, 0.7),
                             border: idx === 0 ? '1px solid rgba(255,215,0,0.3)' : 'none',
                           }}
                         />
@@ -384,7 +384,7 @@ const ClassroomStudents: React.FC = () => {
         <Fade in timeout={500}>
           <GradientPaper sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h5" sx={{ color: '#fff', fontWeight: 'bold' }}>
+              <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 'bold' }}>
                 <GroupIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
                 Enrolled Students ({selectedClassroom.students.length})
               </Typography>
@@ -392,15 +392,15 @@ const ClassroomStudents: React.FC = () => {
                 <Button
                   startIcon={<CopyIcon />}
                   onClick={() => copyToClipboard(selectedClassroom.enrollment_code)}
-                  sx={{ color: alpha(theme.palette.common.white, 0.8), textTransform: 'none' }}
+                  sx={{ color: alpha(theme.palette.text.primary, 0.8), textTransform: 'none' }}
                 >
                   {selectedClassroom.enrollment_code}
                 </Button>
               </Tooltip>
             </Box>
-            <Divider sx={{ mb: 2, borderColor: alpha(theme.palette.common.white, 0.15) }} />
+            <Divider sx={{ mb: 2, borderColor: alpha(theme.palette.text.primary, 0.15) }} />
             {selectedClassroom.students.length === 0 ? (
-              <Typography sx={{ color: alpha(theme.palette.common.white, 0.6), py: 4, textAlign: 'center' }}>
+              <Typography sx={{ color: alpha(theme.palette.text.primary, 0.6), py: 4, textAlign: 'center' }}>
                 No students enrolled yet. Share the enrollment code with your students!
               </Typography>
             ) : (
@@ -411,28 +411,28 @@ const ClassroomStudents: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   InputProps={{
-                    startAdornment: <SearchIcon sx={{ color: alpha(theme.palette.common.white, 0.5), mr: 1 }} />,
+                    startAdornment: <SearchIcon sx={{ color: alpha(theme.palette.text.primary, 0.5), mr: 1 }} />,
                   }}
                   sx={{
                     mb: 3,
-                    '& .MuiInputBase-root': { bgcolor: alpha(theme.palette.common.white, 0.05), color: '#fff', borderRadius: 2 },
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: alpha(theme.palette.common.white, 0.2) },
-                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: alpha(theme.palette.common.white, 0.4) },
+                    '& .MuiInputBase-root': { bgcolor: alpha(theme.palette.text.primary, 0.05), color: "text.primary", borderRadius: 2 },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: alpha(theme.palette.text.primary, 0.2) },
+                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: alpha(theme.palette.text.primary, 0.4) },
                   }}
                 />
                 <TableContainer>
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Username</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Story Progress</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Challenges</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Learning</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Python History Quiz</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="center">Cumulative GWAs</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Email</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }}>Joined</TableCell>
-                        <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.common.white, 0.1) }} align="right">Actions</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }}>Username</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }}>Story Progress</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }} align="center">Challenges</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }} align="center">Learning</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }} align="center">Python History Quiz</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }} align="center">Cumulative GWAs</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }}>Email</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }}>Joined</TableCell>
+                        <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), fontWeight: 'bold', borderColor: alpha(theme.palette.text.primary, 0.1) }} align="right">Actions</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -446,8 +446,8 @@ const ClassroomStudents: React.FC = () => {
                         );
                       }).map((student) => (
                         <TableRow key={student.id} sx={{ '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.05) } }}>
-                          <TableCell sx={{ color: '#fff', borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.username}</TableCell>
-                          <TableCell sx={{ borderColor: alpha(theme.palette.common.white, 0.1), minWidth: 150 }}>
+                          <TableCell sx={{ color: "text.primary", borderColor: alpha(theme.palette.text.primary, 0.1) }}>{student.username}</TableCell>
+                          <TableCell sx={{ borderColor: alpha(theme.palette.text.primary, 0.1), minWidth: 150 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                               <LinearProgress
                                 variant="determinate"
@@ -456,25 +456,25 @@ const ClassroomStudents: React.FC = () => {
                                   flex: 1,
                                   height: 8,
                                   borderRadius: 4,
-                                  bgcolor: alpha(theme.palette.common.white, 0.1),
+                                  bgcolor: alpha(theme.palette.text.primary, 0.1),
                                   '& .MuiLinearProgress-bar': {
                                     borderRadius: 4,
                                     background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
                                   },
                                 }}
                               />
-                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.8), minWidth: 36, textAlign: 'right' }}>
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.8), minWidth: 36, textAlign: 'right' }}>
                                 {(student.story_progress ?? 0).toFixed(0)}%
                               </Typography>
                             </Box>
                           </TableCell>
-                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.text.primary, 0.1) }}>
                             <Chip label={student.challenges_completed ?? 0} size="small" sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light, fontWeight: 'bold' }} />
                           </TableCell>
-                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.text.primary, 0.1) }}>
                             <Chip label={`${student.learning_modules_completed ?? 0} / 7`} size="small" sx={{ bgcolor: alpha(theme.palette.warning.main, 0.2), color: theme.palette.warning.light, fontWeight: 'bold' }} />
                           </TableCell>
-                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.text.primary, 0.1) }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                               <Chip
                                 label={`${student.ch1_quiz_score ?? 0} / 5`}
@@ -490,7 +490,7 @@ const ClassroomStudents: React.FC = () => {
                               )}
                             </Box>
                           </TableCell>
-                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                          <TableCell align="center" sx={{ borderColor: alpha(theme.palette.text.primary, 0.1) }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, alignItems: 'center' }}>
                               {(student.story_mode_gwa ?? 0) > 0 ? (
                                 <Chip
@@ -499,7 +499,7 @@ const ClassroomStudents: React.FC = () => {
                                   sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.2), color: theme.palette.secondary.light, fontWeight: 'bold', fontSize: '0.65rem' }}
                                 />
                               ) : (
-                                <Chip label="Story: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
+                                <Chip label="Story: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.text.primary, 0.1), color: alpha(theme.palette.text.primary, 0.4), fontSize: '0.65rem' }} />
                               )}
                               {(student.learning_mode_gwa ?? 0) > 0 ? (
                                 <Chip
@@ -508,7 +508,7 @@ const ClassroomStudents: React.FC = () => {
                                   sx={{ bgcolor: alpha(theme.palette.info.main, 0.2), color: theme.palette.info.light, fontWeight: 'bold', fontSize: '0.65rem' }}
                                 />
                               ) : (
-                                <Chip label="Learning: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
+                                <Chip label="Learning: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.text.primary, 0.1), color: alpha(theme.palette.text.primary, 0.4), fontSize: '0.65rem' }} />
                               )}
                               {(student.thesis_gwa ?? 0) > 0 ? (
                                 <Chip
@@ -517,7 +517,7 @@ const ClassroomStudents: React.FC = () => {
                                   sx={{ bgcolor: alpha(theme.palette.error.main, 0.2), color: theme.palette.error.light, fontWeight: 'bold', fontSize: '0.65rem' }}
                                 />
                               ) : (
-                                <Chip label="Thesis: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.1), color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }} />
+                                <Chip label="Thesis: N/A" size="small" sx={{ bgcolor: alpha(theme.palette.text.primary, 0.1), color: alpha(theme.palette.text.primary, 0.4), fontSize: '0.65rem' }} />
                               )}
                               {(student.complete_gwa ?? 0) > 0 && (
                                 <Chip
@@ -528,11 +528,11 @@ const ClassroomStudents: React.FC = () => {
                               )}
                             </Box>
                           </TableCell>
-                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.8), borderColor: alpha(theme.palette.common.white, 0.1) }}>{student.email}</TableCell>
-                          <TableCell sx={{ color: alpha(theme.palette.common.white, 0.7), borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                          <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.8), borderColor: alpha(theme.palette.text.primary, 0.1) }}>{student.email}</TableCell>
+                          <TableCell sx={{ color: alpha(theme.palette.text.primary, 0.7), borderColor: alpha(theme.palette.text.primary, 0.1) }}>
                             {new Date(student.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                           </TableCell>
-                          <TableCell align="right" sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+                          <TableCell align="right" sx={{ borderColor: alpha(theme.palette.text.primary, 0.1) }}>
                             <Tooltip title="View Detailed Grades">
                               <IconButton
                                 size="small"
@@ -573,15 +573,15 @@ const ClassroomStudents: React.FC = () => {
       </Container>
 
       {/* Password Reset Dialog */}
-      <Dialog open={resetDialogOpen} onClose={() => setResetDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+      <Dialog open={resetDialogOpen} onClose={() => setResetDialogOpen(false)} PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}>
         <DialogTitle>Reset Student Password</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+          <DialogContentText sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
             Are you sure you want to reset the password for <strong>{resetTarget?.username}</strong>? Their password will be set to the default: <code>DjangoQuest2026!</code>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setResetDialogOpen(false)} sx={{ color: '#fff' }} disabled={resetting}>Cancel</Button>
+          <Button onClick={() => setResetDialogOpen(false)} sx={{ color: "text.primary" }} disabled={resetting}>Cancel</Button>
           <Button onClick={handleResetPassword} variant="contained" color="warning" disabled={resetting}>
             {resetting ? <CircularProgress size={24} /> : 'Reset Password'}
           </Button>
@@ -589,15 +589,15 @@ const ClassroomStudents: React.FC = () => {
       </Dialog>
 
       {/* Remove Student Dialog */}
-      <Dialog open={removeDialogOpen} onClose={() => setRemoveDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+      <Dialog open={removeDialogOpen} onClose={() => setRemoveDialogOpen(false)} PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}>
         <DialogTitle>Remove Student</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+          <DialogContentText sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
             Are you sure you want to remove <strong>{removeTarget?.username}</strong> from this classroom?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setRemoveDialogOpen(false)} sx={{ color: '#fff' }} disabled={removing}>Cancel</Button>
+          <Button onClick={() => setRemoveDialogOpen(false)} sx={{ color: "text.primary" }} disabled={removing}>Cancel</Button>
           <Button onClick={handleRemoveStudent} variant="contained" color="error" disabled={removing}>
             {removing ? <CircularProgress size={24} /> : 'Remove Student'}
           </Button>
@@ -605,11 +605,11 @@ const ClassroomStudents: React.FC = () => {
       </Dialog>
 
       {/* View Detailed Grades Dialog */}
-      <Dialog open={detailsDialogOpen} onClose={() => setDetailsDialogOpen(false)} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+      <Dialog open={detailsDialogOpen} onClose={() => setDetailsDialogOpen(false)} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}>
         <DialogTitle sx={{ pb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Detailed Grades for {detailsTarget?.username}</Typography>
-            <IconButton onClick={() => setDetailsDialogOpen(false)} sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+            <IconButton onClick={() => setDetailsDialogOpen(false)} sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
               <CloseIcon />
             </IconButton>
           </Box>
@@ -620,22 +620,22 @@ const ClassroomStudents: React.FC = () => {
               </Box>
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Story GWA</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(detailsTarget?.story_mode_gwa ?? 0) > 0 ? (detailsTarget?.story_mode_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                  <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Story GWA</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', color: "text.primary" }}>{(detailsTarget?.story_mode_gwa ?? 0) > 0 ? (detailsTarget?.story_mode_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Thesis GWA</Typography>
+                  <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Thesis GWA</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light }}>{(detailsTarget?.thesis_gwa ?? 0) > 0 ? (detailsTarget?.thesis_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Overall GWA</Typography>
+                  <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Overall GWA</Typography>
                   <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.success.light }}>{(detailsTarget?.complete_gwa ?? 0) > 0 ? (detailsTarget?.complete_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
                 </Box>
               </Box>
             </Box>
           )}
         </DialogTitle>
-        <DialogContent dividers sx={{ borderColor: alpha(theme.palette.common.white, 0.1) }}>
+        <DialogContent dividers sx={{ borderColor: alpha(theme.palette.text.primary, 0.1) }}>
           {/* ── Story Mode Grades Section ── */}
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.warning.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.warning.main, 0.3)}`, pb: 1 }}>
             📖 Story Mode Grades
@@ -643,20 +643,20 @@ const ClassroomStudents: React.FC = () => {
           {detailsTarget?.detailed_grades && detailsTarget.detailed_grades.length > 0 ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
               {detailsTarget.detailed_grades.map((prof: any, idx: number) => (
-                <Box key={idx} sx={{ p: 2, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 2 }}>
+                <Box key={idx} sx={{ p: 2, bgcolor: alpha(theme.palette.text.primary, 0.05), borderRadius: 2 }}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.primary.light, mb: 1 }}>{prof.professor}</Typography>
                   <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                     <Box>
-                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Final Grade</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.grade === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.grade}</Typography>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Final Grade</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.grade === 'Not Attempted' ? alpha(theme.palette.text.primary, 0.3) : "text.primary" }}>{prof.grade}</Typography>
                     </Box>
                     <Box>
-                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Retakes</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.retakes === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.retakes}</Typography>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Retakes</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.retakes === 'Not Attempted' ? alpha(theme.palette.text.primary, 0.3) : "text.primary" }}>{prof.retakes}</Typography>
                     </Box>
                     <Box>
-                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Removal Passed</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.removal_exam === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Removal Passed</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.removal_exam === 'Not Attempted' ? alpha(theme.palette.text.primary, 0.3) : "text.primary" }}>
                         {prof.removal_exam === true ? "Passed" : (prof.grade === 5.0 && prof.retakes > 0) ? "Failed" : "N/A"}
                       </Typography>
                     </Box>
@@ -672,7 +672,7 @@ const ClassroomStudents: React.FC = () => {
                     const label = aiLabels[prof.professor] || '🤖 AI Minigame';
                     const hasSkips = Object.entries(prof.ai_data).some(([k, v]) => k.includes('skipped') && v === true);
                     return (
-                    <Box sx={{ mt: 2, pt: 1, borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }}>
+                    <Box sx={{ mt: 2, pt: 1, borderTop: `1px solid ${alpha(theme.palette.text.primary, 0.1)}` }}>
                       <Typography variant="caption" sx={{ color: theme.palette.info.light, fontWeight: 'bold', display: 'block', mb: 1 }}>
                         {label} Status
                       </Typography>
@@ -690,7 +690,7 @@ const ClassroomStudents: React.FC = () => {
               ))}
             </Box>
           ) : (
-            <Typography sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 3 }}>
+            <Typography sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 3 }}>
               No story mode grades yet.
             </Typography>
           )}
@@ -704,16 +704,16 @@ const ClassroomStudents: React.FC = () => {
               {detailsTarget.learning_mode_detailed_grades.map((entry: any, idx: number) => (
                 <Box key={idx} sx={{ p: 1.5, bgcolor: alpha(theme.palette.info.main, 0.08), borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="body2" sx={{ color: theme.palette.info.light, fontWeight: 'bold' }}>{entry.professor}</Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#fff' }}>{entry.grade}</Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: "text.primary" }}>{entry.grade}</Typography>
                 </Box>
               ))}
             </Box>
           ) : (
-            <Typography sx={{ color: alpha(theme.palette.common.white, 0.7) }}>No learning mode grades yet.</Typography>
+            <Typography sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>No learning mode grades yet.</Typography>
           )}
 
           {/* ── Thesis Status + Student Help Progress ── */}
-          <Divider sx={{ my: 3, borderColor: alpha(theme.palette.common.white, 0.1) }} />
+          <Divider sx={{ my: 3, borderColor: alpha(theme.palette.text.primary, 0.1) }} />
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.error.main, 0.3)}`, pb: 1 }}>
             🎓 Thesis Defense Status
           </Typography>
@@ -726,19 +726,19 @@ const ClassroomStudents: React.FC = () => {
                 />
                 <Chip
                   label={detailsTarget.thesis_status.completed ? '✅ Thesis Defended' : '❌ Not Yet Defended'}
-                  sx={{ bgcolor: detailsTarget.thesis_status.completed ? alpha(theme.palette.success.main, 0.15) : alpha(theme.palette.common.white, 0.05), color: detailsTarget.thesis_status.completed ? theme.palette.success.light : alpha(theme.palette.common.white, 0.5), fontWeight: 'bold' }}
+                  sx={{ bgcolor: detailsTarget.thesis_status.completed ? alpha(theme.palette.success.main, 0.15) : alpha(theme.palette.text.primary, 0.05), color: detailsTarget.thesis_status.completed ? theme.palette.success.light : alpha(theme.palette.text.primary, 0.5), fontWeight: 'bold' }}
                 />
                 {detailsTarget.thesis_status.completed_at && (
                   <Chip
                     label={`Defended: ${new Date(detailsTarget.thesis_status.completed_at).toLocaleDateString()}`}
                     size="small"
-                    sx={{ bgcolor: alpha(theme.palette.common.white, 0.05), color: alpha(theme.palette.common.white, 0.6) }}
+                    sx={{ bgcolor: alpha(theme.palette.text.primary, 0.05), color: alpha(theme.palette.text.primary, 0.6) }}
                   />
                 )}
               </Box>
             </Box>
           ) : (
-            <Typography sx={{ color: alpha(theme.palette.common.white, 0.5), mb: 3 }}>No thesis data yet.</Typography>
+            <Typography sx={{ color: alpha(theme.palette.text.primary, 0.5), mb: 3 }}>No thesis data yet.</Typography>
           )}
         </DialogContent>
       </Dialog>

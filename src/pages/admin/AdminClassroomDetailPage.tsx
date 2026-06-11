@@ -146,52 +146,52 @@ const AdminClassroomDetailPage: React.FC = () => {
 
   if (loading) {
     return (<Box>
-      <Skeleton variant="text" width={300} height={40} sx={{ bgcolor: '#334155' }} />
-      <Skeleton variant="rectangular" height={200} sx={{ bgcolor: '#334155', mt: 2, borderRadius: 2 }} />
+      <Skeleton variant="text" width={300} height={40} sx={{ bgcolor: 'var(--mui-palette-divider)' }} />
+      <Skeleton variant="rectangular" height={200} sx={{ bgcolor: 'var(--mui-palette-divider)', mt: 2, borderRadius: 2 }} />
     </Box>);
   }
 
   if (error || !data) {
     return (<Box>
-      <Button startIcon={<BackIcon />} onClick={() => navigate('/admin-dashboard/classrooms')} sx={{ color: '#94a3b8', mb: 2, textTransform: 'none' }}>Back</Button>
+      <Button startIcon={<BackIcon />} onClick={() => navigate('/admin-dashboard/classrooms')} sx={{ color: 'var(--mui-palette-text-secondary)', mb: 2, textTransform: 'none' }}>Back</Button>
       <Alert severity="error" sx={{ bgcolor: alpha('#ef4444', 0.1), color: '#fca5a5', border: '1px solid', borderColor: alpha('#ef4444', 0.3) }}>{error || 'Not found.'}</Alert>
     </Box>);
   }
 
   const stats = [
-    { label: 'Students', value: data.student_count, icon: <GroupIcon />, color: '#2dd4bf' },
+    { label: 'Students', value: data.student_count, icon: <GroupIcon />, color: '#256d4f' },
     { label: 'Feedback', value: data.feedback_count, icon: <FeedbackIcon />, color: '#f97316' },
-    { label: 'Announcements', value: data.announcement_count, icon: <CampaignIcon />, color: '#a78bfa' },
+    { label: 'Announcements', value: data.announcement_count, icon: <CampaignIcon />, color: '#315a7d' },
     { label: 'Avg Rating', value: data.avg_classroom_rating ? `${data.avg_classroom_rating} ★` : 'N/A', icon: <StarIcon />, color: '#fbbf24' },
   ];
 
-  const dialogPaper = { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 3, border: '1px solid #334155' };
-  const fieldSx = { '& .MuiInputBase-root': { bgcolor: '#0f172a', color: '#e2e8f0', borderRadius: 2 }, '& fieldset': { borderColor: '#334155' }, '& .MuiInputLabel-root': { color: '#64748b' } };
+  const dialogPaper = { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 3, border: '1px solid var(--mui-palette-divider)' };
+  const fieldSx = { '& .MuiInputBase-root': { bgcolor: 'var(--mui-palette-background-default)', color: 'var(--mui-palette-text-primary)', borderRadius: 2 }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' }, '& .MuiInputLabel-root': { color: 'var(--mui-palette-text-secondary)' } };
 
   return (
     <Box>
-      <Button startIcon={<BackIcon />} onClick={() => navigate('/admin-dashboard/classrooms')} sx={{ color: '#94a3b8', mb: 2, textTransform: 'none' }}>Back to Classrooms</Button>
+      <Button startIcon={<BackIcon />} onClick={() => navigate('/admin-dashboard/classrooms')} sx={{ color: 'var(--mui-palette-text-secondary)', mb: 2, textTransform: 'none' }}>Back to Classrooms</Button>
 
       {/* Header */}
-      <Paper sx={{ p: 3, bgcolor: '#1e293b', borderRadius: 3, border: '1px solid #334155', mb: 3 }}>
+      <Paper sx={{ p: 3, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 3, border: '1px solid var(--mui-palette-divider)', mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{ width: 52, height: 52, borderRadius: 2, bgcolor: alpha('#fbbf24', 0.15), display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <SchoolIcon sx={{ color: '#fbbf24', fontSize: 28 }} />
             </Box>
             <Box>
-              <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 700 }}>{data.name}</Typography>
-              <Typography variant="body2" sx={{ color: '#94a3b8' }}>
+              <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 700 }}>{data.name}</Typography>
+              <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
                 Teacher: {data.teacher.first_name} {data.teacher.last_name} ({data.teacher.email})
               </Typography>
-              <Typography variant="caption" sx={{ color: '#64748b' }}>Code: {data.enrollment_code}</Typography>
+              <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Code: {data.enrollment_code}</Typography>
             </Box>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button size="small" startIcon={<EditIcon />} onClick={openEdit} variant="outlined"
-              sx={{ color: '#818cf8', borderColor: '#334155', textTransform: 'none' }}>Edit</Button>
+              sx={{ color: '#256d4f', borderColor: 'var(--mui-palette-divider)', textTransform: 'none' }}>Edit</Button>
             <Button size="small" startIcon={<DeleteIcon />} onClick={() => setDeleteOpen(true)} variant="outlined"
-              sx={{ color: '#ef4444', borderColor: '#334155', textTransform: 'none' }}>Delete</Button>
+              sx={{ color: '#ef4444', borderColor: 'var(--mui-palette-divider)', textTransform: 'none' }}>Delete</Button>
           </Box>
         </Box>
       </Paper>
@@ -199,24 +199,24 @@ const AdminClassroomDetailPage: React.FC = () => {
       {/* Stats */}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2, mb: 3 }}>
         {stats.map((s) => (
-          <Paper key={s.label} sx={{ p: 2, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155', textAlign: 'center' }}>
+          <Paper key={s.label} sx={{ p: 2, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)', textAlign: 'center' }}>
             <Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: alpha(s.color, 0.15), display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: s.color, mb: 1 }}>{s.icon}</Box>
-            <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 700 }}>{s.value}</Typography>
-            <Typography variant="caption" sx={{ color: '#64748b' }}>{s.label}</Typography>
+            <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 700 }}>{s.value}</Typography>
+            <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>{s.label}</Typography>
           </Paper>
         ))}
       </Box>
 
       {/* Students Roster */}
-      <Paper sx={{ bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155', overflow: 'hidden' }}>
-        <Box sx={{ p: 2, borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="subtitle1" sx={{ color: '#e2e8f0', fontWeight: 600 }}>Student Roster</Typography>
+      <Paper sx={{ bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)', overflow: 'hidden' }}>
+        <Box sx={{ p: 2, borderBottom: '1px solid var(--mui-palette-divider)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="subtitle1" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>Student Roster</Typography>
           <Button size="small" startIcon={<AddIcon />} onClick={() => setEnrollOpen(true)}
-            sx={{ textTransform: 'none', color: '#2dd4bf', borderColor: '#334155' }} variant="outlined">Add Student</Button>
+            sx={{ textTransform: 'none', color: '#256d4f', borderColor: 'var(--mui-palette-divider)' }} variant="outlined">Add Student</Button>
         </Box>
         {data.students.length === 0 ? (
           <Box sx={{ p: 4, textAlign: 'center' }}>
-            <GroupIcon sx={{ fontSize: 48, color: '#334155', mb: 1 }} />
+            <GroupIcon sx={{ fontSize: 48, color: 'var(--mui-palette-divider)', mb: 1 }} />
             <Typography sx={{ color: '#475569' }}>No students enrolled yet.</Typography>
           </Box>
         ) : (
@@ -224,22 +224,22 @@ const AdminClassroomDetailPage: React.FC = () => {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #334155', fontWeight: 600 }}>Name</TableCell>
-                  <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #334155', fontWeight: 600 }}>Email</TableCell>
-                  <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #334155', fontWeight: 600 }}>Status</TableCell>
-                  <TableCell sx={{ color: '#64748b', borderBottom: '1px solid #334155', fontWeight: 600 }} align="right">Actions</TableCell>
+                  <TableCell sx={{ color: 'var(--mui-palette-text-secondary)', borderBottom: '1px solid var(--mui-palette-divider)', fontWeight: 600 }}>Name</TableCell>
+                  <TableCell sx={{ color: 'var(--mui-palette-text-secondary)', borderBottom: '1px solid var(--mui-palette-divider)', fontWeight: 600 }}>Email</TableCell>
+                  <TableCell sx={{ color: 'var(--mui-palette-text-secondary)', borderBottom: '1px solid var(--mui-palette-divider)', fontWeight: 600 }}>Status</TableCell>
+                  <TableCell sx={{ color: 'var(--mui-palette-text-secondary)', borderBottom: '1px solid var(--mui-palette-divider)', fontWeight: 600 }} align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.students.map((s) => (
-                  <TableRow key={s.id} sx={{ '&:hover': { bgcolor: alpha('#818cf8', 0.05) } }}>
-                    <TableCell sx={{ color: '#e2e8f0', borderBottom: '1px solid #1e293b' }}>{s.first_name} {s.last_name}</TableCell>
-                    <TableCell sx={{ color: '#94a3b8', borderBottom: '1px solid #1e293b' }}>{s.email}</TableCell>
-                    <TableCell sx={{ borderBottom: '1px solid #1e293b' }}>
+                  <TableRow key={s.id} sx={{ '&:hover': { bgcolor: alpha('#256d4f', 0.05) } }}>
+                    <TableCell sx={{ color: 'var(--mui-palette-text-primary)', borderBottom: '1px solid var(--mui-palette-background-paper)' }}>{s.first_name} {s.last_name}</TableCell>
+                    <TableCell sx={{ color: 'var(--mui-palette-text-secondary)', borderBottom: '1px solid var(--mui-palette-background-paper)' }}>{s.email}</TableCell>
+                    <TableCell sx={{ borderBottom: '1px solid var(--mui-palette-background-paper)' }}>
                       <Chip label={s.is_active ? 'Active' : 'Banned'} size="small"
                         sx={{ bgcolor: s.is_active ? alpha('#22c55e', 0.15) : alpha('#ef4444', 0.15), color: s.is_active ? '#22c55e' : '#ef4444', fontWeight: 600, fontSize: '0.7rem' }} />
                     </TableCell>
-                    <TableCell align="right" sx={{ borderBottom: '1px solid #1e293b' }}>
+                    <TableCell align="right" sx={{ borderBottom: '1px solid var(--mui-palette-background-paper)' }}>
                       <Tooltip title="Remove from classroom">
                         <IconButton size="small" onClick={() => setUnenrollTarget(s)} sx={{ color: '#ef4444' }}><RemoveIcon fontSize="small" /></IconButton>
                       </Tooltip>
@@ -267,9 +267,9 @@ const AdminClassroomDetailPage: React.FC = () => {
           </FormControl>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setEditOpen(false)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => setEditOpen(false)} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={handleEdit} variant="contained" disabled={eSubmitting || !eName}
-            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #818cf8, #a78bfa)' }}>
+            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #256d4f, #315a7d)' }}>
             {eSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         </DialogActions>
@@ -279,12 +279,12 @@ const AdminClassroomDetailPage: React.FC = () => {
       <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)} PaperProps={{ sx: dialogPaper }}>
         <DialogTitle sx={{ fontWeight: 600, color: '#ef4444' }}>Delete Classroom?</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: '#94a3b8' }}>
-            This will permanently delete <strong style={{ color: '#e2e8f0' }}>{data.name}</strong> and unenroll all {data.student_count} students. This cannot be undone.
+          <DialogContentText sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+            This will permanently delete <strong style={{ color: 'var(--mui-palette-text-primary)' }}>{data.name}</strong> and unenroll all {data.student_count} students. This cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteOpen(false)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => setDeleteOpen(false)} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={handleDelete} variant="contained"
             sx={{ bgcolor: '#ef4444', textTransform: 'none', fontWeight: 600, '&:hover': { bgcolor: '#dc2626' } }}>
             Delete Permanently
@@ -300,17 +300,17 @@ const AdminClassroomDetailPage: React.FC = () => {
             <TextField placeholder="Search student by name or email..." value={enrollSearch} onChange={(e) => setEnrollSearch(e.target.value)}
               fullWidth size="small" sx={fieldSx} onKeyDown={(e) => e.key === 'Enter' && handleEnrollSearch()} />
             <Button onClick={handleEnrollSearch} variant="contained" disabled={enrollLoading || !enrollSearch}
-              sx={{ textTransform: 'none', bgcolor: '#818cf8', minWidth: 80 }}>Search</Button>
+              sx={{ textTransform: 'none', bgcolor: '#256d4f', minWidth: 80 }}>Search</Button>
           </Box>
           {enrollResults.length > 0 && (
             <Box sx={{ mt: 2, maxHeight: 300, overflow: 'auto' }}>
               {enrollResults.map(u => (
-                <Box key={u.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1, px: 1, borderBottom: '1px solid #334155', '&:hover': { bgcolor: alpha('#818cf8', 0.05) } }}>
+                <Box key={u.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1, px: 1, borderBottom: '1px solid var(--mui-palette-divider)', '&:hover': { bgcolor: alpha('#256d4f', 0.05) } }}>
                   <Box>
-                    <Typography variant="body2" sx={{ color: '#e2e8f0' }}>{u.first_name} {u.last_name}</Typography>
-                    <Typography variant="caption" sx={{ color: '#64748b' }}>{u.email}</Typography>
+                    <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-primary)' }}>{u.first_name} {u.last_name}</Typography>
+                    <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>{u.email}</Typography>
                   </Box>
-                  <Button size="small" onClick={() => handleEnroll(u.id)} sx={{ color: '#2dd4bf', textTransform: 'none' }}>Enroll</Button>
+                  <Button size="small" onClick={() => handleEnroll(u.id)} sx={{ color: '#256d4f', textTransform: 'none' }}>Enroll</Button>
                 </Box>
               ))}
             </Box>
@@ -325,12 +325,12 @@ const AdminClassroomDetailPage: React.FC = () => {
       <Dialog open={!!unenrollTarget} onClose={() => setUnenrollTarget(null)} PaperProps={{ sx: dialogPaper }}>
         <DialogTitle sx={{ fontWeight: 600 }}>Remove Student?</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: '#94a3b8' }}>
-            Remove <strong style={{ color: '#e2e8f0' }}>{unenrollTarget?.first_name} {unenrollTarget?.last_name}</strong> from this classroom?
+          <DialogContentText sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+            Remove <strong style={{ color: 'var(--mui-palette-text-primary)' }}>{unenrollTarget?.first_name} {unenrollTarget?.last_name}</strong> from this classroom?
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setUnenrollTarget(null)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => setUnenrollTarget(null)} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={handleUnenroll} variant="contained"
             sx={{ bgcolor: '#ef4444', textTransform: 'none', fontWeight: 600, '&:hover': { bgcolor: '#dc2626' } }}>
             Remove

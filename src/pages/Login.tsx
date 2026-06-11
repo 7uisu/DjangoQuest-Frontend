@@ -67,9 +67,7 @@ const Login: React.FC = () => {
       sx={{
         flex: 1,
         width: '100%',
-        background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 50%, ${theme.palette.secondary.dark} 100%)`,
-        backgroundSize: 'cover',
-        backdropFilter: 'blur(8px)',
+        backgroundColor: 'background.default',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -80,75 +78,50 @@ const Login: React.FC = () => {
         overflow: 'auto',
       }}
     >
-      {/* Background pattern */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.05,
-          backgroundImage: 'repeating-linear-gradient(45deg, #fff, #fff 10px, transparent 10px, transparent 20px)',
-          zIndex: 1,
-        }}
-      />
-      
       <Container maxWidth="md" sx={{ position: 'relative', zIndex: 2 }}>
         <Fade in={true} timeout={800}>
           <Paper
-            elevation={24}
+            elevation={0}
             sx={{
               display: 'flex',
               flexDirection: isMobile ? 'column' : 'row',
               width: '100%',
               overflow: 'hidden',
-              borderRadius: 4,
+              borderRadius: 2,
               backgroundColor: theme.palette.background.paper,
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: '0 16px 42px rgba(31, 41, 51, 0.08)',
             }}
           >
-            {/* Decorative side panel - hidden on mobile */}
             {!isMobile && (
               <Box
                 sx={{
                   flex: '0 0 40%',
-                  background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-                  color: 'white',
+                  backgroundColor: theme.palette.mode === 'light' ? '#eef6f1' : 'background.default',
+                  color: 'text.primary',
                   p: 4,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
-                  position: 'relative',
-                  overflow: 'hidden',
+                  borderRight: '1px solid',
+                  borderColor: 'divider',
                 }}
               >
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    opacity: 0.1,
-                    backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
-                    backgroundSize: '20px 20px',
-                  }}
-                />
                 
-                <Typography variant="h3" component="h1" fontWeight="bold" sx={{ mb: 2, position: 'relative' }}>
+                <Typography variant="h4" component="h1" fontWeight="bold" sx={{ mb: 2 }}>
                   Welcome Back
                 </Typography>
                 
-                <Typography variant="body1" sx={{ mb: 4, opacity: 0.9, position: 'relative' }}>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
                   Continue your learning journey with our interactive tutorials and track your progress.
                 </Typography>
                 
-                <Box sx={{ mt: 'auto', position: 'relative' }}>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                <Box sx={{ mt: 'auto' }}>
+                  <Typography variant="body2" color="text.secondary">
                     "The expert in anything was once a beginner."
                   </Typography>
-                  <Typography variant="caption" sx={{ opacity: 0.7, mt: 1, display: 'block' }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                     — Helen Hayes
                   </Typography>
                 </Box>
@@ -294,10 +267,6 @@ const Login: React.FC = () => {
                     textTransform: 'none',
                     fontSize: '1rem',
                     fontWeight: 600,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    '&:hover': {
-                      boxShadow: '0 6px 16px rgba(0,0,0,0.2)',
-                    }
                   }}
                 >
                   {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}

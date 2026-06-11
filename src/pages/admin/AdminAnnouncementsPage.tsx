@@ -130,16 +130,16 @@ const AdminAnnouncementsPage: React.FC = () => {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600 }}>Announcements</Typography>
-          <Typography variant="body2" sx={{ color: '#64748b' }}>Manage platform-wide and classroom announcements.</Typography>
+          <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>Announcements</Typography>
+          <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Manage platform-wide and classroom announcements.</Typography>
         </Box>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => setDialogOpen(true)}
           sx={{
-            bgcolor: '#818cf8', textTransform: 'none', fontWeight: 600, borderRadius: 2,
-            '&:hover': { bgcolor: '#6366f1' },
+            bgcolor: '#256d4f', textTransform: 'none', fontWeight: 600, borderRadius: 2,
+            '&:hover': { bgcolor: '#174834' },
           }}
         >
           New Platform Announcement
@@ -152,8 +152,8 @@ const AdminAnnouncementsPage: React.FC = () => {
         </Alert>
       )}
 
-      <Box sx={{ borderBottom: 1, borderColor: '#334155', mb: 3 }}>
-        <Tabs value={tabIndex} onChange={(_, v) => setTabIndex(v)} sx={{ '& .MuiTab-root': { color: '#94a3b8', textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#818cf8 !important' }, '& .MuiTabs-indicator': { bgcolor: '#818cf8' } }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'var(--mui-palette-divider)', mb: 3 }}>
+        <Tabs value={tabIndex} onChange={(_, v) => setTabIndex(v)} sx={{ '& .MuiTab-root': { color: 'var(--mui-palette-text-secondary)', textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#256d4f !important' }, '& .MuiTabs-indicator': { bgcolor: '#256d4f' } }}>
           <Tab label={`Platform Announcements (${announcements.filter(a => a.announcement_type === 'platform').length})`} />
           <Tab label={`Classroom Announcements (${announcements.filter(a => a.announcement_type === 'classroom').length})`} />
         </Tabs>
@@ -162,14 +162,14 @@ const AdminAnnouncementsPage: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <Paper key={i} sx={{ p: 2.5, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155' }}>
-              <Skeleton variant="text" width={250} sx={{ bgcolor: '#334155' }} />
-              <Skeleton variant="text" width="90%" sx={{ bgcolor: '#334155', mt: 1 }} />
+            <Paper key={i} sx={{ p: 2.5, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)' }}>
+              <Skeleton variant="text" width={250} sx={{ bgcolor: 'var(--mui-palette-divider)' }} />
+              <Skeleton variant="text" width="90%" sx={{ bgcolor: 'var(--mui-palette-divider)', mt: 1 }} />
             </Paper>
           ))
         ) : announcements.length === 0 ? (
-          <Paper sx={{ p: 4, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155', textAlign: 'center' }}>
-            <CampaignIcon sx={{ fontSize: 48, color: '#334155', mb: 1 }} />
+          <Paper sx={{ p: 4, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)', textAlign: 'center' }}>
+            <CampaignIcon sx={{ fontSize: 48, color: 'var(--mui-palette-divider)', mb: 1 }} />
             <Typography sx={{ color: '#475569' }}>No announcements yet.</Typography>
           </Paper>
         ) : (
@@ -177,7 +177,7 @@ const AdminAnnouncementsPage: React.FC = () => {
             <Paper
               key={a.id}
               sx={{
-                p: 2.5, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155',
+                p: 2.5, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)',
                 '&:hover': { borderColor: '#475569' }, transition: 'border-color 0.2s',
               }}
             >
@@ -188,32 +188,32 @@ const AdminAnnouncementsPage: React.FC = () => {
                       label={a.announcement_type === 'platform' ? 'Platform' : 'Classroom'}
                       size="small"
                       sx={{
-                        bgcolor: a.announcement_type === 'platform' ? alpha('#818cf8', 0.2) : alpha('#2dd4bf', 0.2),
-                        color: a.announcement_type === 'platform' ? '#818cf8' : '#2dd4bf',
+                        bgcolor: a.announcement_type === 'platform' ? alpha('#256d4f', 0.2) : alpha('#256d4f', 0.2),
+                        color: a.announcement_type === 'platform' ? '#256d4f' : '#256d4f',
                         fontWeight: 600, fontSize: '0.7rem',
                       }}
                     />
                     {a.target_classrooms.map((c) => (
                       <Chip
                         key={c.id} label={c.name} size="small"
-                        sx={{ bgcolor: alpha('#2dd4bf', 0.1), color: '#2dd4bf', fontSize: '0.65rem' }}
+                        sx={{ bgcolor: alpha('#256d4f', 0.1), color: '#256d4f', fontSize: '0.65rem' }}
                       />
                     ))}
                     <Typography variant="caption" sx={{ color: '#475569' }}>{timeAgo(a.created_at)}</Typography>
                   </Box>
-                  <Typography variant="subtitle1" sx={{ color: '#e2e8f0', fontWeight: 600 }}>{a.title}</Typography>
-                  <Typography variant="body2" sx={{ color: '#94a3b8', mt: 0.5 }}>{a.body}</Typography>
+                  <Typography variant="subtitle1" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>{a.title}</Typography>
+                  <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)', mt: 0.5 }}>{a.body}</Typography>
                   <Typography variant="caption" sx={{ color: '#475569', mt: 1, display: 'block' }}>
                     by {a.author_name} ({a.author_email})
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 0.5 }}>
                   <IconButton onClick={() => openEdit(a)} size="small"
-                    sx={{ color: '#64748b', '&:hover': { color: '#818cf8', bgcolor: alpha('#818cf8', 0.1) } }}>
+                    sx={{ color: 'var(--mui-palette-text-secondary)', '&:hover': { color: '#256d4f', bgcolor: alpha('#256d4f', 0.1) } }}>
                     <EditIcon fontSize="small" />
                   </IconButton>
                   <IconButton onClick={() => handleDelete(a.id)} size="small"
-                    sx={{ color: '#64748b', '&:hover': { color: '#ef4444', bgcolor: alpha('#ef4444', 0.1) } }}>
+                    sx={{ color: 'var(--mui-palette-text-secondary)', '&:hover': { color: '#ef4444', bgcolor: alpha('#ef4444', 0.1) } }}>
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </Box>
@@ -225,23 +225,23 @@ const AdminAnnouncementsPage: React.FC = () => {
 
       {/* Create Dialog */}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth
-        PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 3 } }}
+        PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 3 } }}
       >
         <DialogTitle sx={{ fontWeight: 600 }}>New Platform Announcement</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus fullWidth label="Title" value={title} onChange={(e) => setTitle(e.target.value)}
-            sx={{ mt: 1, mb: 2, '& .MuiInputBase-root': { color: '#e2e8f0', bgcolor: '#0f172a' }, '& label': { color: '#64748b' }, '& fieldset': { borderColor: '#334155' } }}
+            sx={{ mt: 1, mb: 2, '& .MuiInputBase-root': { color: 'var(--mui-palette-text-primary)', bgcolor: 'var(--mui-palette-background-default)' }, '& label': { color: 'var(--mui-palette-text-secondary)' }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }}
           />
           <TextField
             fullWidth multiline rows={4} label="Body" value={body} onChange={(e) => setBody(e.target.value)}
-            sx={{ '& .MuiInputBase-root': { color: '#e2e8f0', bgcolor: '#0f172a' }, '& label': { color: '#64748b' }, '& fieldset': { borderColor: '#334155' } }}
+            sx={{ '& .MuiInputBase-root': { color: 'var(--mui-palette-text-primary)', bgcolor: 'var(--mui-palette-background-default)' }, '& label': { color: 'var(--mui-palette-text-secondary)' }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }}
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDialogOpen(false)} sx={{ color: '#94a3b8' }}>Cancel</Button>
+          <Button onClick={() => setDialogOpen(false)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
           <Button onClick={handleCreate} variant="contained" disabled={submitting || !title.trim() || !body.trim()}
-            sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' }, textTransform: 'none' }}
+            sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' }, textTransform: 'none' }}
           >
             {submitting ? 'Publishing…' : 'Publish'}
           </Button>
@@ -250,18 +250,18 @@ const AdminAnnouncementsPage: React.FC = () => {
 
       {/* Edit Dialog */}
       <Dialog open={!!editTarget} onClose={() => setEditTarget(null)} maxWidth="sm" fullWidth
-        PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 3 } }}>
+        PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 3 } }}>
         <DialogTitle sx={{ fontWeight: 600 }}>Edit Announcement</DialogTitle>
         <DialogContent>
           <TextField autoFocus fullWidth label="Title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)}
-            sx={{ mt: 1, mb: 2, '& .MuiInputBase-root': { color: '#e2e8f0', bgcolor: '#0f172a' }, '& label': { color: '#64748b' }, '& fieldset': { borderColor: '#334155' } }} />
+            sx={{ mt: 1, mb: 2, '& .MuiInputBase-root': { color: 'var(--mui-palette-text-primary)', bgcolor: 'var(--mui-palette-background-default)' }, '& label': { color: 'var(--mui-palette-text-secondary)' }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }} />
           <TextField fullWidth multiline rows={4} label="Body" value={editBody} onChange={(e) => setEditBody(e.target.value)}
-            sx={{ '& .MuiInputBase-root': { color: '#e2e8f0', bgcolor: '#0f172a' }, '& label': { color: '#64748b' }, '& fieldset': { borderColor: '#334155' } }} />
+            sx={{ '& .MuiInputBase-root': { color: 'var(--mui-palette-text-primary)', bgcolor: 'var(--mui-palette-background-default)' }, '& label': { color: 'var(--mui-palette-text-secondary)' }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }} />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setEditTarget(null)} sx={{ color: '#94a3b8' }}>Cancel</Button>
+          <Button onClick={() => setEditTarget(null)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
           <Button onClick={handleEdit} variant="contained" disabled={editSubmitting || !editTitle.trim()}
-            sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' }, textTransform: 'none' }}>
+            sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' }, textTransform: 'none' }}>
             {editSubmitting ? 'Saving…' : 'Save Changes'}
           </Button>
         </DialogActions>

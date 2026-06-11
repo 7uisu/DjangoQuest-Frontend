@@ -305,7 +305,7 @@ const Dashboard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: "background.default" }}>
         <LoadingSpinner size={90} message="Syncing Character Data..." />
       </Box>
     );
@@ -313,8 +313,8 @@ const Dashboard: React.FC = () => {
 
   if (!user) {
     return (
-      <Box sx={{ minHeight: '100vh', width: '100%', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
-        <Typography variant="h3" sx={{ color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>Not Authenticated</Typography>
+      <Box sx={{ minHeight: '100vh', width: '100%', backgroundColor: "background.default", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+        <Typography variant="h3" sx={{ color: 'var(--mui-palette-text-primary)',  }}>Not Authenticated</Typography>
         <Button variant="contained" size="large" sx={{ borderRadius: 8, padding: '12px 32px', background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`, boxShadow: '0 4px 20px rgba(0,0,0,0.25)', '&:hover': { background: `linear-gradient(90deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`, transform: 'translateY(-2px)' } }}>Log In</Button>
       </Box>
     );
@@ -327,12 +327,12 @@ const Dashboard: React.FC = () => {
   const xpProgress = ((currentXP % xpPerLevel) / xpPerLevel) * 100;
 
   return (
-    <Box sx={{ minHeight: '100vh', width: '100vw', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, backgroundAttachment: 'fixed', backgroundSize: 'cover', display: 'flex', justifyContent: 'center', pt: 10, pb: 6 }}>
+    <Box sx={{ minHeight: '100vh', width: '100vw', backgroundColor: "background.default", backgroundAttachment: 'fixed', backgroundSize: 'cover', display: 'flex', justifyContent: 'center', pt: 10, pb: 6 }}>
       <Container maxWidth="lg">
         <Fade in={true} timeout={800}>
           <Box sx={{ mb: 5 }}>
-            <Typography variant="h3" sx={{ color: '#ffffff', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>Welcome back, {user.username}!</Typography>
-            <Typography variant="h6" sx={{ color: alpha(theme.palette.common.white, 0.8), textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>Check out your latest achievements and track your progress.</Typography>
+            <Typography variant="h3" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 'bold',  }}>Welcome back, {user.username}!</Typography>
+            <Typography variant="h6" sx={{ color: alpha(theme.palette.text.primary, 0.8),  }}>Check out your latest achievements and track your progress.</Typography>
           </Box>
         </Fade>
 
@@ -345,8 +345,8 @@ const Dashboard: React.FC = () => {
                 onClick={() => setAnnDialog(true)}
                 startIcon={<CampaignIcon />}
                 sx={{
-                  color: '#fff', borderColor: alpha('#fff', 0.3), textTransform: 'none', borderRadius: 8, px: 3,
-                  '&:hover': { borderColor: '#fff', bgcolor: alpha('#fff', 0.1) }
+                  color: "text.primary", borderColor: alpha(theme.palette.text.primary, 0.3), textTransform: 'none', borderRadius: 8, px: 3,
+                  '&:hover': { borderColor: "text.primary", bgcolor: alpha(theme.palette.text.primary, 0.1) }
                 }}
               >
                 View Announcements
@@ -365,7 +365,7 @@ const Dashboard: React.FC = () => {
                   </ProfileAvatar>
                   {!editMode && (
                     <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
-                      <Button startIcon={<EditIcon />} variant="outlined" size="small" onClick={() => setEditMode(true)} sx={{ borderRadius: 8, color: '#ffffff', borderColor: alpha(theme.palette.common.white, 0.5), '&:hover': { borderColor: '#ffffff' } }}>Edit Profile</Button>
+                      <Button startIcon={<EditIcon />} variant="outlined" size="small" onClick={() => setEditMode(true)} sx={{ borderRadius: 8, color: 'var(--mui-palette-text-primary)', borderColor: alpha(theme.palette.text.primary, 0.5), '&:hover': { borderColor: 'var(--mui-palette-text-primary)' } }}>Edit Profile</Button>
                     </Box>
                   )}
                   {editMode && (
@@ -373,41 +373,41 @@ const Dashboard: React.FC = () => {
                       <input accept="image/*" style={{ display: 'none' }} id="avatar-upload" type="file" onChange={handleAvatarChange} />
                       <label htmlFor="avatar-upload">
                         <IconButton color="primary" component="span" sx={{ bgcolor: alpha(theme.palette.primary.main, 0.8), '&:hover': { bgcolor: theme.palette.primary.main } }}>
-                          <PhotoCameraIcon sx={{ color: '#fff' }} />
+                          <PhotoCameraIcon sx={{ color: "text.primary" }} />
                         </IconButton>
                       </label>
                     </Box>
                   )}
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 0.5, color: '#ffffff' }}>{formData.first_name} {formData.last_name}</Typography>
-                  <Typography variant="subtitle1" sx={{ color: alpha(theme.palette.common.white, 0.8), mb: 1 }}>@{user.username}</Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 0.5, color: 'var(--mui-palette-text-primary)' }}>{formData.first_name} {formData.last_name}</Typography>
+                  <Typography variant="subtitle1" sx={{ color: alpha(theme.palette.text.primary, 0.8), mb: 1 }}>@{user.username}</Typography>
                   <Chip icon={user.is_verified ? <VerifiedIcon /> : <UnverifiedIcon />} label={user.is_verified ? "Verified" : "Unverified"} color={user.is_verified ? "success" : "warning"} sx={{ mb: 3 }} />
                 </Box>
-                <Divider sx={{ my: 3 }}><Chip label="User Info" sx={{ color: '#ffffff' }} /></Divider>
+                <Divider sx={{ my: 3 }}><Chip label="User Info" sx={{ color: 'var(--mui-palette-text-primary)' }} /></Divider>
                 <Box sx={{ mt: 2 }}>
                   {!editMode ? (
                     <>
-                      <Typography variant="body1" gutterBottom sx={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Email:</span><span>{user.email}</span></Typography>
-                      <Typography variant="body1" gutterBottom sx={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Member since:</span><span>{new Date(user.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span></Typography>
-                      <Typography variant="body1" gutterBottom sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', color: '#ffffff' }}><span style={{ fontWeight: 'bold' }}>Level:</span><span>Level {currentLevel}</span></Typography>
+                      <Typography variant="body1" gutterBottom sx={{ display: 'flex', justifyContent: 'space-between', color: 'var(--mui-palette-text-primary)' }}><span style={{ fontWeight: 'bold' }}>Email:</span><span>{user.email}</span></Typography>
+                      <Typography variant="body1" gutterBottom sx={{ display: 'flex', justifyContent: 'space-between', color: 'var(--mui-palette-text-primary)' }}><span style={{ fontWeight: 'bold' }}>Member since:</span><span>{new Date(user.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span></Typography>
+                      <Typography variant="body1" gutterBottom sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', color: 'var(--mui-palette-text-primary)' }}><span style={{ fontWeight: 'bold' }}>Level:</span><span>Level {currentLevel}</span></Typography>
 
                       {user.profile?.classroom_name ? (
                         <Box sx={{ mt: 2, mb: 3, p: 2, bgcolor: alpha(theme.palette.primary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}` }}>
                           <Typography variant="body2" sx={{ fontWeight: 'bold', color: theme.palette.primary.light }}>Enrolled Classroom</Typography>
-                          <Typography variant="h6" sx={{ color: '#ffffff', mt: 0.5 }}>{user.profile?.classroom_name}</Typography>
-                          <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1.5 }}>Teacher: {user.profile?.teacher_name}</Typography>
+                          <Typography variant="h6" sx={{ color: 'var(--mui-palette-text-primary)', mt: 0.5 }}>{user.profile?.classroom_name}</Typography>
+                          <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 1.5 }}>Teacher: {user.profile?.teacher_name}</Typography>
                           <Button size="small" variant="outlined" color="error" onClick={() => setUnenrollDialogOpen(true)} sx={{ borderRadius: 4, textTransform: 'none' }}>Unenroll</Button>
                         </Box>
                       ) : (
                         <Box sx={{ mt: 2, mb: 3, p: 2, bgcolor: alpha(theme.palette.secondary.main, 0.1), borderRadius: 2, border: `1px solid ${alpha(theme.palette.secondary.main, 0.3)}` }}>
                           <Typography variant="body2" sx={{ fontWeight: 'bold', color: theme.palette.secondary.light }}>Join a Classroom</Typography>
-                          <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1.5, mt: 0.5 }}>Enter your teacher's code to enroll.</Typography>
+                          <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 1.5, mt: 0.5 }}>Enter your teacher's code to enroll.</Typography>
                           <Box sx={{ display: 'flex', gap: 1 }}>
                             <TextField
                               size="small"
                               placeholder="Enrollment Code"
                               value={enrollCode}
                               onChange={(e) => setEnrollCode(e.target.value)}
-                              sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' } }}
+                              sx={{ '& .MuiInputBase-root': { bgcolor: "background.paper", color: "text.primary" } }}
                             />
                             <Button
                               variant="contained"
@@ -425,24 +425,24 @@ const Dashboard: React.FC = () => {
 
                       <Box sx={{ mt: 2, mb: 4 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                          <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#ffffff' }}>XP Progress</Typography>
-                          <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8) }}>{currentXP % xpPerLevel}/{xpPerLevel} XP</Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'var(--mui-palette-text-primary)' }}>XP Progress</Typography>
+                          <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.8) }}>{currentXP % xpPerLevel}/{xpPerLevel} XP</Typography>
                         </Box>
                         <LinearProgress variant="determinate" value={xpProgress} sx={{ height: 10, borderRadius: 5, backgroundColor: alpha(theme.palette.primary.main, 0.2), '& .MuiLinearProgress-bar': { backgroundImage: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`, borderRadius: 5 } }} />
-                        <Typography variant="caption" sx={{ mt: 1, color: alpha(theme.palette.common.white, 0.7), textAlign: 'right' }}>{nextLevelXP - currentXP} XP until Level {currentLevel + 1}</Typography>
+                        <Typography variant="caption" sx={{ mt: 1, color: alpha(theme.palette.text.primary, 0.7), textAlign: 'right' }}>{nextLevelXP - currentXP} XP until Level {currentLevel + 1}</Typography>
                       </Box>
-                      <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1, color: '#ffffff' }}>Bio:</Typography>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1, color: 'var(--mui-palette-text-primary)' }}>Bio:</Typography>
                       <Paper elevation={0} sx={{ p: 2, bgcolor: alpha(theme.palette.background.paper, 0.6), borderRadius: 2 }}><Typography variant="body2">{formData.bio || 'No bio provided.'}</Typography></Paper>
                     </>
                   ) : (
                     <Box sx={{ width: '100%' }}>
                       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                      <TextField label="First Name" name="first_name" value={formData.first_name} onChange={handleInputChange} fullWidth margin="normal" size="small" sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' }, '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) } }} />
-                      <TextField label="Last Name" name="last_name" value={formData.last_name} onChange={handleInputChange} fullWidth margin="normal" size="small" sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' }, '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) } }} />
-                      <TextField label="Bio" name="bio" value={formData.bio} onChange={handleInputChange} fullWidth margin="normal" multiline rows={4} size="small" sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.grey[800], color: '#fff' }, '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) } }} />
+                      <TextField label="First Name" name="first_name" value={formData.first_name} onChange={handleInputChange} fullWidth margin="normal" size="small" sx={{ '& .MuiInputBase-root': { bgcolor: "background.paper", color: "text.primary" }, '& .MuiInputLabel-root': { color: alpha(theme.palette.text.primary, 0.7) } }} />
+                      <TextField label="Last Name" name="last_name" value={formData.last_name} onChange={handleInputChange} fullWidth margin="normal" size="small" sx={{ '& .MuiInputBase-root': { bgcolor: "background.paper", color: "text.primary" }, '& .MuiInputLabel-root': { color: alpha(theme.palette.text.primary, 0.7) } }} />
+                      <TextField label="Bio" name="bio" value={formData.bio} onChange={handleInputChange} fullWidth margin="normal" multiline rows={4} size="small" sx={{ '& .MuiInputBase-root': { bgcolor: "background.paper", color: "text.primary" }, '& .MuiInputLabel-root': { color: alpha(theme.palette.text.primary, 0.7) } }} />
                       <Box sx={{ display: 'flex', gap: 1, mt: 2, justifyContent: 'center' }}>
                         <Button startIcon={<SaveIcon />} variant="contained" onClick={handleSave} disabled={saving} sx={{ bgcolor: theme.palette.primary.main, '&:hover': { bgcolor: theme.palette.primary.dark } }}>{saving ? <CircularProgress size={24} /> : 'Save'}</Button>
-                        <Button startIcon={<CancelIcon />} variant="outlined" onClick={handleCancel} disabled={saving} sx={{ color: '#ffffff', borderColor: alpha(theme.palette.common.white, 0.5), '&:hover': { borderColor: '#ffffff', bgcolor: alpha(theme.palette.grey[700], 0.2) } }}>Cancel</Button>
+                        <Button startIcon={<CancelIcon />} variant="outlined" onClick={handleCancel} disabled={saving} sx={{ color: 'var(--mui-palette-text-primary)', borderColor: alpha(theme.palette.text.primary, 0.5), '&:hover': { borderColor: 'var(--mui-palette-text-primary)', bgcolor: alpha(theme.palette.background.paper, 0.2) } }}>Cancel</Button>
                       </Box>
                     </Box>
                   )}
@@ -456,7 +456,7 @@ const Dashboard: React.FC = () => {
               <GradientPaper sx={{ p: 3, mb: 4 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2, mb: 2 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#ffffff' }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: 'var(--mui-palette-text-primary)' }}>
                       <LevelUpIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
                       Progress Snapshot
                     </Typography>
@@ -508,13 +508,13 @@ const Dashboard: React.FC = () => {
 
             <Grow in={true} timeout={1100}>
               <GradientPaper sx={{ p: 3, mb: 4 }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3, color: '#ffffff' }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3, color: 'var(--mui-palette-text-primary)' }}>
                   Game Progression Analytics
                 </Typography>
 
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8), mb: 1 }}>
+                    <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.8), mb: 1 }}>
                       Story Mode Progress {(user.story_progress ?? 0).toFixed(0)}%
                     </Typography>
                     <LinearProgress
@@ -523,7 +523,7 @@ const Dashboard: React.FC = () => {
                       sx={{
                         height: 10,
                         borderRadius: 5,
-                        bgcolor: alpha(theme.palette.common.white, 0.1),
+                        bgcolor: alpha(theme.palette.text.primary, 0.1),
                         '& .MuiLinearProgress-bar': {
                           background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
                         },
@@ -533,7 +533,7 @@ const Dashboard: React.FC = () => {
 
                   <Grid item xs={12} sm={6} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     <Box>
-                      <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.8), mb: 0.5 }}>
+                      <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.8), mb: 0.5 }}>
                         Learning Mode
                       </Typography>
                       <Chip
@@ -563,7 +563,7 @@ const Dashboard: React.FC = () => {
                     <Button
                       variant="outlined"
                       onClick={() => setDetailsOpen(true)}
-                      sx={{ borderColor: alpha(theme.palette.common.white, 0.3), color: '#fff' }}
+                      sx={{ borderColor: alpha(theme.palette.text.primary, 0.3), color: "text.primary" }}
                     >
                       View Detailed Module Analytics
                     </Button>
@@ -576,7 +576,7 @@ const Dashboard: React.FC = () => {
             <Grow in={true} timeout={1075}>
               <GradientPaper sx={{ p: 3, mb: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#ffffff', display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'var(--mui-palette-text-primary)', display: 'flex', alignItems: 'center', gap: 1 }}>
                     <LeaderboardIcon /> Leaderboard
                   </Typography>
                   <Tabs
@@ -586,7 +586,7 @@ const Dashboard: React.FC = () => {
                       setLeaderboardLoading(true);
                       getLeaderboard(v).then(r => setLeaderboardEntries(r.entries)).catch(() => {}).finally(() => setLeaderboardLoading(false));
                     }}
-                    sx={{ minHeight: 32, '& .MuiTab-root': { minHeight: 32, py: 0, color: alpha(theme.palette.common.white, 0.6), fontSize: '0.8rem' }, '& .Mui-selected': { color: '#fff !important' }, '& .MuiTabs-indicator': { bgcolor: theme.palette.primary.main } }}
+                    sx={{ minHeight: 32, '& .MuiTab-root': { minHeight: 32, py: 0, color: alpha(theme.palette.text.primary, 0.6), fontSize: '0.8rem' }, '& .Mui-selected': { color: 'var(--mui-palette-primary-contrastText) !important' }, '& .MuiTabs-indicator': { bgcolor: theme.palette.primary.main } }}
                   >
                     <Tab label="My Classroom" value="classroom" />
                     <Tab label="Global" value="global" />
@@ -596,7 +596,7 @@ const Dashboard: React.FC = () => {
                 {leaderboardLoading ? (
                   <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress size={32} /></Box>
                 ) : leaderboardEntries.length === 0 ? (
-                  <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.5), textAlign: 'center', py: 3 }}>
+                  <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.5), textAlign: 'center', py: 3 }}>
                     {leaderboardScope === 'classroom' ? 'Enroll in a classroom to see rankings.' : 'No data yet.'}
                   </Typography>
                 ) : (
@@ -617,17 +617,17 @@ const Dashboard: React.FC = () => {
                             mb: 0.5,
                             bgcolor: entry.is_self ? alpha(theme.palette.primary.main, 0.15) : 'transparent',
                             border: entry.is_self ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}` : '1px solid transparent',
-                            '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.04) },
+                            '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.04) },
                           }}
                         >
-                          <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
+                          <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? "text.primary" : alpha(theme.palette.text.primary, 0.5) }}>
                             {medal || `#${entry.rank}`}
                           </Typography>
                           <Box sx={{ flex: 1 }}>
-                            <Typography sx={{ fontWeight: entry.is_self ? 700 : 500, color: '#fff', fontSize: '0.9rem' }}>
+                            <Typography sx={{ fontWeight: entry.is_self ? 700 : 500, color: "text.primary", fontSize: '0.9rem' }}>
                               {entry.username} {entry.is_self && <Chip label="You" size="small" sx={{ ml: 1, height: 20, fontSize: '0.7rem', bgcolor: alpha(theme.palette.primary.main, 0.3), color: theme.palette.primary.light }} />}
                             </Typography>
-                            <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                            <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>
                               {entry.story_progress.toFixed(0)}% progress · {entry.achievements_count} badges
                             </Typography>
                           </Box>
@@ -636,8 +636,8 @@ const Dashboard: React.FC = () => {
                             size="small"
                             sx={{
                               fontWeight: 'bold',
-                              bgcolor: entry.rank === 1 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
-                              color: entry.rank === 1 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
+                              bgcolor: entry.rank === 1 ? alpha('#FFD700', 0.2) : alpha(theme.palette.text.primary, 0.08),
+                              color: entry.rank === 1 ? '#FFD700' : alpha(theme.palette.text.primary, 0.7),
                               border: entry.rank === 1 ? '1px solid rgba(255,215,0,0.3)' : 'none',
                             }}
                           />
@@ -647,7 +647,7 @@ const Dashboard: React.FC = () => {
                     
                     {leaderboardEntries.find(e => e.is_self && e.rank > 3) && (
                       <>
-                        <Typography sx={{ color: alpha(theme.palette.common.white, 0.3), textAlign: 'center', my: 0.5 }}>• • •</Typography>
+                        <Typography sx={{ color: alpha(theme.palette.text.primary, 0.3), textAlign: 'center', my: 0.5 }}>• • •</Typography>
                         {(() => {
                           const entry = leaderboardEntries.find(e => e.is_self && e.rank > 3)!;
                           return (
@@ -660,14 +660,14 @@ const Dashboard: React.FC = () => {
                                 '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) },
                               }}
                             >
-                              <Typography sx={{ fontWeight: 'bold', fontSize: '0.9rem', minWidth: 36, textAlign: 'center', color: alpha(theme.palette.common.white, 0.7) }}>
+                              <Typography sx={{ fontWeight: 'bold', fontSize: '0.9rem', minWidth: 36, textAlign: 'center', color: alpha(theme.palette.text.primary, 0.7) }}>
                                 #{entry.rank}
                               </Typography>
                               <Box sx={{ flex: 1 }}>
-                                <Typography sx={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem' }}>
+                                <Typography sx={{ fontWeight: 700, color: "text.primary", fontSize: '0.9rem' }}>
                                   {entry.username} <Chip label="You" size="small" sx={{ ml: 1, height: 20, fontSize: '0.7rem', bgcolor: alpha(theme.palette.primary.main, 0.3), color: theme.palette.primary.light }} />
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                                <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>
                                   {entry.story_progress.toFixed(0)}% progress · {entry.achievements_count} badges
                                 </Typography>
                               </Box>
@@ -676,8 +676,8 @@ const Dashboard: React.FC = () => {
                                 size="small"
                                 sx={{
                                   fontWeight: 'bold',
-                                  bgcolor: alpha(theme.palette.common.white, 0.08),
-                                  color: alpha(theme.palette.common.white, 0.7),
+                                  bgcolor: alpha(theme.palette.text.primary, 0.08),
+                                  color: alpha(theme.palette.text.primary, 0.7),
                                 }}
                               />
                             </Box>
@@ -708,10 +708,10 @@ const Dashboard: React.FC = () => {
 
             <Grow in={true} timeout={1150}>
               <GradientPaper sx={{ p: 3, mb: 4 }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1, color: '#ffffff', display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1, color: 'var(--mui-palette-text-primary)', display: 'flex', alignItems: 'center', gap: 1 }}>
                   <CertIcon /> ECertificates
                 </Typography>
-                <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.6), mb: 3 }}>
+                <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.6), mb: 3 }}>
                   Earn certificates by completing each topic's coursework.
                 </Typography>
 
@@ -737,38 +737,38 @@ const Dashboard: React.FC = () => {
                             overflow: 'hidden',
                             bgcolor: cert.completed
                               ? alpha(isGrand ? '#b8860b' : theme.palette.primary.main, 0.12)
-                              : alpha(theme.palette.grey[700], 0.3),
+                              : alpha(theme.palette.background.paper, 0.3),
                             border: cert.completed
                               ? `2px solid ${alpha(goldBorder, 0.5)}`
-                              : `1px solid ${alpha(theme.palette.grey[600], 0.3)}`,
+                              : `1px solid ${alpha(theme.palette.divider, 0.3)}`,
                             opacity: cert.completed ? 1 : 0.6,
                             transition: 'all 0.2s',
                             '&:hover': cert.completed ? { transform: 'translateY(-2px)', boxShadow: `0 6px 20px ${alpha(goldBorder, 0.3)}` } : {},
                           }}
                         >
                           {/* Top accent bar */}
-                          <Box sx={{ height: 4, background: cert.completed ? `linear-gradient(90deg, ${goldBorder}, ${alpha(goldBorder, 0.5)})` : alpha(theme.palette.grey[600], 0.3) }} />
+                          <Box sx={{ height: 4, background: cert.completed ? `linear-gradient(90deg, ${goldBorder}, ${alpha(goldBorder, 0.5)})` : alpha(theme.palette.divider, 0.3) }} />
 
                           <CardContent sx={{ p: isGrand ? 3 : 2, textAlign: isGrand ? 'center' : 'left' }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, justifyContent: isGrand ? 'center' : 'flex-start' }}>
                               {cert.completed ? (
                                 <TrophyIcon sx={{ color: isGrand ? '#ffd700' : theme.palette.primary.light, fontSize: isGrand ? 32 : 24 }} />
                               ) : (
-                                <LockIcon sx={{ color: alpha(theme.palette.common.white, 0.3), fontSize: 24 }} />
+                                <LockIcon sx={{ color: alpha(theme.palette.text.primary, 0.3), fontSize: 24 }} />
                               )}
-                              <Typography variant={isGrand ? 'h6' : 'subtitle1'} sx={{ fontWeight: 'bold', color: cert.completed ? '#fff' : alpha(theme.palette.common.white, 0.4) }}>
+                              <Typography variant={isGrand ? 'h6' : 'subtitle1'} sx={{ fontWeight: 'bold', color: cert.completed ? "text.primary" : alpha(theme.palette.text.primary, 0.4) }}>
                                 {cert.topic}
                               </Typography>
                             </Box>
 
                             {!isGrand && (
-                              <Typography variant="caption" sx={{ color: cert.completed ? alpha(theme.palette.common.white, 0.5) : alpha(theme.palette.common.white, 0.25), display: 'block', mb: 1 }}>
+                              <Typography variant="caption" sx={{ color: cert.completed ? alpha(theme.palette.text.primary, 0.5) : alpha(theme.palette.text.primary, 0.25), display: 'block', mb: 1 }}>
                                 {cert.professor}
                               </Typography>
                             )}
 
                             {cert.completed && cert.completed_at && (
-                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block', mb: 1.5 }}>
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block', mb: 1.5 }}>
                                 Completed: {new Date(cert.completed_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                               </Typography>
                             )}
@@ -815,7 +815,7 @@ const Dashboard: React.FC = () => {
                                 </Button>
                               </Box>
                             ) : (
-                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.3), fontStyle: 'italic' }}>
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.3), fontStyle: 'italic' }}>
                                 {isGrand ? 'Complete all 7 topics to unlock' : `Complete ${cert.topic} to unlock`}
                               </Typography>
                             )}
@@ -830,7 +830,7 @@ const Dashboard: React.FC = () => {
 
             <Grow in={true} timeout={1200}>
               <GradientPaper sx={{ p: 3 }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3, color: '#ffffff' }}>Recent Achievements</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3, color: 'var(--mui-palette-text-primary)' }}>Recent Achievements</Typography>
                 {isAchievementsLoading ? (
                   <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}><CircularProgress /></Box>
                 ) : achievements.length > 0 ? (
@@ -843,8 +843,8 @@ const Dashboard: React.FC = () => {
                             height: '100%', 
                             display: 'flex', 
                             flexDirection: 'column',
-                            bgcolor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.1) : alpha(theme.palette.common.white, 0.02),
-                            borderColor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.3) : alpha(theme.palette.common.white, 0.1),
+                            bgcolor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.1) : alpha(theme.palette.text.primary, 0.02),
+                            borderColor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.3) : alpha(theme.palette.text.primary, 0.1),
                             transition: 'all 0.3s',
                             opacity: ach.unlocked ? 1 : 0.6,
                             '&:hover': {
@@ -856,8 +856,8 @@ const Dashboard: React.FC = () => {
                           <CardContent sx={{ flexGrow: 1, display: 'flex', alignItems: 'flex-start', gap: 2, p: 2 }}>
                             <Avatar 
                               sx={{ 
-                                bgcolor: ach.unlocked ? theme.palette.secondary.main : alpha(theme.palette.common.white, 0.1),
-                                color: ach.unlocked ? '#fff' : alpha(theme.palette.common.white, 0.4),
+                                bgcolor: ach.unlocked ? theme.palette.secondary.main : alpha(theme.palette.text.primary, 0.1),
+                                color: ach.unlocked ? "text.primary" : alpha(theme.palette.text.primary, 0.4),
                                 width: 48, 
                                 height: 48 
                               }}
@@ -865,10 +865,10 @@ const Dashboard: React.FC = () => {
                               {ach.unlocked ? <AchievementIcon /> : <LockIcon />}
                             </Avatar>
                             <Box sx={{ flexGrow: 1 }}>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: ach.unlocked ? '#fff' : alpha(theme.palette.common.white, 0.5), lineHeight: 1.2, mb: 0.5 }}>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: ach.unlocked ? "text.primary" : alpha(theme.palette.text.primary, 0.5), lineHeight: 1.2, mb: 0.5 }}>
                                 {ach.name}
                               </Typography>
-                              <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1, fontSize: '0.8rem' }}>
+                              <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 1, fontSize: '0.8rem' }}>
                                 {ach.unlocked ? ach.description : "Keep playing to discover this achievement!"}
                               </Typography>
                               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
@@ -878,12 +878,12 @@ const Dashboard: React.FC = () => {
                                   sx={{ 
                                     height: 20, 
                                     fontSize: '0.7rem',
-                                    bgcolor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.2) : alpha(theme.palette.common.white, 0.1),
-                                    color: ach.unlocked ? theme.palette.secondary.light : alpha(theme.palette.common.white, 0.4)
+                                    bgcolor: ach.unlocked ? alpha(theme.palette.secondary.main, 0.2) : alpha(theme.palette.text.primary, 0.1),
+                                    color: ach.unlocked ? theme.palette.secondary.light : alpha(theme.palette.text.primary, 0.4)
                                   }} 
                                 />
                                 {ach.unlocked && ach.date_unlocked && (
-                                  <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), fontSize: '0.7rem' }}>
+                                  <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), fontSize: '0.7rem' }}>
                                     {new Date(ach.date_unlocked).toLocaleDateString()}
                                   </Typography>
                                 )}
@@ -895,7 +895,7 @@ const Dashboard: React.FC = () => {
                     ))}
                   </Grid>
                 ) : (
-                  <Typography variant="body1" sx={{ color: alpha(theme.palette.common.white, 0.8), p: 2 }}>No achievements found on the server.</Typography>
+                  <Typography variant="body1" sx={{ color: alpha(theme.palette.text.primary, 0.8), p: 2 }}>No achievements found on the server.</Typography>
                 )}
               </GradientPaper>
             </Grow>
@@ -903,15 +903,15 @@ const Dashboard: React.FC = () => {
         </Grid>
 
         {/* Unenroll Dialog */}
-        <Dialog open={unenrollDialogOpen} onClose={() => setUnenrollDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff' } }}>
+        <Dialog open={unenrollDialogOpen} onClose={() => setUnenrollDialogOpen(false)} PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary" } }}>
           <DialogTitle>Unenroll Classroom</DialogTitle>
           <DialogContent>
-            <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.8) }}>
+            <DialogContentText sx={{ color: alpha(theme.palette.text.primary, 0.8) }}>
               Are you sure you want to unenroll from <strong>{user.profile?.classroom_name}</strong>? You will lose access to the teacher's dashboard, but you will keep your game progress.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setUnenrollDialogOpen(false)} sx={{ color: '#fff' }} disabled={unenrolling}>Cancel</Button>
+            <Button onClick={() => setUnenrollDialogOpen(false)} sx={{ color: "text.primary" }} disabled={unenrolling}>Cancel</Button>
             <Button onClick={handleUnenroll} variant="contained" color="error" disabled={unenrolling}>
               {unenrolling ? <CircularProgress size={24} /> : 'Unenroll'}
             </Button>
@@ -925,11 +925,11 @@ const Dashboard: React.FC = () => {
           maxWidth="sm"
           fullWidth
           PaperProps={{
-            sx: { bgcolor: theme.palette.grey[900], color: '#fff', border: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }
+            sx: { bgcolor: "background.paper", color: "text.primary", border: `1px solid ${alpha(theme.palette.text.primary, 0.1)}` }
           }}
         >
-          <DialogTitle sx={{ borderBottom: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, pb: 2 }}>
-            <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2 }}>
+          <DialogTitle sx={{ borderBottom: `1px solid ${alpha(theme.palette.text.primary, 0.1)}`, pb: 2 }}>
+            <Typography variant="h6" sx={{ color: "text.primary", fontWeight: 'bold', mb: 2 }}>
               Detailed Module Diagnostics for @{user.username}
             </Typography>
             {user.detailed_grades && user.detailed_grades.length > 0 && (
@@ -939,15 +939,15 @@ const Dashboard: React.FC = () => {
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                   <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Story GWA</Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>{(user.story_mode_gwa ?? 0) > 0 ? (user.story_mode_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
+                    <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Story GWA</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: "text.primary" }}>{(user.story_mode_gwa ?? 0) > 0 ? (user.story_mode_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
                   </Box>
                   <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Thesis GWA</Typography>
+                    <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Thesis GWA</Typography>
                     <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light }}>{(user.thesis_gwa ?? 0) > 0 ? (user.thesis_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
                   </Box>
                   <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Overall GWA</Typography>
+                    <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Overall GWA</Typography>
                     <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.success.light }}>{(user.complete_gwa ?? 0) > 0 ? (user.complete_gwa ?? 0).toFixed(2) : 'N/A'}</Typography>
                   </Box>
                 </Box>
@@ -960,24 +960,24 @@ const Dashboard: React.FC = () => {
               📖 Story Mode Grades
             </Typography>
             {!user.detailed_grades || user.detailed_grades.length === 0 ? (
-              <Typography sx={{ color: alpha(theme.palette.common.white, 0.6), mb: 3 }}>No story mode grades yet.</Typography>
+              <Typography sx={{ color: alpha(theme.palette.text.primary, 0.6), mb: 3 }}>No story mode grades yet.</Typography>
             ) : (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 4 }}>
                 {user.detailed_grades.map((prof: any, idx: number) => (
-                  <Box key={idx} sx={{ p: 2, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 2 }}>
+                  <Box key={idx} sx={{ p: 2, bgcolor: alpha(theme.palette.text.primary, 0.05), borderRadius: 2 }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.primary.light, mb: 1 }}>{prof.professor}</Typography>
                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                       <Box>
-                        <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Final Grade</Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.grade === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.grade}</Typography>
+                        <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Final Grade</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.grade === 'Not Attempted' ? alpha(theme.palette.text.primary, 0.3) : "text.primary" }}>{prof.grade}</Typography>
                       </Box>
                       <Box>
-                        <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Retakes</Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.retakes === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>{prof.retakes}</Typography>
+                        <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Retakes</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.retakes === 'Not Attempted' ? alpha(theme.palette.text.primary, 0.3) : "text.primary" }}>{prof.retakes}</Typography>
                       </Box>
                       <Box>
-                        <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5), display: 'block' }}>Removal Passed</Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.removal_exam === 'Not Attempted' ? alpha(theme.palette.common.white, 0.3) : '#fff' }}>
+                        <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5), display: 'block' }}>Removal Passed</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: prof.removal_exam === 'Not Attempted' ? alpha(theme.palette.text.primary, 0.3) : "text.primary" }}>
                           {prof.removal_exam === true ? "Passed" : (prof.grade === 5.0 && prof.retakes > 0) ? "Failed" : "N/A"}
                         </Typography>
                       </Box>
@@ -993,7 +993,7 @@ const Dashboard: React.FC = () => {
                       const label = aiLabels[prof.professor] || '🤖 AI Minigame';
                       const hasSkips = Object.entries(prof.ai_data).some(([k, v]) => k.includes('skipped') && v === true);
                       return (
-                      <Box sx={{ mt: 2, pt: 1, borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }}>
+                      <Box sx={{ mt: 2, pt: 1, borderTop: `1px solid ${alpha(theme.palette.text.primary, 0.1)}` }}>
                         <Typography variant="caption" sx={{ color: theme.palette.info.light, fontWeight: 'bold', display: 'block', mb: 1 }}>
                           {label} Status
                         </Typography>
@@ -1017,20 +1017,20 @@ const Dashboard: React.FC = () => {
               📚 Learning Mode Grades
             </Typography>
             {!user.learning_mode_detailed_grades || user.learning_mode_detailed_grades.length === 0 ? (
-              <Typography sx={{ color: alpha(theme.palette.common.white, 0.6) }}>No learning mode grades yet. Play professors in Learning Mode to see grades here.</Typography>
+              <Typography sx={{ color: alpha(theme.palette.text.primary, 0.6) }}>No learning mode grades yet. Play professors in Learning Mode to see grades here.</Typography>
             ) : (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 {user.learning_mode_detailed_grades.map((entry: any, idx: number) => (
                   <Box key={idx} sx={{ p: 1.5, bgcolor: alpha(theme.palette.info.main, 0.08), borderRadius: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="body2" sx={{ color: theme.palette.info.light, fontWeight: 'bold' }}>{entry.professor}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#fff' }}>{entry.label || entry.grade}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: "text.primary" }}>{entry.label || entry.grade}</Typography>
                   </Box>
                 ))}
               </Box>
             )}
 
             {/* ── Thesis Defense Status ── */}
-            <Divider sx={{ my: 3, borderColor: alpha(theme.palette.common.white, 0.1) }} />
+            <Divider sx={{ my: 3, borderColor: alpha(theme.palette.text.primary, 0.1) }} />
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.error.light, mb: 2, borderBottom: `1px solid ${alpha(theme.palette.error.main, 0.3)}`, pb: 1 }}>
               🎓 Thesis Defense Status
             </Typography>
@@ -1043,34 +1043,34 @@ const Dashboard: React.FC = () => {
                   />
                   <Chip
                     label={user.thesis_status.completed ? '✅ Thesis Defended' : '❌ Not Yet Defended'}
-                    sx={{ bgcolor: user.thesis_status.completed ? alpha(theme.palette.success.main, 0.15) : alpha(theme.palette.common.white, 0.05), color: user.thesis_status.completed ? theme.palette.success.light : alpha(theme.palette.common.white, 0.5), fontWeight: 'bold' }}
+                    sx={{ bgcolor: user.thesis_status.completed ? alpha(theme.palette.success.main, 0.15) : alpha(theme.palette.text.primary, 0.05), color: user.thesis_status.completed ? theme.palette.success.light : alpha(theme.palette.text.primary, 0.5), fontWeight: 'bold' }}
                   />
                   {user.thesis_status.completed_at && (
                     <Chip
                       label={`Defended: ${new Date(user.thesis_status.completed_at).toLocaleDateString()}`}
                       size="small"
-                      sx={{ bgcolor: alpha(theme.palette.common.white, 0.05), color: alpha(theme.palette.common.white, 0.6) }}
+                      sx={{ bgcolor: alpha(theme.palette.text.primary, 0.05), color: alpha(theme.palette.text.primary, 0.6) }}
                     />
                   )}
                 </Box>
               </Box>
             ) : (
-              <Typography sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No thesis data yet.</Typography>
+              <Typography sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>No thesis data yet.</Typography>
             )}
           </DialogContent>
-          <DialogActions sx={{ borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, p: 2 }}>
-            <Button onClick={() => setDetailsOpen(false)} sx={{ color: '#fff' }}>Close Menu</Button>
+          <DialogActions sx={{ borderTop: `1px solid ${alpha(theme.palette.text.primary, 0.1)}`, p: 2 }}>
+            <Button onClick={() => setDetailsOpen(false)} sx={{ color: "text.primary" }}>Close Menu</Button>
           </DialogActions>
         </Dialog>
 
         {/* ── Announcements Dialog ── */}
         <Dialog open={annDialog} onClose={() => setAnnDialog(false)} maxWidth="sm" fullWidth
-          PaperProps={{ sx: { bgcolor: theme.palette.grey[900], color: '#fff', borderRadius: 3, border: `1px solid ${alpha('#818cf8', 0.3)}` } }}>
+          PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3, border: `1px solid ${alpha('#256d4f', 0.3)}` } }}>
           <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
-            <CampaignIcon sx={{ color: '#a78bfa' }} /> Announcements
+            <CampaignIcon sx={{ color: '#315a7d' }} /> Announcements
           </DialogTitle>
-          <Box sx={{ borderBottom: 1, borderColor: alpha('#fff', 0.1), px: 3 }}>
-            <Tabs value={annTab} onChange={(_, v) => setAnnTab(v)} sx={{ '& .MuiTab-root': { color: alpha('#fff', 0.6), textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#818cf8 !important' }, '& .MuiTabs-indicator': { bgcolor: '#818cf8' } }}>
+          <Box sx={{ borderBottom: 1, borderColor: alpha(theme.palette.text.primary, 0.1), px: 3 }}>
+            <Tabs value={annTab} onChange={(_, v) => setAnnTab(v)} sx={{ '& .MuiTab-root': { color: alpha(theme.palette.text.primary, 0.6), textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#256d4f !important' }, '& .MuiTabs-indicator': { bgcolor: '#256d4f' } }}>
               <Tab label="Platform" />
               <Tab label="Classroom" />
             </Tabs>
@@ -1078,7 +1078,7 @@ const Dashboard: React.FC = () => {
           <DialogContent sx={{ minHeight: 300, display: 'flex', flexDirection: 'column', gap: 1.5, p: 3 }}>
             {announcements.filter(a => annTab === 0 ? a.announcement_type === 'platform' : a.announcement_type === 'classroom').length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography sx={{ color: alpha('#fff', 0.5) }}>No announcements in this category.</Typography>
+                <Typography sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>No announcements in this category.</Typography>
               </Box>
             ) : (
               announcements.filter(a => annTab === 0 ? a.announcement_type === 'platform' : a.announcement_type === 'classroom').map((a) => {
@@ -1088,10 +1088,10 @@ const Dashboard: React.FC = () => {
                   <Grow in key={a.id} timeout={400}>
                     <Paper
                       sx={{
-                        p: 2, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 2,
-                        border: `1px solid ${isRead ? alpha(theme.palette.common.white, 0.05) : '#818cf8'}`,
+                        p: 2, bgcolor: alpha(theme.palette.text.primary, 0.05), borderRadius: 2,
+                        border: `1px solid ${isRead ? alpha(theme.palette.text.primary, 0.05) : '#256d4f'}`,
                         cursor: 'pointer', transition: 'all 0.2s',
-                        '&:hover': { borderColor: alpha('#818cf8', 0.5) },
+                        '&:hover': { borderColor: alpha('#256d4f', 0.5) },
                       }}
                       onClick={() => {
                         setExpandedAnnId(isExpanded ? null : a.id);
@@ -1104,23 +1104,23 @@ const Dashboard: React.FC = () => {
                     >
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {!isRead && <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#818cf8', flexShrink: 0 }} />}
-                          <Typography variant="subtitle2" sx={{ color: '#fff', fontWeight: isRead ? 400 : 700 }}>{a.title}</Typography>
+                          {!isRead && <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#256d4f', flexShrink: 0 }} />}
+                          <Typography variant="subtitle2" sx={{ color: "text.primary", fontWeight: isRead ? 400 : 700 }}>{a.title}</Typography>
                           {a.announcement_type === 'classroom' && a.target_classrooms[0] && (
-                            <Chip label={a.target_classrooms[0].name} size="small" sx={{ bgcolor: alpha('#2dd4bf', 0.2), color: '#2dd4bf', fontWeight: 600, fontSize: '0.65rem' }} />
+                            <Chip label={a.target_classrooms[0].name} size="small" sx={{ bgcolor: alpha('#256d4f', 0.2), color: '#256d4f', fontWeight: 600, fontSize: '0.65rem' }} />
                           )}
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="caption" sx={{ color: alpha('#fff', 0.4) }}>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.4) }}>
                             {new Date(a.created_at).toLocaleDateString()}
                           </Typography>
-                          <ExpandMoreIcon sx={{ color: '#64748b', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', fontSize: 18 }} />
+                          <ExpandMoreIcon sx={{ color: 'var(--mui-palette-text-secondary)', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', fontSize: 18 }} />
                         </Box>
                       </Box>
                       {isExpanded && (
-                        <Box sx={{ mt: 1.5, pl: 2, borderLeft: '2px solid', borderColor: alpha('#818cf8', 0.3) }}>
-                          <Typography variant="body2" sx={{ color: alpha('#fff', 0.8) }}>{a.body}</Typography>
-                          <Typography variant="caption" sx={{ color: alpha('#fff', 0.4), mt: 1, display: 'block' }}>by {a.author_name}</Typography>
+                        <Box sx={{ mt: 1.5, pl: 2, borderLeft: '2px solid', borderColor: alpha('#256d4f', 0.3) }}>
+                          <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.8) }}>{a.body}</Typography>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.4), mt: 1, display: 'block' }}>by {a.author_name}</Typography>
                         </Box>
                       )}
                     </Paper>
@@ -1129,8 +1129,8 @@ const Dashboard: React.FC = () => {
               })
             )}
           </DialogContent>
-          <DialogActions sx={{ borderTop: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, p: 2 }}>
-            <Button onClick={() => setAnnDialog(false)} sx={{ color: '#fff' }}>Close</Button>
+          <DialogActions sx={{ borderTop: `1px solid ${alpha(theme.palette.text.primary, 0.1)}`, p: 2 }}>
+            <Button onClick={() => setAnnDialog(false)} sx={{ color: "text.primary" }}>Close</Button>
           </DialogActions>
         </Dialog>
 
@@ -1142,14 +1142,14 @@ const Dashboard: React.FC = () => {
             href="/feedback"
             startIcon={<span role="img" aria-label="feedback">💬</span>}
             sx={{
-              color: alpha(theme.palette.common.white, 0.7),
-              borderColor: alpha(theme.palette.common.white, 0.2),
+              color: alpha(theme.palette.text.primary, 0.7),
+              borderColor: alpha(theme.palette.text.primary, 0.2),
               borderRadius: 3,
               textTransform: 'none',
               px: 3,
               '&:hover': {
-                borderColor: alpha(theme.palette.common.white, 0.4),
-                bgcolor: alpha(theme.palette.common.white, 0.05),
+                borderColor: alpha(theme.palette.text.primary, 0.4),
+                bgcolor: alpha(theme.palette.text.primary, 0.05),
               },
             }}
           >

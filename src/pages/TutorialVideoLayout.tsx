@@ -86,12 +86,12 @@ const TutorialVideoLayout: React.FC = () => {
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate('/tutorials')}
-          sx={{ mb: 4, color: '#999', textTransform: 'none', '&:hover': { color: '#fff' } }}
+          sx={{ mb: 4, color: '#999', textTransform: 'none', '&:hover': { color: "text.primary" } }}
         >
           Back to Tutorials
         </Button>
 
-        <Typography variant="h3" sx={{ color: '#fff', fontWeight: 700, mb: 1 }}>
+        <Typography variant="h3" sx={{ color: "text.primary", fontWeight: 700, mb: 1 }}>
           {tutorial.title}
         </Typography>
         <Typography variant="subtitle1" sx={{ color: '#aaa', mb: 4 }}>
@@ -118,7 +118,7 @@ const TutorialVideoLayout: React.FC = () => {
 
             <Box sx={{ 
               color: '#d4d4d4', mb: 3, typography: 'body1', 
-              '& h1, & h2, & h3, & h4': { color: '#fff', mt: 3, mb: 1.5, fontWeight: 600 },
+              '& h1, & h2, & h3, & h4': { color: "text.primary", mt: 3, mb: 1.5, fontWeight: 600 },
               '& p': { mb: 1.5, lineHeight: 1.6 },
               '& ul, & ol': { mb: 2, pl: 3 },
               '& li': { mb: 1 },
@@ -176,7 +176,7 @@ const TutorialVideoLayout: React.FC = () => {
         ))}
 
         <Box sx={{ textAlign: 'center', mt: 6 }}>
-          <Typography variant="h5" sx={{ color: '#fff', mb: 2 }}>You've finished the guide!</Typography>
+          <Typography variant="h5" sx={{ color: "text.primary", mb: 2 }}>You've finished the guide!</Typography>
           <Button variant="contained" size="large" onClick={() => navigate('/tutorials')} sx={{ borderRadius: 2, textTransform: 'none' }}>
             Return to Tutorials
           </Button>

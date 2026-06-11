@@ -66,12 +66,12 @@ const Feedback: React.FC = () => {
 
   const feedbackTypes = isTeacher
     ? [
-        { value: 'game', label: 'Game', icon: <GameIcon sx={{ fontSize: 40 }} />, color: '#818cf8' },
-        { value: 'website', label: 'Website', icon: <WebsiteIcon sx={{ fontSize: 40 }} />, color: '#2dd4bf' },
+        { value: 'game', label: 'Game', icon: <GameIcon sx={{ fontSize: 40 }} />, color: '#256d4f' },
+        { value: 'website', label: 'Website', icon: <WebsiteIcon sx={{ fontSize: 40 }} />, color: '#256d4f' },
       ]
     : [
-        { value: 'game', label: 'Game', icon: <GameIcon sx={{ fontSize: 40 }} />, color: '#818cf8' },
-        { value: 'website', label: 'Website', icon: <WebsiteIcon sx={{ fontSize: 40 }} />, color: '#2dd4bf' },
+        { value: 'game', label: 'Game', icon: <GameIcon sx={{ fontSize: 40 }} />, color: '#256d4f' },
+        { value: 'website', label: 'Website', icon: <WebsiteIcon sx={{ fontSize: 40 }} />, color: '#256d4f' },
         { value: 'classroom', label: 'Classroom', icon: <ClassroomIcon sx={{ fontSize: 40 }} />, color: '#fbbf24' },
       ];
 
@@ -153,7 +153,7 @@ const Feedback: React.FC = () => {
 
   return (
     <Container maxWidth="sm" sx={{ pt: { xs: '100px', md: '120px' }, pb: 4, minHeight: '100vh' }}>
-      <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, borderRadius: 3, border: '1px solid #e2e8f0' }}>
+      <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, borderRadius: 3, border: '1px solid var(--mui-palette-text-primary)' }}>
         <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
           Share Your Feedback
         </Typography>
@@ -178,7 +178,7 @@ const Feedback: React.FC = () => {
                 elevation={0}
                 sx={{
                   border: '2px solid',
-                  borderColor: formData.feedback_type === type.value ? type.color : '#e2e8f0',
+                  borderColor: formData.feedback_type === type.value ? type.color : 'var(--mui-palette-text-primary)',
                   borderRadius: 3,
                   bgcolor: formData.feedback_type === type.value ? alpha(type.color, 0.08) : 'transparent',
                   transition: 'all 0.2s ease',
@@ -189,7 +189,7 @@ const Feedback: React.FC = () => {
                   sx={{ py: 3, textAlign: 'center' }}
                 >
                   <CardContent>
-                    <Box sx={{ color: formData.feedback_type === type.value ? type.color : '#94a3b8', mb: 1 }}>
+                    <Box sx={{ color: formData.feedback_type === type.value ? type.color : 'var(--mui-palette-text-secondary)', mb: 1 }}>
                       {type.icon}
                     </Box>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>{type.label}</Typography>
@@ -211,7 +211,7 @@ const Feedback: React.FC = () => {
               onChange={(_e, newValue) => setFormData({ ...formData, rating: newValue || 0 })}
               size="large"
               icon={<StarIcon sx={{ fontSize: 48, color: '#fbbf24' }} />}
-              emptyIcon={<StarIcon sx={{ fontSize: 48, color: '#e2e8f0' }} />}
+              emptyIcon={<StarIcon sx={{ fontSize: 48, color: 'var(--mui-palette-text-primary)' }} />}
             />
             <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
               {formData.rating > 0 ? `${formData.rating} / 5` : 'Tap a star to rate'}

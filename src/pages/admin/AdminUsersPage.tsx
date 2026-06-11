@@ -146,31 +146,31 @@ const AdminUsersPage: React.FC = () => {
   };
 
   const getRoleChip = (user: AdminUser) => {
-    if (user.is_staff) return <Chip label="Admin" size="small" sx={{ bgcolor: alpha('#a78bfa', 0.2), color: '#a78bfa', fontWeight: 600, fontSize: '0.7rem' }} />;
-    if (user.is_teacher) return <Chip label="Teacher" size="small" sx={{ bgcolor: alpha('#2dd4bf', 0.2), color: '#2dd4bf', fontWeight: 600, fontSize: '0.7rem' }} />;
-    return <Chip label="Student" size="small" sx={{ bgcolor: alpha('#60a5fa', 0.2), color: '#60a5fa', fontWeight: 600, fontSize: '0.7rem' }} />;
+    if (user.is_staff) return <Chip label="Admin" size="small" sx={{ bgcolor: alpha('#315a7d', 0.2), color: '#315a7d', fontWeight: 600, fontSize: '0.7rem' }} />;
+    if (user.is_teacher) return <Chip label="Teacher" size="small" sx={{ bgcolor: alpha('#256d4f', 0.2), color: '#256d4f', fontWeight: 600, fontSize: '0.7rem' }} />;
+    return <Chip label="Student" size="small" sx={{ bgcolor: alpha('#315a7d', 0.2), color: '#315a7d', fontWeight: 600, fontSize: '0.7rem' }} />;
   };
 
   const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const cellSx = { color: '#cbd5e1', borderColor: '#1e293b', py: 1.5 };
-  const headerSx = { color: '#64748b', borderColor: '#1e293b', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' as const };
-  const dialogPaper = { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 3, border: '1px solid #334155' };
-  const fieldSx = { '& .MuiInputBase-root': { bgcolor: '#0f172a', color: '#e2e8f0', borderRadius: 2 }, '& fieldset': { borderColor: '#334155' }, '& .MuiInputLabel-root': { color: '#64748b' } };
+  const cellSx = { color: 'var(--mui-palette-text-primary)', borderColor: 'var(--mui-palette-background-paper)', py: 1.5 };
+  const headerSx = { color: 'var(--mui-palette-text-secondary)', borderColor: 'var(--mui-palette-background-paper)', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' as const };
+  const dialogPaper = { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 3, border: '1px solid var(--mui-palette-divider)' };
+  const fieldSx = { '& .MuiInputBase-root': { bgcolor: 'var(--mui-palette-background-default)', color: 'var(--mui-palette-text-primary)', borderRadius: 2 }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' }, '& .MuiInputLabel-root': { color: 'var(--mui-palette-text-secondary)' } };
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
         <Box>
-          <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600 }}>User Management</Typography>
-          <Typography variant="body2" sx={{ color: '#64748b' }}>Create, edit roles, reset passwords, and manage all platform users.</Typography>
+          <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>User Management</Typography>
+          <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Create, edit roles, reset passwords, and manage all platform users.</Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button startIcon={<DownloadIcon />} size="small" onClick={() => downloadExport('users')}
-            sx={{ color: '#94a3b8', borderColor: '#334155', textTransform: 'none' }} variant="outlined">
+            sx={{ color: 'var(--mui-palette-text-secondary)', borderColor: 'var(--mui-palette-divider)', textTransform: 'none' }} variant="outlined">
             Export CSV
           </Button>
           <Button startIcon={<AddIcon />} variant="contained" size="small" onClick={() => setCreateOpen(true)}
-            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #818cf8, #a78bfa)', borderRadius: 2 }}>
+            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #256d4f, #315a7d)', borderRadius: 2 }}>
             Create User
           </Button>
         </Box>
@@ -183,11 +183,11 @@ const AdminUsersPage: React.FC = () => {
       )}
 
       <TextField placeholder="Search by name, email, or username..." value={search} onChange={(e) => setSearch(e.target.value)} size="small" fullWidth
-        InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#64748b' }} /></InputAdornment> }}
-        sx={{ my: 2.5, '& .MuiOutlinedInput-root': { bgcolor: '#1e293b', borderRadius: 2, color: '#e2e8f0', '& fieldset': { borderColor: '#334155' } } }}
+        InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: 'var(--mui-palette-text-secondary)' }} /></InputAdornment> }}
+        sx={{ my: 2.5, '& .MuiOutlinedInput-root': { bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, color: 'var(--mui-palette-text-primary)', '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }}
       />
 
-      <TableContainer component={Paper} sx={{ bgcolor: '#1e293b', borderRadius: 3, border: '1px solid #334155' }}>
+      <TableContainer component={Paper} sx={{ bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 3, border: '1px solid var(--mui-palette-divider)' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -204,7 +204,7 @@ const AdminUsersPage: React.FC = () => {
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
                   {Array.from({ length: 6 }).map((__, j) => (
-                    <TableCell key={j} sx={cellSx}><Skeleton variant="text" sx={{ bgcolor: '#334155' }} width={j === 0 ? 180 : 100} /></TableCell>
+                    <TableCell key={j} sx={cellSx}><Skeleton variant="text" sx={{ bgcolor: 'var(--mui-palette-divider)' }} width={j === 0 ? 180 : 100} /></TableCell>
                   ))}
                 </TableRow>
               ))
@@ -216,7 +216,7 @@ const AdminUsersPage: React.FC = () => {
               </TableRow>
             ) : (
               users.map((user) => (
-                <TableRow key={user.id} sx={{ '&:hover': { bgcolor: alpha('#818cf8', 0.03) }, transition: 'background-color 0.15s ease' }}>
+                <TableRow key={user.id} sx={{ '&:hover': { bgcolor: alpha('#256d4f', 0.03) }, transition: 'background-color 0.15s ease' }}>
                   <TableCell sx={cellSx}>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>{user.email}</Typography>
                     <Typography variant="caption" sx={{ color: '#475569' }}>@{user.username}</Typography>
@@ -230,7 +230,7 @@ const AdminUsersPage: React.FC = () => {
                   </TableCell>
                   <TableCell sx={cellSx}>{formatDate(user.date_joined)}</TableCell>
                   <TableCell sx={cellSx} align="right">
-                    <Tooltip title="Edit User"><IconButton size="small" onClick={() => openEdit(user)} disabled={user.is_staff && user.id === users[0]?.id} sx={{ color: '#818cf8', mr: 0.5 }}><EditIcon fontSize="small" /></IconButton></Tooltip>
+                    <Tooltip title="Edit User"><IconButton size="small" onClick={() => openEdit(user)} disabled={user.is_staff && user.id === users[0]?.id} sx={{ color: '#256d4f', mr: 0.5 }}><EditIcon fontSize="small" /></IconButton></Tooltip>
                     <Tooltip title="Reset Password"><IconButton size="small" onClick={() => setResetTarget(user)} sx={{ color: '#fbbf24', mr: 0.5 }}><KeyIcon fontSize="small" /></IconButton></Tooltip>
                     <Tooltip title={user.is_active ? 'Ban User' : 'Unban User'}>
                       <IconButton size="small" onClick={() => handleToggleBan(user)} disabled={actionLoading === user.id || user.is_staff} sx={{ color: user.is_active ? '#f59e0b' : '#22c55e', mr: 0.5 }}>
@@ -271,9 +271,9 @@ const AdminUsersPage: React.FC = () => {
           </FormControl>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setCreateOpen(false)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => setCreateOpen(false)} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={handleCreate} variant="contained" disabled={cSubmitting || !cEmail || !cUsername || !cPassword}
-            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #818cf8, #a78bfa)' }}>
+            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #256d4f, #315a7d)' }}>
             {cSubmitting ? 'Creating...' : 'Create User'}
           </Button>
         </DialogActions>
@@ -304,9 +304,9 @@ const AdminUsersPage: React.FC = () => {
           </FormControl>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setEditTarget(null)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => setEditTarget(null)} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={handleEdit} variant="contained" disabled={eSubmitting}
-            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #818cf8, #a78bfa)' }}>
+            sx={{ textTransform: 'none', fontWeight: 600, background: 'linear-gradient(90deg, #256d4f, #315a7d)' }}>
             {eSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         </DialogActions>
@@ -318,16 +318,16 @@ const AdminUsersPage: React.FC = () => {
           <KeyIcon sx={{ color: '#fbbf24' }} /> Reset Password
         </DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: '#94a3b8', mb: 2 }}>
-            Set a new password for <strong style={{ color: '#e2e8f0' }}>{resetTarget?.email}</strong>.
+          <DialogContentText sx={{ color: 'var(--mui-palette-text-secondary)', mb: 2 }}>
+            Set a new password for <strong style={{ color: 'var(--mui-palette-text-primary)' }}>{resetTarget?.email}</strong>.
           </DialogContentText>
           <TextField label="New Password" type="password" value={rpPassword} onChange={(e) => setRpPassword(e.target.value)}
             fullWidth size="small" sx={fieldSx} autoFocus />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => { setResetTarget(null); setRpPassword(''); }} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => { setResetTarget(null); setRpPassword(''); }} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={handleResetPassword} variant="contained" disabled={rpSubmitting || rpPassword.length < 3}
-            sx={{ textTransform: 'none', fontWeight: 600, bgcolor: '#fbbf24', color: '#0f172a', '&:hover': { bgcolor: '#f59e0b' } }}>
+            sx={{ textTransform: 'none', fontWeight: 600, bgcolor: '#fbbf24', color: 'var(--mui-palette-background-default)', '&:hover': { bgcolor: '#f59e0b' } }}>
             {rpSubmitting ? 'Resetting...' : 'Reset Password'}
           </Button>
         </DialogActions>
@@ -337,13 +337,13 @@ const AdminUsersPage: React.FC = () => {
       <Dialog open={!!deleteDialog} onClose={() => setDeleteDialog(null)} PaperProps={{ sx: dialogPaper }}>
         <DialogTitle sx={{ fontWeight: 600 }}>Delete User?</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: '#94a3b8' }}>
-            Are you sure you want to permanently delete <strong style={{ color: '#e2e8f0' }}>{deleteDialog?.email}</strong>?
+          <DialogContentText sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+            Are you sure you want to permanently delete <strong style={{ color: 'var(--mui-palette-text-primary)' }}>{deleteDialog?.email}</strong>?
             This action cannot be undone and all their data will be lost.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteDialog(null)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => setDeleteDialog(null)} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={handleDelete} variant="contained" disabled={actionLoading === deleteDialog?.id}
             sx={{ bgcolor: '#ef4444', textTransform: 'none', fontWeight: 600, '&:hover': { bgcolor: '#dc2626' } }}>
             Delete Permanently

@@ -58,7 +58,7 @@ const GlassCard = styled(Paper)(({ theme }) => ({
   background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.primary.dark, 0.18)} 100%)`,
   backdropFilter: 'blur(12px)',
   borderRadius: theme.shape.borderRadius * 2.5,
-  border: `1px solid ${alpha(theme.palette.common.white, 0.08)}`,
+  border: `1px solid ${alpha(theme.palette.text.primary, 0.08)}`,
   boxShadow: `0 8px 32px ${alpha(theme.palette.common.black, 0.25)}`,
   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
   '&:hover': {
@@ -74,7 +74,7 @@ const ClassroomCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   background: `linear-gradient(145deg, ${alpha(theme.palette.primary.main, 0.06)} 0%, ${alpha(theme.palette.background.paper, 0.6)} 100%)`,
   backdropFilter: 'blur(10px)',
-  border: `1px solid ${alpha(theme.palette.common.white, 0.08)}`,
+  border: `1px solid ${alpha(theme.palette.text.primary, 0.08)}`,
   transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
   '&::before': {
     content: '""',
@@ -141,7 +141,7 @@ const MyClassroom: React.FC = () => {
   /* ─── Loading State ─── */
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: "background.default" }}>
         <LoadingSpinner size={90} message="Loading Classrooms..." />
       </Box>
     );
@@ -150,12 +150,12 @@ const MyClassroom: React.FC = () => {
   /* ─── Error State ─── */
   if (error) {
     return (
-      <Box sx={{ minHeight: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
-        <ClassIcon sx={{ fontSize: 80, color: alpha(theme.palette.common.white, 0.15) }} />
-        <Typography variant="h5" sx={{ color: alpha(theme.palette.common.white, 0.6), fontWeight: 600 }}>
+      <Box sx={{ minHeight: '100vh', backgroundColor: "background.default", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
+        <ClassIcon sx={{ fontSize: 80, color: alpha(theme.palette.text.primary, 0.15) }} />
+        <Typography variant="h5" sx={{ color: alpha(theme.palette.text.primary, 0.6), fontWeight: 600 }}>
           {error || 'You are not enrolled in a classroom yet.'}
         </Typography>
-        <Button component={Link} to="/dashboard" variant="outlined" sx={{ color: '#fff', borderColor: alpha('#fff', 0.3), borderRadius: 8, textTransform: 'none' }}>
+        <Button component={Link} to="/dashboard" variant="outlined" sx={{ color: "text.primary", borderColor: alpha(theme.palette.text.primary, 0.3), borderRadius: 8, textTransform: 'none' }}>
           Go to Dashboard
         </Button>
       </Box>
@@ -167,7 +167,7 @@ const MyClassroom: React.FC = () => {
      ══════════════════════════════════════════════════════════ */
   if (!classroomId) {
     return (
-      <Box sx={{ minHeight: '100vh', width: '100vw', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, backgroundAttachment: 'fixed', pt: 10, pb: 8 }}>
+      <Box sx={{ minHeight: '100vh', width: '100vw', backgroundColor: "background.default", backgroundAttachment: 'fixed', pt: 10, pb: 8 }}>
         <Container maxWidth="lg">
           {/* Header */}
           <Fade in timeout={600}>
@@ -179,13 +179,13 @@ const MyClassroom: React.FC = () => {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.4)}`,
                 }}>
-                  <ClassIcon sx={{ fontSize: 32, color: '#fff' }} />
+                  <ClassIcon sx={{ fontSize: 32, color: "text.primary" }} />
                 </Box>
                 <Box>
-                  <Typography variant="h3" sx={{ color: '#fff', fontWeight: 900, letterSpacing: -0.5, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+                  <Typography variant="h3" sx={{ color: "text.primary", fontWeight: 900, letterSpacing: -0.5, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
                     My Classrooms
                   </Typography>
-                  <Typography variant="subtitle1" sx={{ color: alpha(theme.palette.common.white, 0.6) }}>
+                  <Typography variant="subtitle1" sx={{ color: alpha(theme.palette.text.primary, 0.6) }}>
                     Select a classroom to view classmates, leaderboard, and announcements
                   </Typography>
                 </Box>
@@ -196,11 +196,11 @@ const MyClassroom: React.FC = () => {
           {classrooms.length === 0 ? (
             <Fade in timeout={800}>
               <GlassCard sx={{ p: 6, textAlign: 'center' }}>
-                <ClassIcon sx={{ fontSize: 72, color: alpha(theme.palette.common.white, 0.12), mb: 2 }} />
-                <Typography variant="h5" sx={{ color: alpha(theme.palette.common.white, 0.5), fontWeight: 600, mb: 1 }}>
+                <ClassIcon sx={{ fontSize: 72, color: alpha(theme.palette.text.primary, 0.12), mb: 2 }} />
+                <Typography variant="h5" sx={{ color: alpha(theme.palette.text.primary, 0.5), fontWeight: 600, mb: 1 }}>
                   No Classrooms Yet
                 </Typography>
-                <Typography sx={{ color: alpha(theme.palette.common.white, 0.35) }}>
+                <Typography sx={{ color: alpha(theme.palette.text.primary, 0.35) }}>
                   Enroll in a classroom through the game or your dashboard to get started.
                 </Typography>
               </GlassCard>
@@ -227,7 +227,7 @@ const MyClassroom: React.FC = () => {
                             <SchoolIcon sx={{ color: theme.palette.primary.light, fontSize: 26 }} />
                           </Box>
 
-                          <Typography variant="h5" sx={{ color: '#fff', fontWeight: 800, mb: 1.5, lineHeight: 1.2 }}>
+                          <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 800, mb: 1.5, lineHeight: 1.2 }}>
                             {item.name}
                           </Typography>
 
@@ -259,7 +259,7 @@ const MyClassroom: React.FC = () => {
                           </Box>
 
                           {/* Subtle "Open" indicator */}
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: alpha(theme.palette.common.white, 0.35), mt: 1 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: alpha(theme.palette.text.primary, 0.35), mt: 1 }}>
                             <Typography variant="caption" sx={{ fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase' }}>
                               Open Classroom →
                             </Typography>
@@ -282,12 +282,12 @@ const MyClassroom: React.FC = () => {
      ══════════════════════════════════════════════════════════ */
   if (!classroom) {
     return (
-      <Box sx={{ minHeight: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
-        <ClassIcon sx={{ fontSize: 80, color: alpha(theme.palette.common.white, 0.15) }} />
-        <Typography variant="h5" sx={{ color: alpha(theme.palette.common.white, 0.5), fontWeight: 600 }}>
+      <Box sx={{ minHeight: '100vh', backgroundColor: "background.default", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
+        <ClassIcon sx={{ fontSize: 80, color: alpha(theme.palette.text.primary, 0.15) }} />
+        <Typography variant="h5" sx={{ color: alpha(theme.palette.text.primary, 0.5), fontWeight: 600 }}>
           Classroom not found
         </Typography>
-        <Button component={Link} to="/my-classrooms" variant="outlined" startIcon={<ArrowBackIcon />} sx={{ color: '#fff', borderColor: alpha('#fff', 0.3), borderRadius: 8, textTransform: 'none' }}>
+        <Button component={Link} to="/my-classrooms" variant="outlined" startIcon={<ArrowBackIcon />} sx={{ color: "text.primary", borderColor: alpha(theme.palette.text.primary, 0.3), borderRadius: 8, textTransform: 'none' }}>
           Back to Classrooms
         </Button>
       </Box>
@@ -298,7 +298,7 @@ const MyClassroom: React.FC = () => {
   const restList = leaderboard.slice(3);
 
   return (
-    <Box sx={{ minHeight: '100vh', width: '100vw', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, backgroundAttachment: 'fixed', pt: 10, pb: 8 }}>
+    <Box sx={{ minHeight: '100vh', width: '100vw', backgroundColor: "background.default", backgroundAttachment: 'fixed', pt: 10, pb: 8 }}>
       <Container maxWidth="lg">
 
         {/* ── Header ── */}
@@ -309,8 +309,8 @@ const MyClassroom: React.FC = () => {
               to="/my-classrooms"
               startIcon={<ArrowBackIcon />}
               sx={{
-                color: alpha(theme.palette.common.white, 0.6), mb: 2, borderRadius: 6, textTransform: 'none',
-                '&:hover': { color: '#fff', bgcolor: alpha(theme.palette.common.white, 0.05) },
+                color: alpha(theme.palette.text.primary, 0.6), mb: 2, borderRadius: 6, textTransform: 'none',
+                '&:hover': { color: "text.primary", bgcolor: alpha(theme.palette.text.primary, 0.05) },
               }}
             >
               Back to My Classrooms
@@ -326,11 +326,11 @@ const MyClassroom: React.FC = () => {
                   boxShadow: `0 4px 24px ${alpha(theme.palette.primary.main, 0.45)}`,
                   flexShrink: 0,
                 }}>
-                  <SchoolIcon sx={{ fontSize: 36, color: '#fff' }} />
+                  <SchoolIcon sx={{ fontSize: 36, color: "text.primary" }} />
                 </Box>
 
                 <Box sx={{ flex: 1, minWidth: 200 }}>
-                  <Typography variant="h4" sx={{ color: '#fff', fontWeight: 900, letterSpacing: -0.5, lineHeight: 1.1 }}>
+                  <Typography variant="h4" sx={{ color: "text.primary", fontWeight: 900, letterSpacing: -0.5, lineHeight: 1.1 }}>
                     {classroom.name}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1.5 }}>
@@ -371,7 +371,7 @@ const MyClassroom: React.FC = () => {
               <GlassCard sx={{ p: 3, height: '100%' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                   <GroupsIcon sx={{ color: theme.palette.primary.light }} />
-                  <Typography variant="h5" sx={{ color: '#fff', fontWeight: 800 }}>
+                  <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 800 }}>
                     Classmates
                   </Typography>
                   <Chip
@@ -381,9 +381,9 @@ const MyClassroom: React.FC = () => {
                   />
                 </Box>
 
-                <Divider sx={{ borderColor: alpha(theme.palette.common.white, 0.06), mb: 1 }} />
+                <Divider sx={{ borderColor: alpha(theme.palette.text.primary, 0.06), mb: 1 }} />
 
-                <List sx={{ maxHeight: 400, overflowY: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-thumb': { bgcolor: alpha(theme.palette.common.white, 0.15), borderRadius: 3 } }}>
+                <List sx={{ maxHeight: 400, overflowY: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-thumb': { bgcolor: alpha(theme.palette.text.primary, 0.15), borderRadius: 3 } }}>
                   {classroom.classmates.map((mate) => (
                     <ListItem
                       key={mate.id}
@@ -392,7 +392,7 @@ const MyClassroom: React.FC = () => {
                         bgcolor: mate.is_self ? alpha(theme.palette.primary.main, 0.12) : 'transparent',
                         border: mate.is_self ? `1px solid ${alpha(theme.palette.primary.main, 0.25)}` : '1px solid transparent',
                         transition: 'background 0.2s',
-                        '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.04) },
+                        '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.04) },
                       }}
                     >
                       <ListItemAvatar>
@@ -400,8 +400,8 @@ const MyClassroom: React.FC = () => {
                           width: 40, height: 40,
                           bgcolor: mate.is_self
                             ? alpha(theme.palette.primary.main, 0.3)
-                            : alpha(theme.palette.common.white, 0.08),
-                          color: mate.is_self ? theme.palette.primary.light : alpha(theme.palette.common.white, 0.7),
+                            : alpha(theme.palette.text.primary, 0.08),
+                          color: mate.is_self ? theme.palette.primary.light : alpha(theme.palette.text.primary, 0.7),
                           fontWeight: 700, fontSize: 16,
                           border: mate.is_self ? `2px solid ${alpha(theme.palette.primary.main, 0.4)}` : 'none',
                         }}>
@@ -411,7 +411,7 @@ const MyClassroom: React.FC = () => {
                       <ListItemText
                         primary={
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Typography sx={{ color: '#fff', fontWeight: mate.is_self ? 700 : 500, fontSize: '0.95rem' }}>
+                            <Typography sx={{ color: "text.primary", fontWeight: mate.is_self ? 700 : 500, fontSize: '0.95rem' }}>
                               {mate.username}
                             </Typography>
                             {mate.is_self && (
@@ -420,7 +420,7 @@ const MyClassroom: React.FC = () => {
                           </Box>
                         }
                         secondary={
-                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.45) }}>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.45) }}>
                             {mate.total_xp} XP
                           </Typography>
                         }
@@ -438,17 +438,17 @@ const MyClassroom: React.FC = () => {
               <GlassCard sx={{ p: 3, height: '100%' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                   <EmojiEventsIcon sx={{ color: '#FFD700' }} />
-                  <Typography variant="h5" sx={{ color: '#fff', fontWeight: 800 }}>
+                  <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 800 }}>
                     Classroom Leaderboard
                   </Typography>
                 </Box>
 
-                <Divider sx={{ borderColor: alpha(theme.palette.common.white, 0.06), mb: 2 }} />
+                <Divider sx={{ borderColor: alpha(theme.palette.text.primary, 0.06), mb: 2 }} />
 
                 {leaderboard.length === 0 ? (
                   <Box sx={{ textAlign: 'center', py: 6 }}>
-                    <EmojiEventsIcon sx={{ fontSize: 56, color: alpha(theme.palette.common.white, 0.1), mb: 1 }} />
-                    <Typography sx={{ color: alpha(theme.palette.common.white, 0.4) }}>
+                    <EmojiEventsIcon sx={{ fontSize: 56, color: alpha(theme.palette.text.primary, 0.1), mb: 1 }} />
+                    <Typography sx={{ color: alpha(theme.palette.text.primary, 0.4) }}>
                       No leaderboard entries yet.
                     </Typography>
                   </Box>
@@ -461,7 +461,7 @@ const MyClassroom: React.FC = () => {
                         {topThree.length > 1 && (
                           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
                             <Typography sx={{ fontSize: '1.4rem', mb: 0.5 }}>{medals[1]}</Typography>
-                            <Typography sx={{ color: '#fff', fontWeight: 600, fontSize: '0.8rem', textAlign: 'center', mb: 0.5 }}>{topThree[1].username}</Typography>
+                            <Typography sx={{ color: "text.primary", fontWeight: 600, fontSize: '0.8rem', textAlign: 'center', mb: 0.5 }}>{topThree[1].username}</Typography>
                             <Chip label={`${topThree[1].total_xp} XP`} size="small" sx={{ bgcolor: alpha('#C0C0C0', 0.2), color: '#C0C0C0', fontWeight: 'bold', fontSize: '0.7rem', border: `1px solid ${alpha('#C0C0C0', 0.3)}` }} />
                             <Box sx={{ width: '100%', height: 50, bgcolor: alpha('#C0C0C0', 0.6), borderRadius: '6px 6px 0 0', mt: 1, boxShadow: `0 -6px 20px ${alpha('#C0C0C0', 0.2)}` }} />
                           </Box>
@@ -469,7 +469,7 @@ const MyClassroom: React.FC = () => {
                         {/* 1st place */}
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
                           <Typography sx={{ fontSize: '1.6rem', mb: 0.5 }}>{medals[0]}</Typography>
-                          <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: '0.85rem', textAlign: 'center', mb: 0.5 }}>{topThree[0].username}</Typography>
+                          <Typography sx={{ color: "text.primary", fontWeight: 800, fontSize: '0.85rem', textAlign: 'center', mb: 0.5 }}>{topThree[0].username}</Typography>
                           <Chip label={`${topThree[0].total_xp} XP`} size="small" sx={{ bgcolor: alpha('#FFD700', 0.2), color: '#FFD700', fontWeight: 'bold', fontSize: '0.7rem', border: `1px solid ${alpha('#FFD700', 0.35)}` }} />
                           <Box sx={{ width: '100%', height: 70, bgcolor: alpha('#FFD700', 0.65), borderRadius: '6px 6px 0 0', mt: 1, boxShadow: `0 -8px 30px ${alpha('#FFD700', 0.25)}` }} />
                         </Box>
@@ -477,7 +477,7 @@ const MyClassroom: React.FC = () => {
                         {topThree.length > 2 && (
                           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
                             <Typography sx={{ fontSize: '1.3rem', mb: 0.5 }}>{medals[2]}</Typography>
-                            <Typography sx={{ color: '#fff', fontWeight: 600, fontSize: '0.8rem', textAlign: 'center', mb: 0.5 }}>{topThree[2].username}</Typography>
+                            <Typography sx={{ color: "text.primary", fontWeight: 600, fontSize: '0.8rem', textAlign: 'center', mb: 0.5 }}>{topThree[2].username}</Typography>
                             <Chip label={`${topThree[2].total_xp} XP`} size="small" sx={{ bgcolor: alpha('#CD7F32', 0.2), color: '#CD7F32', fontWeight: 'bold', fontSize: '0.7rem', border: `1px solid ${alpha('#CD7F32', 0.3)}` }} />
                             <Box sx={{ width: '100%', height: 35, bgcolor: alpha('#CD7F32', 0.6), borderRadius: '6px 6px 0 0', mt: 1, boxShadow: `0 -4px 16px ${alpha('#CD7F32', 0.2)}` }} />
                           </Box>
@@ -487,7 +487,7 @@ const MyClassroom: React.FC = () => {
 
                     {/* Rest of leaderboard */}
                     {restList.length > 0 && (
-                      <Box sx={{ maxHeight: 220, overflowY: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-thumb': { bgcolor: alpha(theme.palette.common.white, 0.15), borderRadius: 3 } }}>
+                      <Box sx={{ maxHeight: 220, overflowY: 'auto', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-thumb': { bgcolor: alpha(theme.palette.text.primary, 0.15), borderRadius: 3 } }}>
                         {restList.map((entry) => (
                           <Box
                             key={entry.rank}
@@ -495,22 +495,22 @@ const MyClassroom: React.FC = () => {
                               display: 'flex', alignItems: 'center', gap: 2, px: 2, py: 1, borderRadius: 2, mb: 0.5,
                               bgcolor: entry.is_self ? alpha(theme.palette.primary.main, 0.12) : 'transparent',
                               border: entry.is_self ? `1px solid ${alpha(theme.palette.primary.main, 0.25)}` : '1px solid transparent',
-                              '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.03) },
+                              '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.03) },
                             }}
                           >
-                            <Typography sx={{ fontWeight: 'bold', fontSize: '0.85rem', minWidth: 32, textAlign: 'center', color: alpha(theme.palette.common.white, 0.45) }}>
+                            <Typography sx={{ fontWeight: 'bold', fontSize: '0.85rem', minWidth: 32, textAlign: 'center', color: alpha(theme.palette.text.primary, 0.45) }}>
                               #{entry.rank}
                             </Typography>
                             <Box sx={{ flex: 1 }}>
-                              <Typography sx={{ fontWeight: entry.is_self ? 700 : 500, color: '#fff', fontSize: '0.85rem' }}>
+                              <Typography sx={{ fontWeight: entry.is_self ? 700 : 500, color: "text.primary", fontSize: '0.85rem' }}>
                                 {entry.username}
                                 {entry.is_self && <Chip label="You" size="small" sx={{ ml: 1, height: 18, fontSize: '0.6rem', bgcolor: alpha(theme.palette.primary.main, 0.3), color: theme.palette.primary.light }} />}
                               </Typography>
-                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4) }}>
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.4) }}>
                                 {entry.story_progress.toFixed(0)}% • {entry.achievements_count} badges
                               </Typography>
                             </Box>
-                            <Typography sx={{ fontWeight: 'bold', fontSize: '0.8rem', color: alpha(theme.palette.common.white, 0.6) }}>
+                            <Typography sx={{ fontWeight: 'bold', fontSize: '0.8rem', color: alpha(theme.palette.text.primary, 0.6) }}>
                               {entry.total_xp} XP
                             </Typography>
                           </Box>
@@ -529,7 +529,7 @@ const MyClassroom: React.FC = () => {
               <GlassCard sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                   <CampaignIcon sx={{ color: theme.palette.warning.light }} />
-                  <Typography variant="h5" sx={{ color: '#fff', fontWeight: 800 }}>
+                  <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 800 }}>
                     Announcements
                   </Typography>
                   {announcements.length > 0 && (
@@ -541,12 +541,12 @@ const MyClassroom: React.FC = () => {
                   )}
                 </Box>
 
-                <Divider sx={{ borderColor: alpha(theme.palette.common.white, 0.06), mb: 2 }} />
+                <Divider sx={{ borderColor: alpha(theme.palette.text.primary, 0.06), mb: 2 }} />
 
                 {announcements.length === 0 ? (
                   <Box sx={{ textAlign: 'center', py: 5 }}>
-                    <CampaignIcon sx={{ fontSize: 48, color: alpha(theme.palette.common.white, 0.1), mb: 1 }} />
-                    <Typography sx={{ color: alpha(theme.palette.common.white, 0.4) }}>
+                    <CampaignIcon sx={{ fontSize: 48, color: alpha(theme.palette.text.primary, 0.1), mb: 1 }} />
+                    <Typography sx={{ color: alpha(theme.palette.text.primary, 0.4) }}>
                       No announcements for this classroom yet.
                     </Typography>
                   </Box>
@@ -557,11 +557,11 @@ const MyClassroom: React.FC = () => {
                         key={announcement.id}
                         sx={{
                           p: 2.5, borderRadius: 2.5,
-                          bgcolor: alpha(theme.palette.common.white, 0.03),
-                          border: `1px solid ${alpha(theme.palette.common.white, 0.06)}`,
+                          bgcolor: alpha(theme.palette.text.primary, 0.03),
+                          border: `1px solid ${alpha(theme.palette.text.primary, 0.06)}`,
                           transition: 'border-color 0.2s, background 0.2s',
                           '&:hover': {
-                            bgcolor: alpha(theme.palette.common.white, 0.05),
+                            bgcolor: alpha(theme.palette.text.primary, 0.05),
                             borderColor: alpha(theme.palette.warning.main, 0.2),
                           },
                         }}
@@ -576,17 +576,17 @@ const MyClassroom: React.FC = () => {
                             <CampaignIcon sx={{ fontSize: 20, color: theme.palette.warning.light }} />
                           </Box>
                           <Box sx={{ flex: 1 }}>
-                            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem', mb: 0.5 }}>
+                            <Typography sx={{ color: "text.primary", fontWeight: 700, fontSize: '1rem', mb: 0.5 }}>
                               {announcement.title}
                             </Typography>
-                            <Typography sx={{ color: alpha(theme.palette.common.white, 0.7), whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                            <Typography sx={{ color: alpha(theme.palette.text.primary, 0.7), whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: 1.6 }}>
                               {announcement.body}
                             </Typography>
                             <Box sx={{ display: 'flex', gap: 2, mt: 1.5, alignItems: 'center' }}>
-                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.35) }}>
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.35) }}>
                                 By {announcement.author_name}
                               </Typography>
-                              <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.25) }}>
+                              <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.25) }}>
                                 {new Date(announcement.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                               </Typography>
                             </Box>

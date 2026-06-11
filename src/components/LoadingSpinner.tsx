@@ -20,7 +20,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         <div className="spinner-ring" style={{ width: size, height: size }}></div>
       </div>
       {message && (
-        <Typography variant="body2" className="spinner-text" sx={{ mt: 2, color: '#44b78b', letterSpacing: '1px' }}>
+        <Typography variant="body2" className="spinner-text" sx={{ mt: 2, color: '#256d4f', letterSpacing: '1px' }}>
           {message}
         </Typography>
       )}

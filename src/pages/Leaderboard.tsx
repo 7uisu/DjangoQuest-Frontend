@@ -35,7 +35,7 @@ const PodiumStep = ({
         <Fade in timeout={800}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
             <Typography sx={{ fontSize: '2rem', mb: 0.5 }}>{medals[rank - 1]}</Typography>
-            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', color: "text.primary", textAlign: 'center' }}>
               {entry.username}
             </Typography>
             <Chip 
@@ -52,7 +52,7 @@ const PodiumStep = ({
           </Box>
         </Fade>
       ) : (
-        <Box sx={{ mb: 4 }}><Typography sx={{ color: alpha(theme.palette.common.white, 0.3) }}>Unclaimed</Typography></Box>
+        <Box sx={{ mb: 4 }}><Typography sx={{ color: alpha(theme.palette.text.primary, 0.3) }}>Unclaimed</Typography></Box>
       )}
       
       <Box 
@@ -70,7 +70,7 @@ const PodiumStep = ({
           borderBottom: 'none'
         }}
       >
-        <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '1.5rem', opacity: 0.5 }}>
+        <Typography sx={{ color: "text.primary", fontWeight: 900, fontSize: '1.5rem', opacity: 0.5 }}>
           {rank}
         </Typography>
       </Box>
@@ -106,10 +106,10 @@ export default function Leaderboard() {
       {/* Header */}
       <Box sx={{ textAlign: 'center', mb: 6 }}>
         <TrophyIcon sx={{ fontSize: 60, color: '#FFD700', mb: 1, filter: 'drop-shadow(0 0 20px rgba(255,215,0,0.5))' }} />
-        <Typography variant="h3" sx={{ fontWeight: 900, color: '#fff', textTransform: 'uppercase', letterSpacing: 2 }}>
+        <Typography variant="h3" sx={{ fontWeight: 900, color: "text.primary", textTransform: 'uppercase', letterSpacing: 2 }}>
           Hall of Fame
         </Typography>
-        <Typography variant="subtitle1" sx={{ color: alpha(theme.palette.common.white, 0.6), mt: 1 }}>
+        <Typography variant="subtitle1" sx={{ color: alpha(theme.palette.text.primary, 0.6), mt: 1 }}>
           The top developers in DjangoQuest
         </Typography>
 
@@ -118,11 +118,11 @@ export default function Leaderboard() {
             value={scope}
             onChange={(_, v) => setScope(v)}
             sx={{ 
-              bgcolor: alpha(theme.palette.common.white, 0.05),
+              bgcolor: alpha(theme.palette.text.primary, 0.05),
               borderRadius: 3,
               p: 0.5,
               '& .MuiTab-root': { borderRadius: 2, minHeight: 40 },
-              '& .Mui-selected': { bgcolor: alpha(theme.palette.primary.main, 0.2), color: '#fff !important' },
+              '& .Mui-selected': { bgcolor: alpha(theme.palette.primary.main, 0.2), color: 'var(--mui-palette-primary-contrastText) !important' },
               '& .MuiTabs-indicator': { display: 'none' } 
             }}
           >
@@ -137,7 +137,7 @@ export default function Leaderboard() {
           <LoadingSpinner message="Calculating Rankings..." />
         </Box>
       ) : entries.length === 0 ? (
-        <Typography sx={{ color: alpha(theme.palette.common.white, 0.5), textAlign: 'center', mt: 10 }}>
+        <Typography sx={{ color: alpha(theme.palette.text.primary, 0.5), textAlign: 'center', mt: 10 }}>
           {scope === 'classroom' ? 'Enroll in a classroom to see rankings.' : 'No data yet.'}
         </Typography>
       ) : (
@@ -157,7 +157,7 @@ export default function Leaderboard() {
                   bgcolor: alpha(theme.palette.background.paper, 0.6), 
                   backdropFilter: 'blur(10px)',
                   borderRadius: 4, 
-                  border: `1px solid ${alpha(theme.palette.common.white, 0.1)}`,
+                  border: `1px solid ${alpha(theme.palette.text.primary, 0.1)}`,
                   overflow: 'hidden'
                 }}
               >
@@ -169,26 +169,26 @@ export default function Leaderboard() {
                       alignItems: 'center',
                       p: 2,
                       px: 3,
-                      borderBottom: idx === restList.length - 1 ? 'none' : `1px solid ${alpha(theme.palette.common.white, 0.05)}`,
+                      borderBottom: idx === restList.length - 1 ? 'none' : `1px solid ${alpha(theme.palette.text.primary, 0.05)}`,
                       bgcolor: entry.is_self ? alpha(theme.palette.primary.main, 0.15) : 'transparent',
                       transition: 'background-color 0.2s',
-                      '&:hover': { bgcolor: alpha(theme.palette.common.white, 0.03) }
+                      '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.03) }
                     }}
                   >
-                    <Typography sx={{ fontWeight: 'bold', width: 40, color: alpha(theme.palette.common.white, 0.5) }}>
+                    <Typography sx={{ fontWeight: 'bold', width: 40, color: alpha(theme.palette.text.primary, 0.5) }}>
                       {entry.rank}
                     </Typography>
                     
                     <Box sx={{ flex: 1, ml: 2 }}>
-                      <Typography sx={{ fontWeight: entry.is_self ? 'bold' : 'normal', color: entry.is_self ? theme.palette.primary.light : '#fff' }}>
+                      <Typography sx={{ fontWeight: entry.is_self ? 'bold' : 'normal', color: entry.is_self ? theme.palette.primary.light : "text.primary" }}>
                         {entry.username} {entry.is_self && <Chip label="You" size="small" sx={{ ml: 1, height: 20, fontSize: '0.7rem', bgcolor: alpha(theme.palette.primary.main, 0.3) }} />}
                       </Typography>
-                      <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4) }}>
+                      <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.4) }}>
                         {entry.story_progress.toFixed(0)}% progress • {entry.achievements_count} badges
                       </Typography>
                     </Box>
 
-                    <Typography sx={{ fontWeight: 'bold', color: alpha(theme.palette.common.white, 0.8) }}>
+                    <Typography sx={{ fontWeight: 'bold', color: alpha(theme.palette.text.primary, 0.8) }}>
                       {entry.total_xp} XP
                     </Typography>
                   </Box>

@@ -152,22 +152,22 @@ const AdminTutorialsPage: React.FC = () => {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600 }}>
+        <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>
           Manage Video Tutorials
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenModal()}
-          sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}
+          sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}
         >
           New Tutorial
         </Button>
       </Box>
 
       {tutorials.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center', bgcolor: '#1e293b', border: '1px dashed #334155' }}>
-          <Typography sx={{ color: '#64748b' }}>No tutorials found.</Typography>
+        <Paper sx={{ p: 4, textAlign: 'center', bgcolor: 'var(--mui-palette-background-paper)', border: '1px dashed var(--mui-palette-divider)' }}>
+          <Typography sx={{ color: 'var(--mui-palette-text-secondary)' }}>No tutorials found.</Typography>
         </Paper>
       ) : (
         <Grid container spacing={3}>
@@ -175,25 +175,25 @@ const AdminTutorialsPage: React.FC = () => {
             const thumbnailUrl = getYoutubeThumbnail(tutorial.video_url);
             return (
               <Grid item xs={12} sm={6} md={4} key={tutorial.id}>
-                <Card sx={{ bgcolor: '#1e293b', border: '1px solid #334155', borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card sx={{ bgcolor: 'var(--mui-palette-background-paper)', border: '1px solid var(--mui-palette-divider)', borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
                   {thumbnailUrl ? (
-                    <CardMedia component="img" height="160" image={thumbnailUrl} alt={tutorial.title} sx={{ borderBottom: '1px solid #334155' }} />
+                    <CardMedia component="img" height="160" image={thumbnailUrl} alt={tutorial.title} sx={{ borderBottom: '1px solid var(--mui-palette-divider)' }} />
                   ) : (
-                    <Box sx={{ height: 160, bgcolor: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #334155' }}>
-                      <Typography variant="body2" sx={{ color: '#64748b' }}>No Thumbnail</Typography>
+                    <Box sx={{ height: 160, bgcolor: 'var(--mui-palette-background-default)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--mui-palette-divider)' }}>
+                      <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)' }}>No Thumbnail</Typography>
                     </Box>
                   )}
                   <CardContent sx={{ flexGrow: 1, p: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
-                      <Typography variant="h6" sx={{ color: '#e2e8f0', fontWeight: 600, fontSize: '1.1rem', lineHeight: 1.2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      <Typography variant="h6" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600, fontSize: '1.1rem', lineHeight: 1.2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {tutorial.title}
                       </Typography>
                       <Chip label={tutorial.is_active ? 'Active' : 'Draft'} color={tutorial.is_active ? 'success' : 'default'} size="small" sx={{ height: 20, fontSize: '0.7rem' }} />
                     </Box>
-                    <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)', mb: 2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {tutorial.description || 'No description provided.'}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mb: 1 }}>
+                    <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', display: 'block', mb: 1 }}>
                       Steps: {tutorial.step_count}
                     </Typography>
                   </CardContent>
@@ -208,7 +208,7 @@ const AdminTutorialsPage: React.FC = () => {
                       Manage Steps
                     </Button>
                     <Box>
-                      <IconButton size="small" onClick={() => handleOpenModal(tutorial)} sx={{ color: '#818cf8', mr: 0.5 }}>
+                      <IconButton size="small" onClick={() => handleOpenModal(tutorial)} sx={{ color: '#256d4f', mr: 0.5 }}>
                         <EditIcon fontSize="small" />
                       </IconButton>
                       <IconButton size="small" onClick={() => handleDelete(tutorial.id)} sx={{ color: '#ef4444' }}>
@@ -224,9 +224,9 @@ const AdminTutorialsPage: React.FC = () => {
       )}
 
       {/* Tutorial Edit/Create Modal */}
-      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0' } }}>
+      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)' } }}>
         <DialogTitle>{editingId ? 'Edit Tutorial' : 'New Tutorial'}</DialogTitle>
-        <DialogContent dividers sx={{ borderColor: '#334155' }}>
+        <DialogContent dividers sx={{ borderColor: 'var(--mui-palette-divider)' }}>
           <TextField
             fullWidth
             label="Title"
@@ -234,8 +234,8 @@ const AdminTutorialsPage: React.FC = () => {
             onChange={(e) => setTitle(e.target.value)}
             margin="normal"
             variant="outlined"
-            InputLabelProps={{ style: { color: '#94a3b8' } }}
-            sx={{ input: { color: '#e2e8f0' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } } }}
+            InputLabelProps={{ style: { color: 'var(--mui-palette-text-secondary)' } }}
+            sx={{ input: { color: 'var(--mui-palette-text-primary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } } }}
           />
           <TextField
             fullWidth
@@ -246,8 +246,8 @@ const AdminTutorialsPage: React.FC = () => {
             onChange={(e) => setDescription(e.target.value)}
             margin="normal"
             variant="outlined"
-            InputLabelProps={{ style: { color: '#94a3b8' } }}
-            sx={{ textarea: { color: '#e2e8f0' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } } }}
+            InputLabelProps={{ style: { color: 'var(--mui-palette-text-secondary)' } }}
+            sx={{ textarea: { color: 'var(--mui-palette-text-primary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } } }}
           />
           <TextField
             fullWidth
@@ -257,8 +257,8 @@ const AdminTutorialsPage: React.FC = () => {
             onChange={(e) => setVideoUrl(e.target.value)}
             margin="normal"
             variant="outlined"
-            InputLabelProps={{ style: { color: '#94a3b8' } }}
-            sx={{ input: { color: '#e2e8f0' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } } }}
+            InputLabelProps={{ style: { color: 'var(--mui-palette-text-secondary)' } }}
+            sx={{ input: { color: 'var(--mui-palette-text-primary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } } }}
           />
           <FormControlLabel
             control={<Switch checked={isActive} onChange={(e) => setIsActive(e.target.checked)} color="primary" />}
@@ -267,23 +267,23 @@ const AdminTutorialsPage: React.FC = () => {
           />
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleCloseModal} sx={{ color: '#94a3b8' }}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}>
+          <Button onClick={handleCloseModal} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}>
             {editingId ? 'Save Changes' : 'Create Tutorial'}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={!!deleteTargetId} onClose={() => setDeleteTargetId(null)} PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0' } }}>
+      <Dialog open={!!deleteTargetId} onClose={() => setDeleteTargetId(null)} PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)' } }}>
         <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent dividers sx={{ borderColor: '#334155' }}>
-          <Typography sx={{ color: '#94a3b8' }}>
+        <DialogContent dividers sx={{ borderColor: 'var(--mui-palette-divider)' }}>
+          <Typography sx={{ color: 'var(--mui-palette-text-secondary)' }}>
             Are you sure you want to delete this tutorial? All its steps will also be deleted permanently.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setDeleteTargetId(null)} sx={{ color: '#94a3b8' }}>Cancel</Button>
+          <Button onClick={() => setDeleteTargetId(null)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
           <Button onClick={executeDelete} variant="contained" color="error">
             Delete
           </Button>

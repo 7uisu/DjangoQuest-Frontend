@@ -23,9 +23,9 @@ interface StatCardProps {
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, loading }) => (
   <Card
     sx={{
-      bgcolor: '#1e293b',
+      bgcolor: 'var(--mui-palette-background-paper)',
       border: '1px solid',
-      borderColor: '#334155',
+      borderColor: 'var(--mui-palette-divider)',
       borderRadius: 3,
       transition: 'all 0.3s ease',
       '&:hover': {
@@ -38,13 +38,13 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, loading 
     <CardContent sx={{ p: 3, '&:last-child': { pb: 3 } }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <Box>
-          <Typography variant="overline" sx={{ color: '#64748b', fontSize: '0.7rem', letterSpacing: '1px' }}>
+          <Typography variant="overline" sx={{ color: 'var(--mui-palette-text-secondary)', fontSize: '0.7rem', letterSpacing: '1px' }}>
             {title}
           </Typography>
           {loading ? (
-            <Skeleton variant="text" width={80} height={48} sx={{ bgcolor: '#334155' }} />
+            <Skeleton variant="text" width={80} height={48} sx={{ bgcolor: 'var(--mui-palette-divider)' }} />
           ) : (
-            <Typography variant="h3" sx={{ color: '#e2e8f0', fontWeight: 700, mt: 0.5 }}>
+            <Typography variant="h3" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 700, mt: 0.5 }}>
               {value.toLocaleString()}
             </Typography>
           )}
@@ -84,21 +84,21 @@ const AdminOverviewPage: React.FC = () => {
   }, []);
 
   const cards = [
-    { title: 'Total Students', value: stats?.total_students || 0, icon: <PeopleIcon />, color: '#818cf8' },
-    { title: 'Total Teachers', value: stats?.total_teachers || 0, icon: <SchoolIcon />, color: '#2dd4bf' },
+    { title: 'Total Students', value: stats?.total_students || 0, icon: <PeopleIcon />, color: '#256d4f' },
+    { title: 'Total Teachers', value: stats?.total_teachers || 0, icon: <SchoolIcon />, color: '#256d4f' },
     { title: 'Total Classrooms', value: stats?.total_classrooms || 0, icon: <ClassroomIcon />, color: '#fbbf24' },
     { title: 'Total Feedback', value: stats?.total_feedback || 0, icon: <FeedbackIcon />, color: '#f97316' },
-    { title: 'Total Announcements', value: stats?.total_announcements || 0, icon: <CampaignIcon />, color: '#a78bfa' },
+    { title: 'Total Announcements', value: stats?.total_announcements || 0, icon: <CampaignIcon />, color: '#315a7d' },
   ];
 
   const totalTypeCount = (stats?.feedback_by_type?.game || 0) + (stats?.feedback_by_type?.website || 0) + (stats?.feedback_by_type?.classroom || 0) || 1;
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600, mb: 0.5 }}>
+      <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600, mb: 0.5 }}>
         Platform Overview
       </Typography>
-      <Typography variant="body2" sx={{ color: '#64748b', mb: 3 }}>
+      <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)', mb: 3 }}>
         Key metrics across the DjangoQuest platform.
       </Typography>
 
@@ -124,21 +124,21 @@ const AdminOverviewPage: React.FC = () => {
       {stats && !loading && (
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2.5, mt: 3 }}>
           {/* Feedback by Type */}
-          <Card sx={{ bgcolor: '#1e293b', border: '1px solid #334155', borderRadius: 3 }}>
+          <Card sx={{ bgcolor: 'var(--mui-palette-background-paper)', border: '1px solid var(--mui-palette-divider)', borderRadius: 3 }}>
             <CardContent sx={{ p: 3, '&:last-child': { pb: 3 } }}>
-              <Typography variant="overline" sx={{ color: '#64748b', fontSize: '0.7rem', letterSpacing: '1px' }}>Feedback by Type</Typography>
+              <Typography variant="overline" sx={{ color: 'var(--mui-palette-text-secondary)', fontSize: '0.7rem', letterSpacing: '1px' }}>Feedback by Type</Typography>
               <Box sx={{ mt: 2 }}>
                 {[
-                  { label: 'Game', value: stats.feedback_by_type?.game || 0, color: '#818cf8' },
-                  { label: 'Website', value: stats.feedback_by_type?.website || 0, color: '#2dd4bf' },
+                  { label: 'Game', value: stats.feedback_by_type?.game || 0, color: '#256d4f' },
+                  { label: 'Website', value: stats.feedback_by_type?.website || 0, color: '#256d4f' },
                   { label: 'Classroom', value: stats.feedback_by_type?.classroom || 0, color: '#fbbf24' },
                 ].map((item) => (
                   <Box key={item.label} sx={{ mb: 1.5 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                      <Typography variant="body2" sx={{ color: '#94a3b8', fontSize: '0.8rem' }}>{item.label}</Typography>
-                      <Typography variant="body2" sx={{ color: '#e2e8f0', fontWeight: 600, fontSize: '0.8rem' }}>{item.value}</Typography>
+                      <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)', fontSize: '0.8rem' }}>{item.label}</Typography>
+                      <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600, fontSize: '0.8rem' }}>{item.value}</Typography>
                     </Box>
-                    <Box sx={{ height: 6, bgcolor: '#0f172a', borderRadius: 3, overflow: 'hidden' }}>
+                    <Box sx={{ height: 6, bgcolor: 'var(--mui-palette-background-default)', borderRadius: 3, overflow: 'hidden' }}>
                       <Box sx={{ height: '100%', width: `${(item.value / totalTypeCount) * 100}%`, bgcolor: item.color, borderRadius: 3, transition: 'width 0.6s ease' }} />
                     </Box>
                   </Box>
@@ -148,17 +148,17 @@ const AdminOverviewPage: React.FC = () => {
           </Card>
 
           {/* Average Ratings */}
-          <Card sx={{ bgcolor: '#1e293b', border: '1px solid #334155', borderRadius: 3 }}>
+          <Card sx={{ bgcolor: 'var(--mui-palette-background-paper)', border: '1px solid var(--mui-palette-divider)', borderRadius: 3 }}>
             <CardContent sx={{ p: 3, '&:last-child': { pb: 3 } }}>
-              <Typography variant="overline" sx={{ color: '#64748b', fontSize: '0.7rem', letterSpacing: '1px' }}>Average Ratings</Typography>
+              <Typography variant="overline" sx={{ color: 'var(--mui-palette-text-secondary)', fontSize: '0.7rem', letterSpacing: '1px' }}>Average Ratings</Typography>
               <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {[
-                  { label: 'Game', value: stats.avg_game_rating, color: '#818cf8' },
-                  { label: 'Website', value: stats.avg_website_rating, color: '#2dd4bf' },
+                  { label: 'Game', value: stats.avg_game_rating, color: '#256d4f' },
+                  { label: 'Website', value: stats.avg_website_rating, color: '#256d4f' },
                   { label: 'Classroom', value: stats.avg_classroom_rating, color: '#fbbf24' },
                 ].map((item) => (
                   <Box key={item.label} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="body2" sx={{ color: '#94a3b8' }}>{item.label}</Typography>
+                    <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)' }}>{item.label}</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                       <Typography variant="h6" sx={{ color: item.color, fontWeight: 700 }}>{item.value || '—'}</Typography>
                       <Typography sx={{ color: '#fbbf24', fontSize: '1rem' }}>★</Typography>
@@ -170,17 +170,17 @@ const AdminOverviewPage: React.FC = () => {
           </Card>
 
           {/* Feedback by Role */}
-          <Card sx={{ bgcolor: '#1e293b', border: '1px solid #334155', borderRadius: 3 }}>
+          <Card sx={{ bgcolor: 'var(--mui-palette-background-paper)', border: '1px solid var(--mui-palette-divider)', borderRadius: 3 }}>
             <CardContent sx={{ p: 3, '&:last-child': { pb: 3 } }}>
-              <Typography variant="overline" sx={{ color: '#64748b', fontSize: '0.7rem', letterSpacing: '1px' }}>Feedback by Role</Typography>
+              <Typography variant="overline" sx={{ color: 'var(--mui-palette-text-secondary)', fontSize: '0.7rem', letterSpacing: '1px' }}>Feedback by Role</Typography>
               <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-                <Box sx={{ flex: 1, textAlign: 'center', p: 2, bgcolor: alpha('#818cf8', 0.1), borderRadius: 2 }}>
-                  <Typography variant="h4" sx={{ color: '#818cf8', fontWeight: 700 }}>{stats.feedback_by_role?.student || 0}</Typography>
-                  <Typography variant="caption" sx={{ color: '#64748b' }}>Students</Typography>
+                <Box sx={{ flex: 1, textAlign: 'center', p: 2, bgcolor: alpha('#256d4f', 0.1), borderRadius: 2 }}>
+                  <Typography variant="h4" sx={{ color: '#256d4f', fontWeight: 700 }}>{stats.feedback_by_role?.student || 0}</Typography>
+                  <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Students</Typography>
                 </Box>
-                <Box sx={{ flex: 1, textAlign: 'center', p: 2, bgcolor: alpha('#2dd4bf', 0.1), borderRadius: 2 }}>
-                  <Typography variant="h4" sx={{ color: '#2dd4bf', fontWeight: 700 }}>{stats.feedback_by_role?.teacher || 0}</Typography>
-                  <Typography variant="caption" sx={{ color: '#64748b' }}>Teachers</Typography>
+                <Box sx={{ flex: 1, textAlign: 'center', p: 2, bgcolor: alpha('#256d4f', 0.1), borderRadius: 2 }}>
+                  <Typography variant="h4" sx={{ color: '#256d4f', fontWeight: 700 }}>{stats.feedback_by_role?.teacher || 0}</Typography>
+                  <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Teachers</Typography>
                 </Box>
               </Box>
             </CardContent>

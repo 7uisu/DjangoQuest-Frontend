@@ -54,8 +54,8 @@ const timeAgo = (dateStr: string): string => {
 };
 
 const typeColors: Record<string, string> = {
-  game: '#818cf8',
-  website: '#2dd4bf',
+  game: '#256d4f',
+  website: '#256d4f',
   classroom: '#fbbf24',
 };
 
@@ -96,11 +96,11 @@ const AdminFeedbackPage: React.FC = () => {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
         <Box>
-          <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600 }}>Feedback</Typography>
-          <Typography variant="body2" sx={{ color: '#64748b' }}>View and moderate all user feedback.</Typography>
+          <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>Feedback</Typography>
+          <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)' }}>View and moderate all user feedback.</Typography>
         </Box>
         <Button startIcon={<DownloadIcon />} size="small" onClick={() => downloadExport('feedback')}
-          variant="outlined" sx={{ color: '#94a3b8', borderColor: '#334155', textTransform: 'none' }}>
+          variant="outlined" sx={{ color: 'var(--mui-palette-text-secondary)', borderColor: 'var(--mui-palette-divider)', textTransform: 'none' }}>
           Export CSV
         </Button>
       </Box>
@@ -114,16 +114,16 @@ const AdminFeedbackPage: React.FC = () => {
       {/* Filters */}
       <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
         <FormControl size="small" sx={{ minWidth: 160 }}>
-          <InputLabel sx={{ color: '#64748b' }}>Type</InputLabel>
+          <InputLabel sx={{ color: 'var(--mui-palette-text-secondary)' }}>Type</InputLabel>
           <Select
             value={typeFilter}
             label="Type"
             onChange={(e) => setTypeFilter(e.target.value)}
             sx={{
-              bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 2,
-              '& fieldset': { borderColor: '#334155' },
+              bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 2,
+              '& fieldset': { borderColor: 'var(--mui-palette-divider)' },
               '&:hover fieldset': { borderColor: '#475569' },
-              '& .MuiSvgIcon-root': { color: '#64748b' },
+              '& .MuiSvgIcon-root': { color: 'var(--mui-palette-text-secondary)' },
             }}
           >
             <MenuItem value="">All Types</MenuItem>
@@ -133,16 +133,16 @@ const AdminFeedbackPage: React.FC = () => {
           </Select>
         </FormControl>
         <FormControl size="small" sx={{ minWidth: 160 }}>
-          <InputLabel sx={{ color: '#64748b' }}>Role</InputLabel>
+          <InputLabel sx={{ color: 'var(--mui-palette-text-secondary)' }}>Role</InputLabel>
           <Select
             value={roleFilter}
             label="Role"
             onChange={(e) => setRoleFilter(e.target.value)}
             sx={{
-              bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 2,
-              '& fieldset': { borderColor: '#334155' },
+              bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 2,
+              '& fieldset': { borderColor: 'var(--mui-palette-divider)' },
               '&:hover fieldset': { borderColor: '#475569' },
-              '& .MuiSvgIcon-root': { color: '#64748b' },
+              '& .MuiSvgIcon-root': { color: 'var(--mui-palette-text-secondary)' },
             }}
           >
             <MenuItem value="">All Roles</MenuItem>
@@ -153,19 +153,19 @@ const AdminFeedbackPage: React.FC = () => {
         <TextField
           type="date" size="small" label="From" value={dateFrom}
           onChange={(e) => setDateFrom(e.target.value)}
-          InputLabelProps={{ shrink: true, sx: { color: '#64748b' } }}
-          sx={{ minWidth: 150, '& .MuiInputBase-root': { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 2 }, '& fieldset': { borderColor: '#334155' } }}
+          InputLabelProps={{ shrink: true, sx: { color: 'var(--mui-palette-text-secondary)' } }}
+          sx={{ minWidth: 150, '& .MuiInputBase-root': { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 2 }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }}
         />
         <TextField
           type="date" size="small" label="To" value={dateTo}
           onChange={(e) => setDateTo(e.target.value)}
-          InputLabelProps={{ shrink: true, sx: { color: '#64748b' } }}
-          sx={{ minWidth: 150, '& .MuiInputBase-root': { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 2 }, '& fieldset': { borderColor: '#334155' } }}
+          InputLabelProps={{ shrink: true, sx: { color: 'var(--mui-palette-text-secondary)' } }}
+          sx={{ minWidth: 150, '& .MuiInputBase-root': { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 2 }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }}
         />
         {(typeFilter || roleFilter || dateFrom || dateTo) && (
           <Button
             size="small" onClick={() => { setTypeFilter(''); setRoleFilter(''); setDateFrom(''); setDateTo(''); }}
-            sx={{ color: '#94a3b8', textTransform: 'none', '&:hover': { color: '#e2e8f0' } }}
+            sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none', '&:hover': { color: 'var(--mui-palette-text-primary)' } }}
           >
             Clear Filters
           </Button>
@@ -176,14 +176,14 @@ const AdminFeedbackPage: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <Paper key={i} sx={{ p: 2.5, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155' }}>
-              <Skeleton variant="text" width={200} sx={{ bgcolor: '#334155' }} />
-              <Skeleton variant="text" width="80%" sx={{ bgcolor: '#334155', mt: 1 }} />
-              <Skeleton variant="text" width="60%" sx={{ bgcolor: '#334155' }} />
+            <Paper key={i} sx={{ p: 2.5, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)' }}>
+              <Skeleton variant="text" width={200} sx={{ bgcolor: 'var(--mui-palette-divider)' }} />
+              <Skeleton variant="text" width="80%" sx={{ bgcolor: 'var(--mui-palette-divider)', mt: 1 }} />
+              <Skeleton variant="text" width="60%" sx={{ bgcolor: 'var(--mui-palette-divider)' }} />
             </Paper>
           ))
         ) : feedback.length === 0 ? (
-          <Paper sx={{ p: 4, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155', textAlign: 'center' }}>
+          <Paper sx={{ p: 4, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)', textAlign: 'center' }}>
             <Typography sx={{ color: '#475569' }}>No feedback submitted yet.</Typography>
           </Paper>
         ) : (
@@ -193,8 +193,8 @@ const AdminFeedbackPage: React.FC = () => {
               <Paper
                 key={item.id}
                 sx={{
-                  p: 2.5, bgcolor: '#1e293b', borderRadius: 2,
-                  border: '1px solid #334155',
+                  p: 2.5, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2,
+                  border: '1px solid var(--mui-palette-divider)',
                   transition: 'border-color 0.2s ease',
                   '&:hover': { borderColor: '#475569' },
                 }}
@@ -205,8 +205,8 @@ const AdminFeedbackPage: React.FC = () => {
                     label={item.role_snapshot === 'student' ? 'Student' : 'Teacher'}
                     size="small"
                     sx={{
-                      bgcolor: item.role_snapshot === 'student' ? alpha('#60a5fa', 0.2) : alpha('#2dd4bf', 0.2),
-                      color: item.role_snapshot === 'student' ? '#60a5fa' : '#2dd4bf',
+                      bgcolor: item.role_snapshot === 'student' ? alpha('#315a7d', 0.2) : alpha('#256d4f', 0.2),
+                      color: item.role_snapshot === 'student' ? '#315a7d' : '#256d4f',
                       fontWeight: 600, fontSize: '0.7rem',
                     }}
                   />
@@ -214,8 +214,8 @@ const AdminFeedbackPage: React.FC = () => {
                     label={item.feedback_type.charAt(0).toUpperCase() + item.feedback_type.slice(1)}
                     size="small"
                     sx={{
-                      bgcolor: alpha(typeColors[item.feedback_type] || '#94a3b8', 0.2),
-                      color: typeColors[item.feedback_type] || '#94a3b8',
+                      bgcolor: alpha(typeColors[item.feedback_type] || 'var(--mui-palette-text-secondary)', 0.2),
+                      color: typeColors[item.feedback_type] || 'var(--mui-palette-text-secondary)',
                       fontWeight: 600, fontSize: '0.7rem',
                     }}
                   />
@@ -231,13 +231,13 @@ const AdminFeedbackPage: React.FC = () => {
                 </Box>
 
                 {/* User email */}
-                <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mb: 0.5 }}>
+                <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', display: 'block', mb: 0.5 }}>
                   {item.user_email}
                 </Typography>
 
                 {/* Comments */}
                 {item.comments && (
-                  <Typography variant="body2" sx={{ color: '#cbd5e1', mt: 1 }}>
+                  <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-primary)', mt: 1 }}>
                     {item.comments}
                   </Typography>
                 )}
@@ -249,30 +249,30 @@ const AdminFeedbackPage: React.FC = () => {
                       size="small"
                       onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                       endIcon={expandedId === item.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                      sx={{ color: '#64748b', textTransform: 'none', mt: 1, p: 0 }}
+                      sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none', mt: 1, p: 0 }}
                     >
                       Teacher Context
                     </Button>
                     <Collapse in={expandedId === item.id}>
-                      <Box sx={{ mt: 1, pl: 1, borderLeft: '2px solid #334155' }}>
+                      <Box sx={{ mt: 1, pl: 1, borderLeft: '2px solid var(--mui-palette-divider)' }}>
                         {item.classroom_name && (
-                          <Typography variant="caption" sx={{ color: '#94a3b8', display: 'block' }}>
+                          <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', display: 'block' }}>
                             Classroom: {item.classroom_name}
                           </Typography>
                         )}
                         {item.game_level && (
-                          <Typography variant="caption" sx={{ color: '#94a3b8', display: 'block' }}>
+                          <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', display: 'block' }}>
                             Game Level: {item.game_level}
                           </Typography>
                         )}
                         {item.curriculum_relevance_rating && (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                            <Typography variant="caption" sx={{ color: '#94a3b8' }}>Curriculum Relevance:</Typography>
+                            <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Curriculum Relevance:</Typography>
                             <Rating value={item.curriculum_relevance_rating} readOnly size="small" />
                           </Box>
                         )}
                         {item.website_usability_notes && (
-                          <Typography variant="caption" sx={{ color: '#94a3b8', display: 'block' }}>
+                          <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', display: 'block' }}>
                             Usability: {item.website_usability_notes}
                           </Typography>
                         )}
@@ -287,13 +287,13 @@ const AdminFeedbackPage: React.FC = () => {
       </Box>
 
       {/* Delete Feedback Dialog */}
-      <Dialog open={!!deleteTarget} onClose={() => setDeleteTarget(null)} PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 3, border: '1px solid #334155' } }}>
+      <Dialog open={!!deleteTarget} onClose={() => setDeleteTarget(null)} PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 3, border: '1px solid var(--mui-palette-divider)' } }}>
         <DialogTitle sx={{ fontWeight: 600 }}>Delete Feedback?</DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ color: '#94a3b8' }}>This feedback entry will be permanently deleted.</DialogContentText>
+          <DialogContentText sx={{ color: 'var(--mui-palette-text-secondary)' }}>This feedback entry will be permanently deleted.</DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setDeleteTarget(null)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+          <Button onClick={() => setDeleteTarget(null)} sx={{ color: 'var(--mui-palette-text-secondary)', textTransform: 'none' }}>Cancel</Button>
           <Button onClick={async () => {
             if (!deleteTarget) return;
             try { await deleteAdminFeedback(deleteTarget); setDeleteTarget(null); setSnackbar('Feedback deleted.'); setFeedback(f => f.filter(x => x.id !== deleteTarget)); }

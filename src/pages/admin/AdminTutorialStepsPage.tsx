@@ -147,29 +147,29 @@ const AdminTutorialStepsPage: React.FC = () => {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <Button startIcon={<BackIcon />} onClick={() => navigate(`/admin-dashboard/video-tutorials`)} sx={{ mr: 2, color: '#94a3b8' }}>Back</Button>
-        <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600, flexGrow: 1 }}>
-          Steps for: <Typography component="span" variant="h5" sx={{ color: '#818cf8', fontWeight: 700 }}>{tutorialTitle}</Typography>
+        <Button startIcon={<BackIcon />} onClick={() => navigate(`/admin-dashboard/video-tutorials`)} sx={{ mr: 2, color: 'var(--mui-palette-text-secondary)' }}>Back</Button>
+        <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600, flexGrow: 1 }}>
+          Steps for: <Typography component="span" variant="h5" sx={{ color: '#256d4f', fontWeight: 700 }}>{tutorialTitle}</Typography>
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenModal()} sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenModal()} sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}>
           New Step
         </Button>
       </Box>
 
-      <Paper sx={{ bgcolor: '#1e293b', border: '1px solid #334155' }}>
+      <Paper sx={{ bgcolor: 'var(--mui-palette-background-paper)', border: '1px solid var(--mui-palette-divider)' }}>
         {steps.length === 0 ? (
-          <Typography sx={{ p: 4, color: '#64748b', textAlign: 'center' }}>No steps created yet.</Typography>
+          <Typography sx={{ p: 4, color: 'var(--mui-palette-text-secondary)', textAlign: 'center' }}>No steps created yet.</Typography>
         ) : (
           <List disablePadding>
             {steps.map((step, idx) => (
               <React.Fragment key={step.id}>
                 <ListItem sx={{ py: 2 }}>
                   <ListItemText
-                    primary={<Typography sx={{ color: '#e2e8f0', fontWeight: 600 }}>{step.order}. {step.title}</Typography>}
-                    secondary={<Typography variant="caption" sx={{ color: '#94a3b8' }}>Log Order: {step.order}</Typography>}
+                    primary={<Typography sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>{step.order}. {step.title}</Typography>}
+                    secondary={<Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Log Order: {step.order}</Typography>}
                   />
                   <ListItemSecondaryAction>
-                    <IconButton edge="end" onClick={() => handleOpenModal(step.id)} sx={{ color: '#818cf8', mr: 1 }}>
+                    <IconButton edge="end" onClick={() => handleOpenModal(step.id)} sx={{ color: '#256d4f', mr: 1 }}>
                       <EditIcon />
                     </IconButton>
                     <IconButton edge="end" onClick={() => handleDelete(step.id)} sx={{ color: '#ef4444' }}>
@@ -177,7 +177,7 @@ const AdminTutorialStepsPage: React.FC = () => {
                     </IconButton>
                   </ListItemSecondaryAction>
                 </ListItem>
-                {idx < steps.length - 1 && <Divider sx={{ borderColor: '#334155' }} />}
+                {idx < steps.length - 1 && <Divider sx={{ borderColor: 'var(--mui-palette-divider)' }} />}
               </React.Fragment>
             ))}
           </List>
@@ -185,13 +185,13 @@ const AdminTutorialStepsPage: React.FC = () => {
       </Paper>
 
       {/* Editor Modal */}
-      <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0' } }}>
+      <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="md" fullWidth PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)' } }}>
         <DialogTitle>{editingId ? 'Edit Step' : 'New Step'}</DialogTitle>
-        <DialogContent dividers sx={{ borderColor: '#334155', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <DialogContent dividers sx={{ borderColor: 'var(--mui-palette-divider)', display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
             <TextField
-              sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } }, input: { color: '#e2e8f0' } }}
-              InputLabelProps={{ style: { color: '#94a3b8' } }}
+              sx={{ flexGrow: 1, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } }, input: { color: 'var(--mui-palette-text-primary)' } }}
+              InputLabelProps={{ style: { color: 'var(--mui-palette-text-secondary)' } }}
               label="Title"
               value={formData.title}
               onChange={e => handleChange('title', e.target.value)}
@@ -204,35 +204,35 @@ const AdminTutorialStepsPage: React.FC = () => {
             multiline rows={6}
             value={formData.content}
             onChange={e => handleChange('content', e.target.value)}
-            sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } }, textarea: { color: '#e2e8f0' } }}
-            InputLabelProps={{ style: { color: '#94a3b8' } }}
+            sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#475569' } }, textarea: { color: 'var(--mui-palette-text-primary)' } }}
+            InputLabelProps={{ style: { color: 'var(--mui-palette-text-secondary)' } }}
           />
 
 
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setOpenModal(false)} sx={{ color: '#94a3b8' }}>Cancel</Button>
+          <Button onClick={() => setOpenModal(false)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
           {!editingId && (
-            <Button onClick={() => handleSubmit(true)} variant="outlined" sx={{ color: '#818cf8', borderColor: '#818cf8', '&:hover': { bgcolor: 'rgba(129, 140, 248, 0.1)' } }}>
+            <Button onClick={() => handleSubmit(true)} variant="outlined" sx={{ color: '#256d4f', borderColor: '#256d4f', '&:hover': { bgcolor: 'rgba(129, 140, 248, 0.1)' } }}>
               Save & Add Another
             </Button>
           )}
-          <Button onClick={() => handleSubmit(false)} variant="contained" sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}>
+          <Button onClick={() => handleSubmit(false)} variant="contained" sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}>
             {editingId ? 'Save Step' : 'Create Step'}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={!!deleteTargetId} onClose={() => setDeleteTargetId(null)} PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0' } }}>
+      <Dialog open={!!deleteTargetId} onClose={() => setDeleteTargetId(null)} PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)' } }}>
         <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent dividers sx={{ borderColor: '#334155' }}>
-          <Typography sx={{ color: '#94a3b8' }}>
+        <DialogContent dividers sx={{ borderColor: 'var(--mui-palette-divider)' }}>
+          <Typography sx={{ color: 'var(--mui-palette-text-secondary)' }}>
             Are you sure you want to delete this step completely? This action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setDeleteTargetId(null)} sx={{ color: '#94a3b8' }}>Cancel</Button>
+          <Button onClick={() => setDeleteTargetId(null)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
           <Button onClick={executeDelete} variant="contained" color="error">
             Delete
           </Button>

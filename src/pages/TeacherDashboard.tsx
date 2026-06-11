@@ -276,24 +276,24 @@ const TeacherDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)` }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: "background.default" }}>
         <LoadingSpinner size={90} message="Checking Classrooms..." />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', width: '100vw', background: `linear-gradient(135deg, ${theme.palette.grey[900]} 0%, ${theme.palette.grey[800]} 100%)`, pt: 10, pb: 6 }}>
+    <Box sx={{ minHeight: '100vh', width: '100vw', backgroundColor: "background.default", pt: 10, pb: 6 }}>
       <Container maxWidth="lg">
         {/* Header */}
         <Fade in timeout={800}>
           <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
             <Box>
-              <Typography variant="h3" sx={{ color: '#fff', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              <Typography variant="h3" sx={{ color: "text.primary", fontWeight: 'bold',  }}>
                 <SchoolIcon sx={{ mr: 1, fontSize: 40, verticalAlign: 'middle' }} />
                 Teacher Dashboard
               </Typography>
-              <Typography variant="h6" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+              <Typography variant="h6" sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
                 Welcome, {user?.first_name || user?.username}! Manage your classrooms below.
               </Typography>
             </Box>
@@ -335,7 +335,7 @@ const TeacherDashboard: React.FC = () => {
               ].map((stat) => (
                 <GradientPaper key={stat.label} sx={{ p: 2, textAlign: 'center' }}>
                   <Typography variant="h4" sx={{ fontWeight: 'bold', color: stat.color }}>{stat.value}</Typography>
-                  <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>{stat.label}</Typography>
+                  <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>{stat.label}</Typography>
                 </GradientPaper>
               ))}
             </Box>
@@ -351,12 +351,12 @@ const TeacherDashboard: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               InputProps={{
-                startAdornment: <SearchIcon sx={{ color: alpha(theme.palette.common.white, 0.5), mr: 1 }} />,
+                startAdornment: <SearchIcon sx={{ color: alpha(theme.palette.text.primary, 0.5), mr: 1 }} />,
                 sx: { 
-                  bgcolor: alpha(theme.palette.common.white, 0.05),
-                  color: '#fff',
+                  bgcolor: alpha(theme.palette.text.primary, 0.05),
+                  color: "text.primary",
                   borderRadius: 3,
-                  '& fieldset': { borderColor: alpha(theme.palette.common.white, 0.2) },
+                  '& fieldset': { borderColor: alpha(theme.palette.text.primary, 0.2) },
                   '&:hover fieldset': { borderColor: theme.palette.primary.main },
                   '&.Mui-focused fieldset': { borderColor: theme.palette.primary.light },
                 }
@@ -370,8 +370,8 @@ const TeacherDashboard: React.FC = () => {
             {classrooms.length === 0 ? (
               <Grow in timeout={600}>
                 <GradientPaper sx={{ p: 4, gridColumn: '1 / -1', textAlign: 'center' }}>
-                  <ClassIcon sx={{ fontSize: 60, color: alpha(theme.palette.common.white, 0.3), mb: 2 }} />
-                  <Typography variant="h6" sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+                  <ClassIcon sx={{ fontSize: 60, color: alpha(theme.palette.text.primary, 0.3), mb: 2 }} />
+                  <Typography variant="h6" sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
                     No classrooms found.
                   </Typography>
                 </GradientPaper>
@@ -387,12 +387,12 @@ const TeacherDashboard: React.FC = () => {
                   }}>
                     <CardContent>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold' }}>
+                        <Typography variant="h6" sx={{ color: "text.primary", fontWeight: 'bold' }}>
                           {classroom.name}
                         </Typography>
                         <Box>
                           <Tooltip title="Edit Class">
-                            <IconButton size="small" onClick={() => { setEditTargetId(classroom.id); setEditClassName(classroom.name); setEditDialogOpen(true); }} sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+                            <IconButton size="small" onClick={() => { setEditTargetId(classroom.id); setEditClassName(classroom.name); setEditDialogOpen(true); }} sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
                               <EditIcon fontSize="small" />
                             </IconButton>
                           </Tooltip>
@@ -411,16 +411,16 @@ const TeacherDashboard: React.FC = () => {
                             fontWeight: 'bold',
                             fontSize: '0.95rem',
                             bgcolor: alpha(theme.palette.primary.main, 0.3),
-                            color: '#fff',
+                            color: "text.primary",
                           }}
                         />
                         <Tooltip title="Copy code">
-                          <IconButton size="small" onClick={() => copyToClipboard(classroom.enrollment_code)} sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+                          <IconButton size="small" onClick={() => copyToClipboard(classroom.enrollment_code)} sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
                             <CopyIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
                       </Box>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: alpha(theme.palette.common.white, 0.7) }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: alpha(theme.palette.text.primary, 0.7) }}>
                         <GroupIcon fontSize="small" />
                         <Typography variant="body2">{classroom.student_count} student{classroom.student_count !== 1 ? 's' : ''}</Typography>
                       </Box>
@@ -430,7 +430,7 @@ const TeacherDashboard: React.FC = () => {
                         size="small"
                         variant="outlined"
                         onClick={() => handleViewClassroom(classroom.id)}
-                        sx={{ borderRadius: 2, color: '#fff', borderColor: alpha(theme.palette.common.white, 0.4), textTransform: 'none', '&:hover': { borderColor: '#fff' } }}
+                        sx={{ borderRadius: 2, color: "text.primary", borderColor: alpha(theme.palette.text.primary, 0.4), textTransform: 'none', '&:hover': { borderColor: "text.primary" } }}
                       >
                         View Students
                       </Button>
@@ -446,51 +446,51 @@ const TeacherDashboard: React.FC = () => {
         <Container maxWidth="lg" sx={{ mt: 5 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <CampaignIcon sx={{ color: '#a78bfa', fontSize: 28 }} />
-              <Typography variant="h5" sx={{ color: '#fff', fontWeight: 'bold' }}>Announcements</Typography>
+              <CampaignIcon sx={{ color: '#315a7d', fontSize: 28 }} />
+              <Typography variant="h5" sx={{ color: "text.primary", fontWeight: 'bold' }}>Announcements</Typography>
               {announcements.length > 0 && (
-                <Chip label={`${announcements.length} active`} size="small" sx={{ bgcolor: alpha('#a78bfa', 0.2), color: '#a78bfa', fontWeight: 600, fontSize: '0.7rem' }} />
+                <Chip label={`${announcements.length} active`} size="small" sx={{ bgcolor: alpha('#315a7d', 0.2), color: '#315a7d', fontWeight: 600, fontSize: '0.7rem' }} />
               )}
             </Box>
             <Button
               variant="contained" startIcon={<AddIcon />}
               onClick={() => { setAnnEditId(null); setAnnTitle(''); setAnnBody(''); setAnnSelectedClassrooms([]); setAnnDialogOpen(true); }}
               disabled={classrooms.length === 0}
-              sx={{ borderRadius: 3, textTransform: 'none', fontWeight: 600, background: `linear-gradient(90deg, #818cf8, #a78bfa)`, '&:hover': { transform: 'translateY(-2px)' }, transition: 'all 0.2s' }}
+              sx={{ borderRadius: 3, textTransform: 'none', fontWeight: 600, background: `linear-gradient(90deg, #256d4f, #315a7d)`, '&:hover': { transform: 'translateY(-2px)' }, transition: 'all 0.2s' }}
             >
               New Announcement
             </Button>
           </Box>
 
           {announcements.length === 0 ? (
-            <Paper sx={{ p: 4, textAlign: 'center', bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.common.white, 0.1)}` }}>
-              <CampaignIcon sx={{ fontSize: 48, color: alpha(theme.palette.common.white, 0.2), mb: 1 }} />
-              <Typography sx={{ color: alpha(theme.palette.common.white, 0.5) }}>No announcements yet. Create one to notify your students.</Typography>
+            <Paper sx={{ p: 4, textAlign: 'center', bgcolor: alpha(theme.palette.text.primary, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.text.primary, 0.1)}` }}>
+              <CampaignIcon sx={{ fontSize: 48, color: alpha(theme.palette.text.primary, 0.2), mb: 1 }} />
+              <Typography sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>No announcements yet. Create one to notify your students.</Typography>
             </Paper>
           ) : (
             <>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {(showAllTeacherAnn ? announcements : announcements.slice(0, 5)).map((a) => (
                 <Grow in key={a.id} timeout={600}>
-                  <Paper sx={{ p: 2.5, bgcolor: alpha(theme.palette.common.white, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.common.white, 0.1)}`, '&:hover': { borderColor: alpha('#a78bfa', 0.4) }, transition: 'all 0.2s' }}>
+                  <Paper sx={{ p: 2.5, bgcolor: alpha(theme.palette.text.primary, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.text.primary, 0.1)}`, '&:hover': { borderColor: alpha('#315a7d', 0.4) }, transition: 'all 0.2s' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <Box sx={{ flex: 1 }}>
                         <Box sx={{ display: 'flex', gap: 1, mb: 0.5, flexWrap: 'wrap', alignItems: 'center' }}>
                           {a.target_classrooms.map(c => (
-                            <Chip key={c.id} label={c.name} size="small" sx={{ bgcolor: alpha('#2dd4bf', 0.15), color: '#2dd4bf', fontWeight: 600, fontSize: '0.7rem' }} />
+                            <Chip key={c.id} label={c.name} size="small" sx={{ bgcolor: alpha('#256d4f', 0.15), color: '#256d4f', fontWeight: 600, fontSize: '0.7rem' }} />
                           ))}
-                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4) }}>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.4) }}>
                             {new Date(a.created_at).toLocaleDateString()}
                           </Typography>
                         </Box>
-                        <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 600 }}>{a.title}</Typography>
-                        <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mt: 0.5 }}>{a.body}</Typography>
+                        <Typography variant="subtitle1" sx={{ color: "text.primary", fontWeight: 600 }}>{a.title}</Typography>
+                        <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.7), mt: 0.5 }}>{a.body}</Typography>
                       </Box>
                       <Box sx={{ display: 'flex', gap: 0.5 }}>
-                        <IconButton size="small" onClick={() => openAnnEdit(a)} sx={{ color: alpha(theme.palette.common.white, 0.5), '&:hover': { color: '#818cf8' } }}>
+                        <IconButton size="small" onClick={() => openAnnEdit(a)} sx={{ color: alpha(theme.palette.text.primary, 0.5), '&:hover': { color: '#256d4f' } }}>
                           <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton size="small" onClick={() => setAnnDeleteId(a.id)} sx={{ color: alpha(theme.palette.common.white, 0.5), '&:hover': { color: '#ef4444' } }}>
+                        <IconButton size="small" onClick={() => setAnnDeleteId(a.id)} sx={{ color: alpha(theme.palette.text.primary, 0.5), '&:hover': { color: '#ef4444' } }}>
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Box>
@@ -501,7 +501,7 @@ const TeacherDashboard: React.FC = () => {
             </Box>
             {announcements.length > 5 && (
               <Box sx={{ textAlign: 'center', mt: 2 }}>
-                <Button onClick={() => setShowAllTeacherAnn(!showAllTeacherAnn)} sx={{ color: '#a78bfa', textTransform: 'none' }}>
+                <Button onClick={() => setShowAllTeacherAnn(!showAllTeacherAnn)} sx={{ color: '#315a7d', textTransform: 'none' }}>
                   {showAllTeacherAnn ? 'Show less' : `View all ${announcements.length} announcements`}
                 </Button>
               </Box>
@@ -515,9 +515,9 @@ const TeacherDashboard: React.FC = () => {
           <Container maxWidth="lg" sx={{ mt: 5 }}>
             <Fade in timeout={650}>
               <GradientPaper sx={{ p: 3 }}>
-                <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="h6" sx={{ color: "text.primary", fontWeight: 'bold', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                   🏆 Classroom Rankings
-                  <Chip label="by avg XP" size="small" sx={{ bgcolor: alpha(theme.palette.common.white, 0.08), color: alpha(theme.palette.common.white, 0.6), fontSize: '0.7rem' }} />
+                  <Chip label="by avg XP" size="small" sx={{ bgcolor: alpha(theme.palette.text.primary, 0.08), color: alpha(theme.palette.text.primary, 0.6), fontSize: '0.7rem' }} />
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   {classroomRankings.map((cr, idx) => {
@@ -535,24 +535,24 @@ const TeacherDashboard: React.FC = () => {
                           py: 1.5,
                           borderRadius: 2,
                           cursor: 'pointer',
-                          bgcolor: alpha(theme.palette.common.white, 0.03),
-                          border: `1px solid ${alpha(theme.palette.common.white, 0.06)}`,
+                          bgcolor: alpha(theme.palette.text.primary, 0.03),
+                          border: `1px solid ${alpha(theme.palette.text.primary, 0.06)}`,
                           '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.08), borderColor: alpha(theme.palette.primary.main, 0.2) },
                           transition: 'all 0.2s',
                         }}
                       >
-                        <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? '#fff' : alpha(theme.palette.common.white, 0.5) }}>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: medal ? '1.3rem' : '0.9rem', minWidth: 36, textAlign: 'center', color: medal ? "text.primary" : alpha(theme.palette.text.primary, 0.5) }}>
                           {medal || `#${idx + 1}`}
                         </Typography>
                         <Box sx={{ flex: 1 }}>
-                          <Typography sx={{ fontWeight: 600, color: '#fff', fontSize: '0.95rem' }}>
+                          <Typography sx={{ fontWeight: 600, color: "text.primary", fontSize: '0.95rem' }}>
                             {cr.name}
                           </Typography>
                           <Box sx={{ display: 'flex', gap: 2, mt: 0.5 }}>
-                            <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                            <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>
                               {cr.student_count} students
                             </Typography>
-                            <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.5) }}>
+                            <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.5) }}>
                               {cr.total_achievements} total badges
                             </Typography>
                           </Box>
@@ -563,13 +563,13 @@ const TeacherDashboard: React.FC = () => {
                               mt: 0.5,
                               height: 4,
                               borderRadius: 2,
-                              bgcolor: alpha(theme.palette.common.white, 0.06),
+                              bgcolor: alpha(theme.palette.text.primary, 0.06),
                               '& .MuiLinearProgress-bar': {
                                 background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
                               },
                             }}
                           />
-                          <Typography variant="caption" sx={{ color: alpha(theme.palette.common.white, 0.4), fontSize: '0.65rem' }}>
+                          <Typography variant="caption" sx={{ color: alpha(theme.palette.text.primary, 0.4), fontSize: '0.65rem' }}>
                             Avg progress: {cr.avg_progress.toFixed(0)}%
                           </Typography>
                         </Box>
@@ -578,8 +578,8 @@ const TeacherDashboard: React.FC = () => {
                           size="small"
                           sx={{
                             fontWeight: 'bold',
-                            bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.common.white, 0.08),
-                            color: idx === 0 ? '#FFD700' : alpha(theme.palette.common.white, 0.7),
+                            bgcolor: idx === 0 ? alpha('#FFD700', 0.2) : alpha(theme.palette.text.primary, 0.08),
+                            color: idx === 0 ? '#FFD700' : alpha(theme.palette.text.primary, 0.7),
                             border: idx === 0 ? '1px solid rgba(255,215,0,0.3)' : 'none',
                           }}
                         />
@@ -593,10 +593,10 @@ const TeacherDashboard: React.FC = () => {
         )}
 
         {/* Create Classroom Dialog */}
-        <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+        <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}>
           <DialogTitle>Create New Classroom</DialogTitle>
           <DialogContent>
-            <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 2 }}>
+            <DialogContentText sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 2 }}>
               Enter a name for your classroom. An enrollment code will be generated automatically.
             </DialogContentText>
             <TextField
@@ -607,11 +607,11 @@ const TeacherDashboard: React.FC = () => {
               onChange={(e) => setNewClassName(e.target.value)}
               placeholder="e.g. CS101 — Intro to Programming"
               disabled={creating}
-              sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.grey[700], color: '#fff' }, '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) } }}
+              sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.background.paper, color: "text.primary" }, '& .MuiInputLabel-root': { color: alpha(theme.palette.text.primary, 0.7) } }}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setCreateDialogOpen(false)} sx={{ color: '#fff' }} disabled={creating}>Cancel</Button>
+            <Button onClick={() => setCreateDialogOpen(false)} sx={{ color: "text.primary" }} disabled={creating}>Cancel</Button>
             <Button onClick={handleCreateClassroom} variant="contained" disabled={creating || !newClassName.trim()}>
               {creating ? <CircularProgress size={24} /> : 'Create'}
             </Button>
@@ -619,7 +619,7 @@ const TeacherDashboard: React.FC = () => {
         </Dialog>
 
         {/* Edit Classroom Dialog */}
-        <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+        <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}>
           <DialogTitle>Rename Classroom</DialogTitle>
           <DialogContent>
             <TextField
@@ -630,11 +630,11 @@ const TeacherDashboard: React.FC = () => {
               value={editClassName}
               onChange={(e) => setEditClassName(e.target.value)}
               disabled={editing}
-              sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.grey[700], color: '#fff', mt: 1 }, '& .MuiInputLabel-root': { color: alpha(theme.palette.common.white, 0.7) } }}
+              sx={{ '& .MuiInputBase-root': { bgcolor: theme.palette.background.paper, color: "text.primary", mt: 1 }, '& .MuiInputLabel-root': { color: alpha(theme.palette.text.primary, 0.7) } }}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setEditDialogOpen(false)} sx={{ color: '#fff' }} disabled={editing}>Cancel</Button>
+            <Button onClick={() => setEditDialogOpen(false)} sx={{ color: "text.primary" }} disabled={editing}>Cancel</Button>
             <Button onClick={handleEditClassroom} variant="contained" disabled={editing || !editClassName.trim()}>
               {editing ? <CircularProgress size={24} /> : 'Save'}
             </Button>
@@ -642,15 +642,15 @@ const TeacherDashboard: React.FC = () => {
         </Dialog>
 
         {/* Delete Classroom Dialog */}
-        <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+        <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}>
           <DialogTitle>Delete Classroom</DialogTitle>
           <DialogContent>
-            <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.7) }}>
+            <DialogContentText sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>
               Are you sure you want to delete this classroom? This action cannot be undone. Enrolled students will automatically be unenrolled.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setDeleteDialogOpen(false)} sx={{ color: '#fff' }} disabled={deleting}>Cancel</Button>
+            <Button onClick={() => setDeleteDialogOpen(false)} sx={{ color: "text.primary" }} disabled={deleting}>Cancel</Button>
             <Button onClick={handleDeleteClassroom} variant="contained" color="error" disabled={deleting}>
               {deleting ? <CircularProgress size={24} /> : 'Delete Classroom'}
             </Button>
@@ -659,19 +659,19 @@ const TeacherDashboard: React.FC = () => {
 
         {/* Announcement Create/Edit Dialog */}
         <Dialog open={annDialogOpen} onClose={() => setAnnDialogOpen(false)} maxWidth="sm" fullWidth
-          PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}
+          PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}
         >
           <DialogTitle>{annEditId ? 'Edit Announcement' : 'New Announcement'}</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus fullWidth label="Title" value={annTitle} onChange={(e) => setAnnTitle(e.target.value)}
-              sx={{ mt: 1, mb: 2, '& .MuiInputBase-root': { color: '#fff', bgcolor: theme.palette.grey[700] }, '& label': { color: alpha(theme.palette.common.white, 0.7) } }}
+              sx={{ mt: 1, mb: 2, '& .MuiInputBase-root': { color: "text.primary", bgcolor: theme.palette.background.paper }, '& label': { color: alpha(theme.palette.text.primary, 0.7) } }}
             />
             <TextField
               fullWidth multiline rows={3} label="Body" value={annBody} onChange={(e) => setAnnBody(e.target.value)}
-              sx={{ mb: 2, '& .MuiInputBase-root': { color: '#fff', bgcolor: theme.palette.grey[700] }, '& label': { color: alpha(theme.palette.common.white, 0.7) } }}
+              sx={{ mb: 2, '& .MuiInputBase-root': { color: "text.primary", bgcolor: theme.palette.background.paper }, '& label': { color: alpha(theme.palette.text.primary, 0.7) } }}
             />
-            <Typography variant="body2" sx={{ color: alpha(theme.palette.common.white, 0.7), mb: 1 }}>Target Classrooms</Typography>
+            <Typography variant="body2" sx={{ color: alpha(theme.palette.text.primary, 0.7), mb: 1 }}>Target Classrooms</Typography>
             <FormGroup>
               {classrooms.map((c) => (
                 <FormControlLabel
@@ -683,19 +683,19 @@ const TeacherDashboard: React.FC = () => {
                         if (e.target.checked) setAnnSelectedClassrooms((prev) => [...prev, c.id]);
                         else setAnnSelectedClassrooms((prev) => prev.filter((id) => id !== c.id));
                       }}
-                      sx={{ color: '#64748b', '&.Mui-checked': { color: '#818cf8' } }}
+                      sx={{ color: 'var(--mui-palette-text-secondary)', '&.Mui-checked': { color: '#256d4f' } }}
                     />
                   }
                   label={c.name}
-                  sx={{ color: '#fff' }}
+                  sx={{ color: "text.primary" }}
                 />
               ))}
             </FormGroup>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setAnnDialogOpen(false)} sx={{ color: '#fff' }}>Cancel</Button>
+            <Button onClick={() => setAnnDialogOpen(false)} sx={{ color: "text.primary" }}>Cancel</Button>
             <Button onClick={handleAnnSubmit} variant="contained" disabled={annSubmitting || !annTitle.trim() || !annBody.trim() || annSelectedClassrooms.length === 0}
-              sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' } }}
+              sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}
             >
               {annSubmitting ? <CircularProgress size={24} /> : annEditId ? 'Save' : 'Publish'}
             </Button>
@@ -703,13 +703,13 @@ const TeacherDashboard: React.FC = () => {
         </Dialog>
 
         {/* Announcement Delete Dialog */}
-        <Dialog open={!!annDeleteId} onClose={() => setAnnDeleteId(null)} PaperProps={{ sx: { bgcolor: theme.palette.grey[800], color: '#fff', borderRadius: 3 } }}>
+        <Dialog open={!!annDeleteId} onClose={() => setAnnDeleteId(null)} PaperProps={{ sx: { bgcolor: "background.paper", color: "text.primary", borderRadius: 3 } }}>
           <DialogTitle>Delete Announcement</DialogTitle>
           <DialogContent>
-            <DialogContentText sx={{ color: alpha(theme.palette.common.white, 0.7) }}>Delete this announcement? Students will no longer see it.</DialogContentText>
+            <DialogContentText sx={{ color: alpha(theme.palette.text.primary, 0.7) }}>Delete this announcement? Students will no longer see it.</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setAnnDeleteId(null)} sx={{ color: '#fff' }}>Cancel</Button>
+            <Button onClick={() => setAnnDeleteId(null)} sx={{ color: "text.primary" }}>Cancel</Button>
             <Button onClick={handleAnnDelete} variant="contained" color="error">Delete</Button>
           </DialogActions>
         </Dialog>
@@ -721,20 +721,20 @@ const TeacherDashboard: React.FC = () => {
             href="/feedback"
             startIcon={<span role="img" aria-label="feedback">💬</span>}
             sx={{
-              color: alpha(theme.palette.common.white, 0.7),
-              borderColor: alpha(theme.palette.common.white, 0.2),
+              color: alpha(theme.palette.text.primary, 0.7),
+              borderColor: alpha(theme.palette.text.primary, 0.2),
               borderRadius: 3,
               textTransform: 'none',
               px: 3,
               '&:hover': {
-                borderColor: alpha(theme.palette.common.white, 0.4),
-                bgcolor: alpha(theme.palette.common.white, 0.05),
+                borderColor: alpha(theme.palette.text.primary, 0.4),
+                bgcolor: alpha(theme.palette.text.primary, 0.05),
               },
             }}
           >
             Give Feedback
             {feedbackCount > 0 && (
-              <Chip label={feedbackCount} size="small" sx={{ ml: 1, bgcolor: alpha(theme.palette.common.white, 0.15), color: '#fff', fontWeight: 600, fontSize: '0.7rem', height: 22 }} />
+              <Chip label={feedbackCount} size="small" sx={{ ml: 1, bgcolor: alpha(theme.palette.text.primary, 0.15), color: "text.primary", fontWeight: 600, fontSize: '0.7rem', height: 22 }} />
             )}
           </Button>
         </Box>

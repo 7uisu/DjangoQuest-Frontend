@@ -14,10 +14,10 @@ import {
 import { getAuditLog, AuditLogEntry } from '../../api/admin';
 
 const typeColors: Record<string, string> = {
-  user: '#60a5fa',
-  classroom: '#2dd4bf',
+  user: '#315a7d',
+  classroom: '#256d4f',
   feedback: '#f97316',
-  announcement: '#a78bfa',
+  announcement: '#315a7d',
 };
 
 const typeIcons: Record<string, React.ReactNode> = {
@@ -52,13 +52,13 @@ const AdminAuditLogPage: React.FC = () => {
       ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   };
 
-  const cellSx = { color: '#cbd5e1', borderColor: '#1e293b', py: 1.5 };
-  const headerSx = { color: '#64748b', borderColor: '#1e293b', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' as const };
+  const cellSx = { color: 'var(--mui-palette-text-primary)', borderColor: 'var(--mui-palette-background-paper)', py: 1.5 };
+  const headerSx = { color: 'var(--mui-palette-text-secondary)', borderColor: 'var(--mui-palette-background-paper)', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' as const };
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600, mb: 0.5 }}>Activity Log</Typography>
-      <Typography variant="body2" sx={{ color: '#64748b', mb: 3 }}>
+      <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600, mb: 0.5 }}>Activity Log</Typography>
+      <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)', mb: 3 }}>
         Audit trail of all admin actions on the platform.
       </Typography>
 
@@ -68,7 +68,7 @@ const AdminAuditLogPage: React.FC = () => {
         </Alert>
       )}
 
-      <TableContainer component={Paper} sx={{ bgcolor: '#1e293b', borderRadius: 3, border: '1px solid #334155' }}>
+      <TableContainer component={Paper} sx={{ bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 3, border: '1px solid var(--mui-palette-divider)' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -84,22 +84,22 @@ const AdminAuditLogPage: React.FC = () => {
               Array.from({ length: 6 }).map((_, i) => (
                 <TableRow key={i}>
                   {Array.from({ length: 5 }).map((__, j) => (
-                    <TableCell key={j} sx={cellSx}><Skeleton variant="text" sx={{ bgcolor: '#334155' }} width={j === 2 ? 220 : 120} /></TableCell>
+                    <TableCell key={j} sx={cellSx}><Skeleton variant="text" sx={{ bgcolor: 'var(--mui-palette-divider)' }} width={j === 2 ? 220 : 120} /></TableCell>
                   ))}
                 </TableRow>
               ))
             ) : logs.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} sx={{ ...cellSx, textAlign: 'center', py: 4 }}>
-                  <HistoryIcon sx={{ fontSize: 48, color: '#334155', mb: 1, display: 'block', mx: 'auto' }} />
+                  <HistoryIcon sx={{ fontSize: 48, color: 'var(--mui-palette-divider)', mb: 1, display: 'block', mx: 'auto' }} />
                   <Typography sx={{ color: '#475569' }}>No admin actions recorded yet.</Typography>
                 </TableCell>
               </TableRow>
             ) : (
               logs.map((log) => (
-                <TableRow key={log.id} sx={{ '&:hover': { bgcolor: alpha('#818cf8', 0.03) }, transition: 'background-color 0.15s ease' }}>
+                <TableRow key={log.id} sx={{ '&:hover': { bgcolor: alpha('#256d4f', 0.03) }, transition: 'background-color 0.15s ease' }}>
                   <TableCell sx={{ ...cellSx, whiteSpace: 'nowrap' }}>
-                    <Typography variant="caption" sx={{ color: '#94a3b8' }}>{formatDate(log.timestamp)}</Typography>
+                    <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>{formatDate(log.timestamp)}</Typography>
                   </TableCell>
                   <TableCell sx={cellSx}>
                     <Typography variant="body2" sx={{ fontWeight: 500 }}>{log.admin_email}</Typography>
@@ -113,8 +113,8 @@ const AdminAuditLogPage: React.FC = () => {
                       label={log.target_type}
                       size="small"
                       sx={{
-                        bgcolor: alpha(typeColors[log.target_type] || '#94a3b8', 0.15),
-                        color: typeColors[log.target_type] || '#94a3b8',
+                        bgcolor: alpha(typeColors[log.target_type] || 'var(--mui-palette-text-secondary)', 0.15),
+                        color: typeColors[log.target_type] || 'var(--mui-palette-text-secondary)',
                         fontWeight: 600, fontSize: '0.7rem', textTransform: 'capitalize',
                       }}
                     />
@@ -123,7 +123,7 @@ const AdminAuditLogPage: React.FC = () => {
                     )}
                   </TableCell>
                   <TableCell sx={cellSx}>
-                    <Typography variant="caption" sx={{ color: '#64748b' }}>{log.details || '—'}</Typography>
+                    <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>{log.details || '—'}</Typography>
                   </TableCell>
                 </TableRow>
               ))

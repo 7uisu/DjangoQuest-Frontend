@@ -226,7 +226,7 @@ const TutorialList: React.FC = () => {
         <Box sx={{ mb: 6 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {isVideo ? <VideoIcon sx={{ color: '#f44336', fontSize: 40, mr: 2 }} /> : <SchoolIcon sx={{ color: '#4fc3f7', fontSize: 40, mr: 2 }} />}
-            <Typography variant="h3" sx={{ fontWeight: 800, color: '#fff', letterSpacing: '-0.5px' }}>
+            <Typography variant="h3" sx={{ fontWeight: 800, color: "text.primary", letterSpacing: '-0.5px' }}>
               {isVideo ? 'Video Tutorials' : 'Interactive Learning'}
             </Typography>
           </Box>

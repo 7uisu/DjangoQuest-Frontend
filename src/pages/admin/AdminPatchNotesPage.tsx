@@ -166,44 +166,44 @@ const AdminPatchNotesPage = () => {
   return (
     <Box>
       {/* ─── Download Links Section ─── */}
-      <Typography variant="h6" sx={{ color: '#e2e8f0', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Typography variant="h6" sx={{ color: 'var(--mui-palette-text-primary)', mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
         <LinkIcon /> Download Links
       </Typography>
-      <Paper sx={{ bgcolor: '#1e293b', p: 3, borderRadius: 3, mb: 4 }}>
+      <Paper sx={{ bgcolor: 'var(--mui-palette-background-paper)', p: 3, borderRadius: 3, mb: 4 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-            <Chip label="Windows" size="small" sx={{ bgcolor: '#00a4ef', color: 'white', fontWeight: 'bold' }} />
+            <Chip label="Windows" size="small" sx={{ bgcolor: '#00a4ef', color: "text.primary", fontWeight: 'bold' }} />
             <TextField
               value={winUrl}
               onChange={(e) => setWinUrl(e.target.value)}
               placeholder="https://drive.google.com/..."
               size="small"
               fullWidth
-              sx={{ flex: 1, minWidth: 300, input: { color: '#e2e8f0' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }}
+              sx={{ flex: 1, minWidth: 300, input: { color: 'var(--mui-palette-text-primary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }}
             />
             <Button variant="contained" size="small" disabled={linkSaving} onClick={() => handleSaveLink('windows')}
-              sx={{ bgcolor: '#44b78b', '&:hover': { bgcolor: '#3da57d' } }}>
+              sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}>
               Save
             </Button>
           </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-            <Chip label="macOS" size="small" sx={{ bgcolor: '#a0aec0', color: '#0f172a', fontWeight: 'bold' }} />
+            <Chip label="macOS" size="small" sx={{ bgcolor: '#a0aec0', color: 'var(--mui-palette-background-default)', fontWeight: 'bold' }} />
             <TextField
               value={macUrl}
               onChange={(e) => setMacUrl(e.target.value)}
               placeholder="https://drive.google.com/..."
               size="small"
               fullWidth
-              sx={{ flex: 1, minWidth: 300, input: { color: '#e2e8f0' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }}
+              sx={{ flex: 1, minWidth: 300, input: { color: 'var(--mui-palette-text-primary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }}
             />
             <Button variant="contained" size="small" disabled={linkSaving} onClick={() => handleSaveLink('macos')}
-              sx={{ bgcolor: '#44b78b', '&:hover': { bgcolor: '#3da57d' } }}>
+              sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}>
               Save
             </Button>
           </Box>
         </Box>
         {links.length > 0 && (
-          <Typography variant="caption" sx={{ color: '#64748b', mt: 1, display: 'block' }}>
+          <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', mt: 1, display: 'block' }}>
             Last updated: {timeAgo(links[0].updated_at)}
           </Typography>
         )}
@@ -211,11 +211,11 @@ const AdminPatchNotesPage = () => {
 
       {/* ─── Patch Notes Section ─── */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6" sx={{ color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="h6" sx={{ color: 'var(--mui-palette-text-primary)', display: 'flex', alignItems: 'center', gap: 1 }}>
           <ReleaseIcon /> Patch Notes
         </Typography>
         <Button startIcon={<AddIcon />} variant="contained" size="small" onClick={() => setDialogOpen(true)}
-          sx={{ bgcolor: '#44b78b', '&:hover': { bgcolor: '#3da57d' } }}>
+          sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' } }}>
           New Patch Note
         </Button>
       </Box>
@@ -224,33 +224,33 @@ const AdminPatchNotesPage = () => {
 
       {loading ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {[1, 2, 3].map(i => <Skeleton key={i} variant="rounded" height={100} sx={{ bgcolor: '#1e293b' }} />)}
+          {[1, 2, 3].map(i => <Skeleton key={i} variant="rounded" height={100} sx={{ bgcolor: 'var(--mui-palette-background-paper)' }} />)}
         </Box>
       ) : notes.length === 0 ? (
-        <Paper sx={{ bgcolor: '#1e293b', p: 4, textAlign: 'center', borderRadius: 3 }}>
-          <Typography sx={{ color: '#64748b' }}>No patch notes yet. Click "New Patch Note" to create one.</Typography>
+        <Paper sx={{ bgcolor: 'var(--mui-palette-background-paper)', p: 4, textAlign: 'center', borderRadius: 3 }}>
+          <Typography sx={{ color: 'var(--mui-palette-text-secondary)' }}>No patch notes yet. Click "New Patch Note" to create one.</Typography>
         </Paper>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {notes.map(note => (
-            <Paper key={note.id} sx={{ bgcolor: '#1e293b', p: 3, borderRadius: 3, position: 'relative', borderLeft: '4px solid #818cf8' }}>
+            <Paper key={note.id} sx={{ bgcolor: 'var(--mui-palette-background-paper)', p: 3, borderRadius: 3, position: 'relative', borderLeft: '4px solid #256d4f' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                 <Box>
-                  <Chip label={`v${note.version}`} size="small" sx={{ bgcolor: alpha('#818cf8', 0.2), color: '#818cf8', fontWeight: 'bold', mr: 1 }} />
-                  <Typography component="span" sx={{ color: '#e2e8f0', fontWeight: 600 }}>{note.title}</Typography>
+                  <Chip label={`v${note.version}`} size="small" sx={{ bgcolor: alpha('#256d4f', 0.2), color: '#256d4f', fontWeight: 'bold', mr: 1 }} />
+                  <Typography component="span" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>{note.title}</Typography>
                 </Box>
                 <Box>
                   <IconButton size="small" onClick={() => { setEditTarget(note); setEditVersion(note.version); setEditTitle(note.title); setEditBody(note.body); }}
-                    sx={{ color: '#64748b', '&:hover': { color: '#818cf8' } }}>
+                    sx={{ color: 'var(--mui-palette-text-secondary)', '&:hover': { color: '#256d4f' } }}>
                     <EditIcon fontSize="small" />
                   </IconButton>
                   <IconButton size="small" onClick={() => handleDelete(note.id)}
-                    sx={{ color: '#64748b', '&:hover': { color: '#ef4444' } }}>
+                    sx={{ color: 'var(--mui-palette-text-secondary)', '&:hover': { color: '#ef4444' } }}>
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </Box>
               </Box>
-              <Typography variant="body2" sx={{ color: '#94a3b8', whiteSpace: 'pre-wrap', mb: 1 }}>{note.body}</Typography>
+              <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)', whiteSpace: 'pre-wrap', mb: 1 }}>{note.body}</Typography>
               <Typography variant="caption" sx={{ color: '#475569' }}>{timeAgo(note.created_at)}</Typography>
             </Paper>
           ))}
@@ -258,36 +258,36 @@ const AdminPatchNotesPage = () => {
       )}
 
       {/* Create Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0' } }}>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)' } }}>
         <DialogTitle>New Patch Note</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '12px !important' }}>
           <TextField label="Version" value={version} onChange={(e) => setVersion(e.target.value)} placeholder="1.0.0" size="small"
-            sx={{ input: { color: '#e2e8f0' }, label: { color: '#64748b' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }} />
+            sx={{ input: { color: 'var(--mui-palette-text-primary)' }, label: { color: 'var(--mui-palette-text-secondary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }} />
           <TextField label="Title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Initial Release" size="small"
-            sx={{ input: { color: '#e2e8f0' }, label: { color: '#64748b' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }} />
+            sx={{ input: { color: 'var(--mui-palette-text-primary)' }, label: { color: 'var(--mui-palette-text-secondary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }} />
           <TextField label="Body" value={body} onChange={(e) => setBody(e.target.value)} placeholder="- Added feature X..." multiline rows={6}
-            sx={{ textarea: { color: '#e2e8f0' }, label: { color: '#64748b' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }} />
+            sx={{ textarea: { color: 'var(--mui-palette-text-primary)' }, label: { color: 'var(--mui-palette-text-secondary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)} sx={{ color: '#64748b' }}>Cancel</Button>
-          <Button onClick={handleCreate} disabled={submitting} variant="contained" sx={{ bgcolor: '#44b78b' }}>Create</Button>
+          <Button onClick={() => setDialogOpen(false)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
+          <Button onClick={handleCreate} disabled={submitting} variant="contained" sx={{ bgcolor: '#256d4f' }}>Create</Button>
         </DialogActions>
       </Dialog>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editTarget} onClose={() => setEditTarget(null)} maxWidth="sm" fullWidth PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0' } }}>
+      <Dialog open={!!editTarget} onClose={() => setEditTarget(null)} maxWidth="sm" fullWidth PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)' } }}>
         <DialogTitle>Edit Patch Note</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: '12px !important' }}>
           <TextField label="Version" value={editVersion} onChange={(e) => setEditVersion(e.target.value)} size="small"
-            sx={{ input: { color: '#e2e8f0' }, label: { color: '#64748b' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }} />
+            sx={{ input: { color: 'var(--mui-palette-text-primary)' }, label: { color: 'var(--mui-palette-text-secondary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }} />
           <TextField label="Title" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} size="small"
-            sx={{ input: { color: '#e2e8f0' }, label: { color: '#64748b' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }} />
+            sx={{ input: { color: 'var(--mui-palette-text-primary)' }, label: { color: 'var(--mui-palette-text-secondary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }} />
           <TextField label="Body" value={editBody} onChange={(e) => setEditBody(e.target.value)} multiline rows={6}
-            sx={{ textarea: { color: '#e2e8f0' }, label: { color: '#64748b' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#334155' } } }} />
+            sx={{ textarea: { color: 'var(--mui-palette-text-primary)' }, label: { color: 'var(--mui-palette-text-secondary)' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'var(--mui-palette-divider)' } } }} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditTarget(null)} sx={{ color: '#64748b' }}>Cancel</Button>
-          <Button onClick={handleEdit} disabled={editSubmitting} variant="contained" sx={{ bgcolor: '#44b78b' }}>Save Changes</Button>
+          <Button onClick={() => setEditTarget(null)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
+          <Button onClick={handleEdit} disabled={editSubmitting} variant="contained" sx={{ bgcolor: '#256d4f' }}>Save Changes</Button>
         </DialogActions>
       </Dialog>
 

@@ -118,8 +118,8 @@ const AdminSettingsPage: React.FC = () => {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box>
-          <Typography variant="h5" sx={{ color: '#e2e8f0', fontWeight: 600 }}>Settings</Typography>
-          <Typography variant="body2" sx={{ color: '#64748b' }}>Manage teacher registration invite codes.</Typography>
+          <Typography variant="h5" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>Settings</Typography>
+          <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)' }}>Manage teacher registration invite codes.</Typography>
         </Box>
       </Box>
 
@@ -130,30 +130,30 @@ const AdminSettingsPage: React.FC = () => {
       )}
 
       {/* Invite Codes Section */}
-      <Paper sx={{ p: 3, bgcolor: '#1e293b', borderRadius: 2, border: '1px solid #334155' }}>
+      <Paper sx={{ p: 3, bgcolor: 'var(--mui-palette-background-paper)', borderRadius: 2, border: '1px solid var(--mui-palette-divider)' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <KeyIcon sx={{ color: '#818cf8', fontSize: 28 }} />
+            <KeyIcon sx={{ color: '#256d4f', fontSize: 28 }} />
             <Box>
-              <Typography variant="h6" sx={{ color: '#e2e8f0', fontWeight: 600 }}>Teacher Invite Codes</Typography>
-              <Typography variant="caption" sx={{ color: '#64748b' }}>
+              <Typography variant="h6" sx={{ color: 'var(--mui-palette-text-primary)', fontWeight: 600 }}>Teacher Invite Codes</Typography>
+              <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
                 Teachers must enter one of these codes when registering on the public signup page.
               </Typography>
             </Box>
           </Box>
           <Button
             variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}
-            sx={{ bgcolor: '#818cf8', textTransform: 'none', fontWeight: 600, borderRadius: 2, '&:hover': { bgcolor: '#6366f1' } }}
+            sx={{ bgcolor: '#256d4f', textTransform: 'none', fontWeight: 600, borderRadius: 2, '&:hover': { bgcolor: '#174834' } }}
           >
             Add Code
           </Button>
         </Box>
 
         {loading ? (
-          <Typography sx={{ color: '#64748b', textAlign: 'center', py: 4 }}>Loading...</Typography>
+          <Typography sx={{ color: 'var(--mui-palette-text-secondary)', textAlign: 'center', py: 4 }}>Loading...</Typography>
         ) : codes.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
-            <KeyIcon sx={{ fontSize: 48, color: '#334155', mb: 1 }} />
+            <KeyIcon sx={{ fontSize: 48, color: 'var(--mui-palette-divider)', mb: 1 }} />
             <Typography sx={{ color: '#475569' }}>No invite codes yet. Create one to allow teachers to register.</Typography>
           </Box>
         ) : (
@@ -162,8 +162,8 @@ const AdminSettingsPage: React.FC = () => {
               <Paper
                 key={c.id}
                 sx={{
-                  p: 2, bgcolor: '#0f172a', borderRadius: 2,
-                  border: `1px solid ${c.is_active ? alpha('#818cf8', 0.3) : '#334155'}`,
+                  p: 2, bgcolor: 'var(--mui-palette-background-default)', borderRadius: 2,
+                  border: `1px solid ${c.is_active ? alpha('#256d4f', 0.3) : 'var(--mui-palette-divider)'}`,
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 }}
               >
@@ -171,7 +171,7 @@ const AdminSettingsPage: React.FC = () => {
                   <Typography
                     variant="h6"
                     sx={{
-                      color: c.is_active ? '#e2e8f0' : '#475569',
+                      color: c.is_active ? 'var(--mui-palette-text-primary)' : '#475569',
                       fontFamily: 'monospace', fontWeight: 700, letterSpacing: 2,
                       textDecoration: c.is_active ? 'none' : 'line-through',
                     }}
@@ -188,7 +188,7 @@ const AdminSettingsPage: React.FC = () => {
                     }}
                   />
                   <IconButton onClick={() => copyToClipboard(c.code)} size="small"
-                    sx={{ color: '#64748b', '&:hover': { color: '#818cf8' } }}>
+                    sx={{ color: 'var(--mui-palette-text-secondary)', '&:hover': { color: '#256d4f' } }}>
                     <CopyIcon fontSize="small" />
                   </IconButton>
                 </Box>
@@ -197,14 +197,14 @@ const AdminSettingsPage: React.FC = () => {
                     checked={c.is_active}
                     onChange={() => handleToggleActive(c)}
                     size="small"
-                    sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: '#818cf8' }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#818cf8' } }}
+                    sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: '#256d4f' }, '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#256d4f' } }}
                   />
                   <IconButton onClick={() => { setEditTarget(c); setEditCode(c.code); }} size="small"
-                    sx={{ color: '#64748b', '&:hover': { color: '#818cf8', bgcolor: alpha('#818cf8', 0.1) } }}>
+                    sx={{ color: 'var(--mui-palette-text-secondary)', '&:hover': { color: '#256d4f', bgcolor: alpha('#256d4f', 0.1) } }}>
                     <EditIcon fontSize="small" />
                   </IconButton>
                   <IconButton onClick={() => handleDelete(c.id)} size="small"
-                    sx={{ color: '#64748b', '&:hover': { color: '#ef4444', bgcolor: alpha('#ef4444', 0.1) } }}>
+                    sx={{ color: 'var(--mui-palette-text-secondary)', '&:hover': { color: '#ef4444', bgcolor: alpha('#ef4444', 0.1) } }}>
                     <DeleteIcon fontSize="small" />
                   </IconButton>
                 </Box>
@@ -216,23 +216,23 @@ const AdminSettingsPage: React.FC = () => {
 
       {/* Create Dialog */}
       <Dialog open={createOpen} onClose={() => setCreateOpen(false)} maxWidth="xs" fullWidth
-        PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 3 } }}>
+        PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 3 } }}>
         <DialogTitle sx={{ fontWeight: 600 }}>Create Invite Code</DialogTitle>
         <DialogContent>
-          <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
+          <Typography variant="body2" sx={{ color: 'var(--mui-palette-text-secondary)', mb: 2 }}>
             Enter a code that teachers will use during registration. It will be automatically converted to uppercase.
           </Typography>
           <TextField
             autoFocus fullWidth label="Invite Code" value={newCode}
             onChange={(e) => setNewCode(e.target.value.toUpperCase())}
             placeholder="e.g. CAPSTONE-2026"
-            sx={{ '& .MuiInputBase-root': { color: '#e2e8f0', bgcolor: '#0f172a', fontFamily: 'monospace', fontWeight: 700, letterSpacing: 2 }, '& label': { color: '#64748b' }, '& fieldset': { borderColor: '#334155' } }}
+            sx={{ '& .MuiInputBase-root': { color: 'var(--mui-palette-text-primary)', bgcolor: 'var(--mui-palette-background-default)', fontFamily: 'monospace', fontWeight: 700, letterSpacing: 2 }, '& label': { color: 'var(--mui-palette-text-secondary)' }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }}
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setCreateOpen(false)} sx={{ color: '#94a3b8' }}>Cancel</Button>
+          <Button onClick={() => setCreateOpen(false)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
           <Button onClick={handleCreate} variant="contained" disabled={creating || !newCode.trim()}
-            sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' }, textTransform: 'none' }}>
+            sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' }, textTransform: 'none' }}>
             {creating ? 'Creating…' : 'Create'}
           </Button>
         </DialogActions>
@@ -240,19 +240,19 @@ const AdminSettingsPage: React.FC = () => {
 
       {/* Edit Dialog */}
       <Dialog open={!!editTarget} onClose={() => setEditTarget(null)} maxWidth="xs" fullWidth
-        PaperProps={{ sx: { bgcolor: '#1e293b', color: '#e2e8f0', borderRadius: 3 } }}>
+        PaperProps={{ sx: { bgcolor: 'var(--mui-palette-background-paper)', color: 'var(--mui-palette-text-primary)', borderRadius: 3 } }}>
         <DialogTitle sx={{ fontWeight: 600 }}>Edit Invite Code</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus fullWidth label="Invite Code" value={editCode}
             onChange={(e) => setEditCode(e.target.value.toUpperCase())}
-            sx={{ mt: 1, '& .MuiInputBase-root': { color: '#e2e8f0', bgcolor: '#0f172a', fontFamily: 'monospace', fontWeight: 700, letterSpacing: 2 }, '& label': { color: '#64748b' }, '& fieldset': { borderColor: '#334155' } }}
+            sx={{ mt: 1, '& .MuiInputBase-root': { color: 'var(--mui-palette-text-primary)', bgcolor: 'var(--mui-palette-background-default)', fontFamily: 'monospace', fontWeight: 700, letterSpacing: 2 }, '& label': { color: 'var(--mui-palette-text-secondary)' }, '& fieldset': { borderColor: 'var(--mui-palette-divider)' } }}
           />
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setEditTarget(null)} sx={{ color: '#94a3b8' }}>Cancel</Button>
+          <Button onClick={() => setEditTarget(null)} sx={{ color: 'var(--mui-palette-text-secondary)' }}>Cancel</Button>
           <Button onClick={handleEdit} variant="contained" disabled={editing || !editCode.trim()}
-            sx={{ bgcolor: '#818cf8', '&:hover': { bgcolor: '#6366f1' }, textTransform: 'none' }}>
+            sx={{ bgcolor: '#256d4f', '&:hover': { bgcolor: '#174834' }, textTransform: 'none' }}>
             {editing ? 'Saving…' : 'Save Changes'}
           </Button>
         </DialogActions>

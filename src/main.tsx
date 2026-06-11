@@ -1,15 +1,14 @@
 import { ParallaxProvider } from 'react-scroll-parallax';
 
 import { createRoot } from "react-dom/client";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./styles/theme";
+import { AppThemeProvider } from "./styles/ThemeModeProvider";
 import App from "./App.tsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <ParallaxProvider>
-    <ThemeProvider theme={theme}>
+    <AppThemeProvider>
       <App />
-    </ThemeProvider>
+    </AppThemeProvider>
   </ParallaxProvider>
 );
