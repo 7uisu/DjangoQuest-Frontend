@@ -17,6 +17,7 @@ import {
   ChevronLeft as ChevronLeftIcon,
   AdminPanelSettings as AdminIcon,
   Home as HomeIcon,
+  Download as DownloadIcon,
   History as HistoryIcon,
   Settings as SettingsIcon,
   VideoLibrary as VideoIcon,
@@ -254,6 +255,16 @@ const AdminLayout: React.FC = () => {
             <IconButton onClick={toggleMode} color="primary" sx={{ mr: 1 }} aria-label="toggle theme mode">
               {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
             </IconButton>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={() => navigate('/download')}
+              startIcon={<DownloadIcon />}
+              sx={{ mr: 1, fontWeight: 'bold', textTransform: 'none' }}
+            >
+              Download Game
+            </Button>
             <Button
               variant="outlined"
               size="small"
