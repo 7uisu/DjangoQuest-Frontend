@@ -4,7 +4,7 @@ import { tutorialApi } from '../api/axios';
 import {
   Box, Typography, Button, Grid, Card, CardContent, CardActions, Chip,
   Container, LinearProgress, Paper, Avatar, useTheme, CardHeader, Skeleton, Alert, CardMedia,
-  Divider, TextField, InputAdornment, ToggleButton, ToggleButtonGroup
+  Divider, TextField, InputAdornment
 } from '@mui/material';
 import {
   Code as CodeIcon, CheckCircle as CheckCircleIcon,
@@ -37,7 +37,9 @@ const TutorialList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'in_progress' | 'not_started'>('all');
+  const [visitedIds, setVisitedIds] = useState<number[]>(() => {
+    try { return JSON.parse(localStorage.getItem('dq_visited_tutorials') || '[]'); } catch { return []; }
+  });
 
   const isVideo = true;
 
@@ -133,13 +135,6 @@ const TutorialList: React.FC = () => {
     );
   }
 
-  const getTutorialStatus = (tutorial: Tutorial) => {
-    const userProgress = progress[tutorial.id];
-    if (userProgress?.isCompleted) return 'completed';
-    if (userProgress?.currentStep !== null && userProgress?.currentStep !== undefined) return 'in_progress';
-    return 'not_started';
-  };
-
   const categoryTutorials = tutorials.filter((tutorial) => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
     const searchableText = [
@@ -147,9 +142,7 @@ const TutorialList: React.FC = () => {
       tutorial.description,
       ...tutorial.steps.map((step) => step.title),
     ].join(' ').toLowerCase();
-    const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch);
-    const matchesStatus = statusFilter === 'all' || getTutorialStatus(tutorial) === statusFilter;
-    return matchesSearch && matchesStatus;
+    return !normalizedSearch || searchableText.includes(normalizedSearch);
   });
 
   const getYoutubeThumbnail = (url?: string) => {
@@ -166,6 +159,16 @@ const TutorialList: React.FC = () => {
     const tutorialColor = getTutorialColor(tutorial.id);
     const buttonText = isVideo ? "Watch Video Guide" : (isCompleted ? "Review Challenges" : progress[tutorial.id] ? "Continue Coding" : "Start Challenges");
     const thumbnailUrl = getYoutubeThumbnail(tutorial.videoUrl);
+    const isVisited = visitedIds.includes(tutorial.id);
+
+    const handleCardClick = () => {
+      if (!visitedIds.includes(tutorial.id)) {
+        const updated = [...visitedIds, tutorial.id];
+        setVisitedIds(updated);
+        localStorage.setItem('dq_visited_tutorials', JSON.stringify(updated));
+      }
+      navigate(isVideo ? `/tutorials/${tutorial.id}/video` : `/tutorials/${tutorial.id}`);
+    };
 
     return (
       <Grid item xs={12} md={4} key={tutorial.id}>
@@ -174,9 +177,10 @@ const TutorialList: React.FC = () => {
           sx={{
             height: '100%',
             display: 'flex', flexDirection: 'column', transition: 'all 0.3s ease',
-            backgroundColor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2,
+            backgroundColor: 'background.paper', border: '2px solid', borderColor: isVisited ? 'primary.main' : 'divider', borderRadius: 2,
             '&:hover': { transform: 'translateY(-4px)', borderColor: isVideo ? 'secondary.main' : 'primary.main', boxShadow: '0 12px 28px rgba(31,41,51,0.12)' },
-            overflow: 'hidden'
+            overflow: 'hidden',
+            ...(isVisited && { boxShadow: `0 0 0 1px ${theme.palette.primary.main}22` }),
           }}
         >
           {thumbnailUrl && (
@@ -193,7 +197,7 @@ const TutorialList: React.FC = () => {
             title={
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minWidth: 0 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', fontSize: '1.1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>{tutorial.title}</Typography>
-                {!isVideo && isCompleted && <CheckCircleIcon fontSize="small" color="success" />}
+                {isVisited && <CheckCircleIcon fontSize="small" color="primary" sx={{ ml: 0.5, flexShrink: 0 }} />}
               </Box>
             }
             sx={{ pb: 0, pt: 2.5 }}
@@ -227,12 +231,12 @@ const TutorialList: React.FC = () => {
               variant={isVideo ? "outlined" : (isCompleted ? "outlined" : "contained")}
               color={isVideo ? "secondary" : (isCompleted ? "success" : "primary")}
               fullWidth
-              onClick={() => navigate(isVideo ? `/tutorials/${tutorial.id}/video` : `/tutorials/${tutorial.id}`)}
+              onClick={handleCardClick}
               disabled={!isAuthenticated}
               endIcon={isVideo ? <VideoIcon /> : <ArrowForwardIcon />}
               sx={{ borderRadius: 1.5, fontWeight: 600, py: 1, textTransform: 'none' }}
             >
-              {buttonText}
+              {isVisited ? 'Watch Again' : buttonText}
             </Button>
           </CardActions>
         </Card>
@@ -261,44 +265,25 @@ const TutorialList: React.FC = () => {
             </Box>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Chip label={`${tutorials.length} Videos`} color="primary" variant="outlined" />
-              <Chip label={`${tutorials.reduce((sum, tutorial) => sum + tutorial.steps.length, 0)} Topics`} variant="outlined" />
             </Box>
           </Box>
         </Paper>
 
         <Paper elevation={0} sx={{ p: { xs: 2, md: 2.5 }, mb: 3, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Search tutorials"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
-              <ToggleButtonGroup
-                value={statusFilter}
-                exclusive
-                size="small"
-                onChange={(_, nextValue) => nextValue && setStatusFilter(nextValue)}
-                sx={{ flexWrap: 'wrap', gap: 0.5, '& .MuiToggleButton-root': { border: '1px solid', borderColor: 'divider', borderRadius: '6px !important' } }}
-              >
-                <ToggleButton value="all">All</ToggleButton>
-                <ToggleButton value="not_started">Not Started</ToggleButton>
-                <ToggleButton value="in_progress">In Progress</ToggleButton>
-                <ToggleButton value="completed">Completed</ToggleButton>
-              </ToggleButtonGroup>
-            </Grid>
-          </Grid>
+          <TextField
+            fullWidth
+            size="small"
+            label="Search tutorials"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
         </Paper>
 
         <Box sx={{ mb: 3 }}>

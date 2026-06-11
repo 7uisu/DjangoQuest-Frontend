@@ -122,8 +122,6 @@ const App = () => {
                     <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/patch-notes" element={<PatchNotesPage />} />
-                    <Route path="/tutorials" element={<TutorialList />} />
-                    <Route path="/tutorials/:id/video" element={<TutorialVideoLayout />} />
                     <Route element={<PrivateRoutes />}>
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/my-classroom" element={<MyClassroom />} />
@@ -133,6 +131,8 @@ const App = () => {
                       <Route path="/teacher-dashboard/class/:id" element={<ClassroomStudents />} />
                       <Route path="/leaderboard" element={<Leaderboard />} />
                       <Route path="/download" element={<DownloadPage />} />
+                      <Route path="/tutorials" element={<TutorialList />} />
+                      <Route path="/tutorials/:id/video" element={<TutorialVideoLayout />} />
                     </Route>
                   </Routes>
                 </Box>
