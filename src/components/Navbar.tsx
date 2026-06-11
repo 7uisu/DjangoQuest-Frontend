@@ -65,9 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
 
   const publicLinks = (
     <>
-      <Button color="inherit" onClick={() => handleNavigation("home")}>
-        Home
-      </Button>
+
       {location.pathname === "/" && (
         <>
           <Button color="inherit" onClick={() => handleNavigation("about")}>
@@ -81,10 +79,20 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
           </Button>
         </>
       )}
-      <Button color="inherit" component={Link} to="/tutorials">
+      <Button 
+        color="inherit" 
+        component={Link} 
+        to="/tutorials"
+        sx={{ fontWeight: location.pathname.startsWith('/tutorials') ? 800 : 400, color: location.pathname.startsWith('/tutorials') ? 'primary.main' : 'inherit' }}
+      >
         Video Tutorials
       </Button>
-      <Button color="inherit" component={Link} to="/patch-notes">
+      <Button 
+        color="inherit" 
+        component={Link} 
+        to="/patch-notes"
+        sx={{ fontWeight: location.pathname.startsWith('/patch-notes') ? 800 : 400, color: location.pathname.startsWith('/patch-notes') ? 'primary.main' : 'inherit' }}
+      >
         Patch Notes
       </Button>
     </>
@@ -92,24 +100,44 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
 
   const accountLinks = (
     <>
-      {user?.is_staff && (
-        <Button color="inherit" component={Link} to="/admin-dashboard">
-          Admin Dashboard
-        </Button>
-      )}
-      {user?.is_teacher && (
-        <Button color="inherit" component={Link} to="/teacher-dashboard">
-          Teacher Dashboard
-        </Button>
-      )}
+      <Button 
+        color="inherit" 
+        component={Link} 
+        to="/dashboard"
+        sx={{ fontWeight: location.pathname === '/dashboard' ? 800 : 400, color: location.pathname === '/dashboard' ? 'primary.main' : 'inherit' }}
+      >
+        My Profile
+      </Button>
       {user?.is_student && (
-        <Button color="inherit" component={Link} to="/my-classrooms">
+        <Button 
+          color="inherit" 
+          component={Link} 
+          to="/my-classrooms"
+          sx={{ fontWeight: location.pathname.startsWith('/my-classrooms') ? 800 : 400, color: location.pathname.startsWith('/my-classrooms') ? 'primary.main' : 'inherit' }}
+        >
           My Classrooms
         </Button>
       )}
-      <Button color="inherit" component={Link} to="/dashboard">
-        My Profile
-      </Button>
+      {user?.is_teacher && (
+        <Button 
+          color="inherit" 
+          component={Link} 
+          to="/teacher-dashboard"
+          sx={{ fontWeight: location.pathname.startsWith('/teacher-dashboard') ? 800 : 400, color: location.pathname.startsWith('/teacher-dashboard') ? 'primary.main' : 'inherit' }}
+        >
+          Teacher Dashboard
+        </Button>
+      )}
+      {user?.is_staff && (
+        <Button 
+          color="inherit" 
+          component={Link} 
+          to="/admin-dashboard"
+          sx={{ fontWeight: location.pathname.startsWith('/admin-dashboard') ? 800 : 400, color: location.pathname.startsWith('/admin-dashboard') ? 'primary.main' : 'inherit' }}
+        >
+          Admin Dashboard
+        </Button>
+      )}
     </>
   );
 
@@ -117,15 +145,25 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
     label: string,
     onClick?: () => void,
     to?: string
-  ) => (
-    <ListItemButton
-      component={to ? Link : "button"}
-      to={to}
-      onClick={onClick ?? (() => setMobileMenuOpen(false))}
-    >
-      <ListItemText primary={label} />
-    </ListItemButton>
-  );
+  ) => {
+    const isActive = to ? (to === '/dashboard' ? location.pathname === '/dashboard' : location.pathname.startsWith(to)) : false;
+    return (
+      <ListItemButton
+        component={to ? Link : "button"}
+        to={to as any}
+        onClick={onClick ?? (() => setMobileMenuOpen(false))}
+        sx={{
+          bgcolor: isActive ? 'action.selected' : 'transparent',
+          color: isActive ? 'primary.main' : 'inherit',
+          '& .MuiListItemText-primary': {
+            fontWeight: isActive ? 600 : 400,
+          }
+        }}
+      >
+        <ListItemText primary={label} />
+      </ListItemButton>
+    );
+  };
 
   return (
     <>
@@ -227,7 +265,7 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
           </Box>
 
           <List>
-            {renderMobileLink("Home", () => handleNavigation("home"))}
+
             {location.pathname === "/" && (
               <>
                 {renderMobileLink("About", () => handleNavigation("about"))}
@@ -239,10 +277,10 @@ const Navbar: React.FC<NavbarProps> = ({ setCurrentSection }) => {
             {renderMobileLink("Patch Notes", undefined, "/patch-notes")}
             {isAuthenticated && (
               <>
-                {user?.is_staff && renderMobileLink("Admin Dashboard", undefined, "/admin-dashboard")}
-                {user?.is_teacher && renderMobileLink("Teacher Dashboard", undefined, "/teacher-dashboard")}
-                {user?.is_student && renderMobileLink("My Classrooms", undefined, "/my-classrooms")}
                 {renderMobileLink("My Profile", undefined, "/dashboard")}
+                {user?.is_student && renderMobileLink("My Classrooms", undefined, "/my-classrooms")}
+                {user?.is_teacher && renderMobileLink("Teacher Dashboard", undefined, "/teacher-dashboard")}
+                {user?.is_staff && renderMobileLink("Admin Dashboard", undefined, "/admin-dashboard")}
               </>
             )}
           </List>
